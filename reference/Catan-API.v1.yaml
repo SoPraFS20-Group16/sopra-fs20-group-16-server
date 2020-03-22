@@ -10,7 +10,8 @@ paths:
   /users:
     get:
       summary: GET /users
-      tags: []
+      tags:
+        - GET Request
       responses:
         '200':
           description: OK
@@ -22,7 +23,8 @@ paths:
                   users:
                     type: array
                     description: The array containing all users
-                    items: {}
+                    items:
+                      $ref: '#/components/schemas/User'
       operationId: get-users
       description: Returns all the users currently in the database
     post:
@@ -67,6 +69,8 @@ paths:
                   description: The users password
             examples: {}
         description: The chosen username and password of the new user
+      tags:
+        - POST Request
   '/users/{userId}':
     parameters:
       - schema:
@@ -74,9 +78,11 @@ paths:
         name: userId
         in: path
         description: The Id of the user
+        required: true
     get:
       summary: GET /users/userId
-      tags: []
+      tags:
+        - GET Request
       responses:
         '200':
           description: OK
@@ -84,8 +90,11 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 description: The user with the corresponding id
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         '404':
           description: Not Found
           content:
@@ -101,13 +110,7 @@ paths:
                     description: an error message for the user
       operationId: get-users-userId
       description: Returns the user if it is in the database
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: userId
-          description: |
-            The Id of the requested User
+      parameters: []
   /login:
     put:
       summary: PUT /login
@@ -150,10 +153,13 @@ paths:
                   type: string
                   description: The users password
         description: The request body contains username and password
+      tags:
+        - PUT Request
   /games:
     get:
       summary: GET /games
-      tags: []
+      tags:
+        - GET Request
       responses:
         '200':
           description: OK
@@ -204,6 +210,23 @@ paths:
                     type: string
                     description: A message to the user
       description: Creates a new game on the server and returns gameId and game url
+      tags:
+        - POST Request
 components:
-  schemas: {}
+  schemas:
+    User:
+      title: User
+      type: object
+      description: This is the user as it is returned by the server
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+    Game:
+      title: Game
+      type: object
+      properties:
+        id:
+          type: string
   securitySchemes: {}
