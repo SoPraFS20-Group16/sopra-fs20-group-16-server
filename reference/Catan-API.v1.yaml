@@ -9,7 +9,7 @@ servers:
 paths:
   /users:
     get:
-      summary: Your GET endpoint
+      summary: GET /users
       tags: []
       responses:
         '200':
@@ -27,7 +27,7 @@ paths:
       description: Returns all the users currently in the database
       parameters: []
     post:
-      summary: ''
+      summary: POST /users
       operationId: post-users
       responses:
         '201':
@@ -61,8 +61,9 @@ paths:
         name: userId
         in: path
         required: true
+        description: The Id of the user
     get:
-      summary: Your GET endpoint
+      summary: GET /users/userId
       tags: []
       responses:
         '200':
@@ -84,7 +85,7 @@ paths:
             The Id of the requested User
   /login:
     put:
-      summary: ''
+      summary: PUT /login
       operationId: put-login
       responses:
         '200':
@@ -113,7 +114,7 @@ paths:
         description: The request body contains username and password
   /games:
     get:
-      summary: Your GET endpoint
+      summary: GET /games
       tags: []
       responses:
         '200':
@@ -125,10 +126,40 @@ paths:
                 properties:
                   games:
                     type: array
-                    items: {}
+                    items:
+                      type: object
+                      properties:
+                        gameId:
+                          type: string
+                        url:
+                          type: string
+              examples: {}
       operationId: get-games
-      description: Returns the Ids for all available games
+      description: Returns the Ids and links for all available games
       requestBody: {}
+    post:
+      summary: POST /games
+      operationId: post-games
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                description: returns game Id and game url
+                properties:
+                  gameId:
+                    type: string
+                  url:
+                    type: string
+      description: Creates a new game on the server and returns gameId and game url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
 components:
   schemas: {}
   securitySchemes: {}
