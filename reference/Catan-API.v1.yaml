@@ -25,7 +25,6 @@ paths:
                     items: {}
       operationId: get-users
       description: Returns all the users currently in the database
-      parameters: []
     post:
       summary: POST /users
       operationId: post-users
@@ -39,6 +38,19 @@ paths:
                 properties:
                   token:
                     type: string
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    description: An error object containing additional information
+                  errorMessage:
+                    type: string
+                    description: an error message to the user
       description: Adds a user to the database and returns the new users login token
       requestBody:
         content:
@@ -54,6 +66,7 @@ paths:
                   type: string
                   description: The users password
             examples: {}
+        description: The chosen username and password of the new user
   '/users/{userId}':
     parameters:
       - schema:
@@ -97,6 +110,19 @@ paths:
                 properties:
                   token:
                     type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    description: Error object containing additional information
+                  errorMessage:
+                    type: string
+                    description: A message to the user
       description: Takes the user credentials and returns the login token
       requestBody:
         content:
@@ -136,7 +162,6 @@ paths:
               examples: {}
       operationId: get-games
       description: Returns the Ids and links for all available games
-      requestBody: {}
     post:
       summary: POST /games
       operationId: post-games
@@ -153,13 +178,20 @@ paths:
                     type: string
                   url:
                     type: string
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    description: an error object containing additional information
+                  errorMessage:
+                    type: string
+                    description: A message to the user
       description: Creates a new game on the server and returns gameId and game url
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties: {}
 components:
   schemas: {}
   securitySchemes: {}
