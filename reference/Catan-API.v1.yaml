@@ -73,7 +73,6 @@ paths:
           type: string
         name: userId
         in: path
-        required: true
         description: The Id of the user
     get:
       summary: GET /users/userId
@@ -87,6 +86,19 @@ paths:
               schema:
                 type: object
                 description: The user with the corresponding id
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    description: an error object containing additional information
+                  errorMessage:
+                    type: string
+                    description: an error message for the user
       operationId: get-users-userId
       description: Returns the user if it is in the database
       parameters:
