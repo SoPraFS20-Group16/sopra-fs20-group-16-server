@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: Catan API
+  version: '1.0'
+  description: This is the API specification for the REST Interface in the Catan/Toucan Game
+servers:
+  - url: 'http://localhost:8080'
+    description: Local
+paths:
+  /users:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    description: The array containing all users
+                    items: {}
+      operationId: get-users
+      description: Returns all the users currently in the database
+      parameters: []
+    post:
+      summary: ''
+      operationId: post-users
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+      description: Adds a user to the database and returns the new users login token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Object describing new user
+              properties:
+                username:
+                  type: string
+                  description: The users username
+                password:
+                  type: string
+                  description: The users password
+            examples: {}
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The user with the corresponding id
+      operationId: get-users-userId
+      description: Returns the user if it is in the database
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: userId
+          description: |
+            The Id of the requested User
+  /login:
+    put:
+      summary: ''
+      operationId: put-login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+      description: Takes the user credentials and returns the login token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: ''
+              properties:
+                username:
+                  type: string
+                  description: The username
+                password:
+                  type: string
+                  description: The users password
+        description: The request body contains username and password
+  /games:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  games:
+                    type: array
+                    items: {}
+      operationId: get-games
+      description: Returns the Ids for all available games
+      requestBody: {}
+components:
+  schemas: {}
+  securitySchemes: {}
