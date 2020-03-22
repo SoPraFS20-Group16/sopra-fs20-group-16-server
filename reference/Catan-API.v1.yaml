@@ -178,8 +178,8 @@ paths:
                     type: string
                   url:
                     type: string
-        '409':
-          description: Conflict
+        '503':
+          description: Service Unavailable
           content:
             application/json:
               schema:
