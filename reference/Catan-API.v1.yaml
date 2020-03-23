@@ -14,7 +14,7 @@ paths:
         - GET Request
       responses:
         '200':
-          description: OK
+          description: OK - Returns an array of all users
           content:
             application/json:
               schema:
@@ -32,7 +32,7 @@ paths:
       operationId: post-users
       responses:
         '201':
-          description: Created
+          description: Created - The user was created successfully and the token is returned
           content:
             application/json:
               schema:
@@ -41,7 +41,7 @@ paths:
                   token:
                     type: string
         '409':
-          description: Conflict
+          description: Conflict - There exists already a user with this username
           content:
             application/json:
               schema:
@@ -85,7 +85,7 @@ paths:
         - GET Request
       responses:
         '200':
-          description: OK
+          description: OK - The user with the userId exists and the user is returned
           headers: {}
           content:
             application/json:
@@ -96,7 +96,7 @@ paths:
                   user:
                     $ref: '#/components/schemas/User'
         '404':
-          description: Not Found
+          description: Not Found - There is no user with this userId
           content:
             application/json:
               schema:
@@ -117,7 +117,7 @@ paths:
       operationId: put-login
       responses:
         '200':
-          description: OK
+          description: OK - User is logged in correctly and the token is returned
           content:
             application/json:
               schema:
@@ -126,7 +126,7 @@ paths:
                   token:
                     type: string
         '401':
-          description: Unauthorized
+          description: Unauthorized - the login credentials where wrong
           content:
             application/json:
               schema:
@@ -162,7 +162,7 @@ paths:
         - GET Request
       responses:
         '200':
-          description: OK
+          description: 'OK - Returns games array '
           content:
             application/json:
               schema:
@@ -185,7 +185,7 @@ paths:
       operationId: post-games
       responses:
         '201':
-          description: Created
+          description: Created - Game is successfully created and gameId and url are returned
           content:
             application/json:
               schema:
@@ -197,7 +197,7 @@ paths:
                   url:
                     type: string
         '503':
-          description: Service Unavailable
+          description: Service Unavailable - If the game creation fails on the server
           content:
             application/json:
               schema:
@@ -223,10 +223,21 @@ components:
           type: string
         username:
           type: string
+      x-tags:
+        - Response Object
     Game:
       title: Game
       type: object
+      description: The game object as it is returned by the server
+      x-tags:
+        - Response Object
       properties:
-        id:
+        gameId:
           type: string
+          description: The Id of the game
+        players:
+          type: array
+          description: An array containing the players
+          items:
+            $ref: '#/components/schemas/User'
   securitySchemes: {}
