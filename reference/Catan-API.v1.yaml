@@ -4,8 +4,8 @@ info:
   version: '1.0'
   description: This is the API specification for the REST Interface in the Catan/Toucan Game
 servers:
-  - url: 'http://localhost:8080'
-    description: Local
+  - url: '{{baseUrl}}'
+    description: BaseUrl
 paths:
   /users:
     get:
