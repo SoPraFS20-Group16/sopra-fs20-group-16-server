@@ -10,8 +10,6 @@ paths:
   /users:
     get:
       summary: GET /users
-      tags:
-        - GET Request
       responses:
         '200':
           description: OK - Returns an array of all users
@@ -27,6 +25,9 @@ paths:
                       $ref: '#/components/schemas/User'
       operationId: get-users
       description: Returns all the users currently in the database
+      tags:
+        - /users
+        - GET Request
     post:
       summary: POST /users
       operationId: post-users
@@ -75,6 +76,7 @@ paths:
             examples: {}
         description: The chosen username and password of the new user
       tags:
+        - /users
         - POST Request
   '/users/{userId}':
     parameters:
@@ -86,8 +88,6 @@ paths:
         required: true
     get:
       summary: GET /users/userId
-      tags:
-        - GET Request
       responses:
         '200':
           description: OK - The user with the userId exists and the user is returned
@@ -115,6 +115,10 @@ paths:
       operationId: get-users-userId
       description: Returns the user if it is in the database
       parameters: []
+      tags:
+        - /users
+        - '/{userId}'
+        - GET Request
   /login:
     put:
       summary: PUT /login
@@ -157,12 +161,11 @@ paths:
                   description: The users password
         description: The request body contains username and password
       tags:
+        - /login
         - PUT Request
   /games:
     get:
       summary: GET /games
-      tags:
-        - GET Request
       responses:
         '200':
           description: 'OK - Returns games array '
@@ -183,6 +186,9 @@ paths:
               examples: {}
       operationId: get-games
       description: Returns the Ids and links for all available games
+      tags:
+        - /games
+        - GET Request
     post:
       summary: POST /games
       operationId: post-games
@@ -207,9 +213,10 @@ paths:
                     type: string
                     description: A message to the user
       description: Creates a new game on the server and returns gameId and game url
-      tags:
-        - POST Request
       parameters: []
+      tags:
+        - /games
+        - POST Request
   '/games/{gamesId}':
     parameters:
       - schema:
@@ -219,8 +226,7 @@ paths:
         required: true
         description: The gameId
     get:
-      summary: Your GET endpoint
-      tags: []
+      summary: GET /games/gamesId
       responses:
         '200':
           description: OK - Game exists and the game is returned
@@ -269,6 +275,10 @@ paths:
                   type: string
                   description: The users login token recieved upon login
         description: The request body holds the token of the requesting user to ensure that the games content is exclusively available to loged in users that are part of the game instance
+      tags:
+        - /games
+        - '/{gamesId}'
+        - GET Request
 components:
   schemas:
     User:
@@ -303,4 +313,6 @@ components:
       properties:
         id:
           type: string
+      x-tags:
+        - Response Object
   securitySchemes: {}
