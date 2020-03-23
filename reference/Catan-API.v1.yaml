@@ -37,9 +37,15 @@ paths:
             application/json:
               schema:
                 type: object
+                description: The Response body contains the login token for the created user
                 properties:
                   token:
                     type: string
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The header contains the location of the created resource
         '409':
           description: Conflict - There exists already a user with this username
           content:
@@ -186,16 +192,11 @@ paths:
       responses:
         '201':
           description: Created - Game is successfully created and gameId and url are returned
-          content:
-            application/json:
+          headers:
+            Location:
               schema:
-                type: object
-                description: returns game Id and game url
-                properties:
-                  gameId:
-                    type: string
-                  url:
-                    type: string
+                type: string
+              description: The header contains the location of the created resource
         '503':
           description: Service Unavailable - If the game creation fails on the server
           content:
@@ -212,6 +213,7 @@ paths:
       description: Creates a new game on the server and returns gameId and game url
       tags:
         - POST Request
+      parameters: []
 components:
   schemas:
     User:
