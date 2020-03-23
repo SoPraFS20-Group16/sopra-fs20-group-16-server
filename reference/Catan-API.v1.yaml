@@ -1,0 +1,318 @@
+openapi: 3.0.0
+info:
+  title: Catan API
+  version: '1.0'
+  description: This is the API specification for the REST Interface in the Catan/Toucan Game
+servers:
+  - url: '{{baseUrl}}'
+    description: BaseUrl
+paths:
+  /users:
+    get:
+      summary: GET /users
+      responses:
+        '200':
+          description: OK - Returns an array of all users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    description: The array containing all users
+                    items:
+                      $ref: '#/components/schemas/User'
+      operationId: get-users
+      description: Returns all the users currently in the database
+      tags:
+        - /users
+        - GET Request
+    post:
+      summary: POST /users
+      operationId: post-users
+      responses:
+        '201':
+          description: Created - The user was created successfully and the token is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The Response body contains the login token for the created user
+                properties:
+                  token:
+                    type: string
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The header contains the location of the created resource
+        '409':
+          description: Conflict - There exists already a user with this username
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: an error message to the user
+      description: Adds a user to the database and returns the new users login token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Object describing new user
+              properties:
+                username:
+                  type: string
+                  description: The users username
+                password:
+                  type: string
+                  description: The users password
+            examples: {}
+        description: The chosen username and password of the new user
+      tags:
+        - /users
+        - POST Request
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        description: The Id of the user
+        required: true
+    get:
+      summary: GET /users/userId
+      responses:
+        '200':
+          description: OK - The user with the userId exists and the user is returned
+          headers: {}
+          content:
+            application/json:
+              schema:
+                description: The user with the corresponding id
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: Not Found - There is no user with this userId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: an error message for the user
+      operationId: get-users-userId
+      description: Returns the user if it is in the database
+      parameters: []
+      tags:
+        - /users
+        - '/{userId}'
+        - GET Request
+  /login:
+    put:
+      summary: PUT /login
+      operationId: put-login
+      responses:
+        '200':
+          description: OK - User is logged in correctly and the token is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized - the login credentials where wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: A message to the user
+      description: Takes the user credentials and returns the login token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: ''
+              properties:
+                username:
+                  type: string
+                  description: The username
+                password:
+                  type: string
+                  description: The users password
+        description: The request body contains username and password
+      tags:
+        - /login
+        - PUT Request
+  /games:
+    get:
+      summary: GET /games
+      responses:
+        '200':
+          description: 'OK - Returns games array '
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  games:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        gameId:
+                          type: string
+                        url:
+                          type: string
+              examples: {}
+      operationId: get-games
+      description: Returns the Ids and links for all available games
+      tags:
+        - /games
+        - GET Request
+    post:
+      summary: POST /games
+      operationId: post-games
+      responses:
+        '201':
+          description: Created - Game is successfully created and gameId and url are returned
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The header contains the location of the created resource
+        '503':
+          description: Service Unavailable - If the game creation fails on the server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: A message to the user
+      description: Creates a new game on the server and returns gameId and game url
+      parameters: []
+      tags:
+        - /games
+        - POST Request
+  '/games/{gamesId}':
+    parameters:
+      - schema:
+          type: string
+        name: gamesId
+        in: path
+        required: true
+        description: The gameId
+    get:
+      summary: GET /games/gamesId
+      responses:
+        '200':
+          description: OK - Game exists and the game is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The response body containing the game
+                properties:
+                  game:
+                    $ref: '#/components/schemas/Game'
+        '403':
+          description: Forbidden - The user does not possess a valid token for this game instance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: An error message for the user
+        '404':
+          description: Not Found - there is no game with this Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: An error message for the user
+      operationId: get-games-gamesId
+      description: Returns the entire game state of the game with the given Id. This is the endpoint used for polling during the game. Requires user token to check access permission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: The request body containing the token
+              properties:
+                token:
+                  type: string
+                  description: The users login token recieved upon login
+        description: The request body holds the token of the requesting user to ensure that the games content is exclusively available to loged in users that are part of the game instance
+      tags:
+        - /games
+        - '/{gamesId}'
+        - GET Request
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: This is the user as it is returned by the server
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+      x-tags:
+        - Response Object
+    Game:
+      title: Game
+      type: object
+      description: The game object as it is returned by the server
+      x-tags:
+        - Response Object
+      properties:
+        gameId:
+          type: string
+          description: The Id of the game
+        players:
+          type: array
+          description: An array containing the players
+          items:
+            $ref: '#/components/schemas/User'
+    Error:
+      title: Error
+      type: object
+      properties:
+        id:
+          type: string
+      x-tags:
+        - Response Object
+  securitySchemes: {}
