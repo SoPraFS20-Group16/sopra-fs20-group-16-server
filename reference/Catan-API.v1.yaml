@@ -54,8 +54,7 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: object
-                    description: An error object containing additional information
+                    $ref: '#/components/schemas/Error'
                   errorMessage:
                     type: string
                     description: an error message to the user
@@ -109,8 +108,7 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: object
-                    description: an error object containing additional information
+                    $ref: '#/components/schemas/Error'
                   errorMessage:
                     type: string
                     description: an error message for the user
@@ -139,8 +137,7 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: object
-                    description: Error object containing additional information
+                    $ref: '#/components/schemas/Error'
                   errorMessage:
                     type: string
                     description: A message to the user
@@ -205,8 +202,7 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: object
-                    description: an error object containing additional information
+                    $ref: '#/components/schemas/Error'
                   errorMessage:
                     type: string
                     description: A message to the user
@@ -214,6 +210,65 @@ paths:
       tags:
         - POST Request
       parameters: []
+  '/games/{gamesId}':
+    parameters:
+      - schema:
+          type: string
+        name: gamesId
+        in: path
+        required: true
+        description: The gameId
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK - Game exists and the game is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The response body containing the game
+                properties:
+                  game:
+                    $ref: '#/components/schemas/Game'
+        '403':
+          description: Forbidden - The user does not possess a valid token for this game instance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: An error message for the user
+        '404':
+          description: Not Found - there is no game with this Id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                  errorMessage:
+                    type: string
+                    description: An error message for the user
+      operationId: get-games-gamesId
+      description: Returns the entire game state of the game with the given Id. This is the endpoint used for polling during the game. Requires user token to check access permission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: The request body containing the token
+              properties:
+                token:
+                  type: string
+                  description: The users login token recieved upon login
+        description: The request body holds the token of the requesting user to ensure that the games content is exclusively available to loged in users that are part of the game instance
 components:
   schemas:
     User:
@@ -242,4 +297,10 @@ components:
           description: An array containing the players
           items:
             $ref: '#/components/schemas/User'
+    Error:
+      title: Error
+      type: object
+      properties:
+        id:
+          type: string
   securitySchemes: {}
