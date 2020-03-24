@@ -177,12 +177,7 @@ paths:
                   games:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        gameId:
-                          type: string
-                        url:
-                          type: string
+                      $ref: '#/components/schemas/GameLink'
               examples: {}
       operationId: get-games
       description: Returns the Ids and links for all available games
@@ -285,13 +280,15 @@ components:
       title: User
       type: object
       description: This is the user as it is returned by the server
+      x-tags:
+        - Response Object
       properties:
         userId:
           type: string
         username:
           type: string
-      x-tags:
-        - Response Object
+        status:
+          type: string
     Game:
       title: Game
       type: object
@@ -315,4 +312,15 @@ components:
           type: string
       x-tags:
         - Response Object
+    GameLink:
+      title: GameLink
+      type: object
+      description: The GameLink object is an array object when a GET request is sent to /games
+      properties:
+        gameId:
+          type: string
+          description: The gameId
+        url:
+          type: string
+          description: The link that directs to the game
   securitySchemes: {}
