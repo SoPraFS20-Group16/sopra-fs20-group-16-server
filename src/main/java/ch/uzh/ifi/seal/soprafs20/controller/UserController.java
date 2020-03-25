@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.TokenDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
@@ -67,7 +68,7 @@ public class UserController {
      * @return the appropriate ResponseEntity according to the API specification
      */
     @PostMapping("/users")
-    public ResponseEntity<String> postUsers(@RequestBody UserPostDTO userPostDTO) {
+    public ResponseEntity<TokenDTO> postUsers(@RequestBody UserPostDTO userPostDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
@@ -82,7 +83,7 @@ public class UserController {
         createdUser.setToken("thisIsTheUserToken");
 
         //Compose Response
-        return new ResponseEntity<>(createdUser.getToken(), headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(new TokenDTO(createdUser.getToken()), headers, HttpStatus.CREATED);
 
     }
 
@@ -126,14 +127,14 @@ public class UserController {
     @PutMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public UserGetDTO putLogin(@RequestBody UserPostDTO userPostDTO) {
+    public TokenDTO putLogin(@RequestBody UserPostDTO userPostDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
-        // create user
-        User createdUser = userService.createUser(userInput);
+        // login
+        User loggedInUser = userService.loginUser(userInput);
 
         // convert internal representation of user back to API
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+        return new TokenDTO(loggedInUser.getToken());
     }
 }

@@ -23,8 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -178,11 +177,73 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.error", not("")));
     }
 
+    /**
+     * Tests PUT /login given that the credentials are correct
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void loginUser_credentialsCorrect() throws Exception {
+        //given
+        User user = new User();
+        user.setUsername("firstname@lastname");
+        user.setPassword("password");
+        user.setStatus(UserStatus.OFFLINE);
+        user.setToken("TheUserToken");
+        user.setId(1L);
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("testUsername");
+        userPostDTO.setPassword("password");
+
+        given(userService.loginUser(Mockito.any())).willReturn(user);
+
+        // when
+        MockHttpServletRequestBuilder putRequest = put("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        // then
+        mockMvc.perform(putRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$.token", is("TheUserToken")));
+
+
+    }
+
+    /**
+     * Tests PUT /login given the credentials are incorrect
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void loginUser_credentialsIncorrect() throws Exception {
+        User user = new User();
+        user.setUsername("firstname@lastname");
+        user.setPassword("password");
+        user.setStatus(UserStatus.OFFLINE);
+        user.setId(1L);
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("testUsername");
+        userPostDTO.setPassword("password");
+
+        given(userService.loginUser(Mockito.any())).willThrow(new RestException(HttpStatus.UNAUTHORIZED, "The Mocked Exception Reason"));
+
+        MockHttpServletRequestBuilder putRequest = put("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        // then
+        mockMvc.perform(putRequest).andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorMessage", is("The Mocked Exception Reason")));
+
+    }
 
 
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input can be processed
      * Input will look like this: {"name": "Test User", "username": "testUsername"}
+     *
      * @param object
      * @return string
      */

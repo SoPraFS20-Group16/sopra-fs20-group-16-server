@@ -1,10 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
-import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GamePostDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -92,7 +90,7 @@ public class GameController {
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameDTO getGameWithId(@RequestBody String token, @PathVariable Long gameId) {
+    public GameDTO getGameWithId(@PathVariable Long gameId) {
 
         //Check token for validity
 
