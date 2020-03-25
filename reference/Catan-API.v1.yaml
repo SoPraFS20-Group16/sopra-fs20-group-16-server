@@ -3,6 +3,8 @@ info:
   title: Catan API
   version: '1.0'
   description: This is the API specification for the REST Interface in the Catan/Toucan Game
+  contact:
+    name: Sopra Group 16
 servers:
   - url: '{{baseUrl}}'
     description: BaseUrl
@@ -91,7 +93,6 @@ paths:
         - /users
         - '/{userId}'
         - GET Request
-      requestBody: {}
   /login:
     put:
       summary: PUT /login
@@ -146,8 +147,6 @@ paths:
       tags:
         - /games
         - GET Request
-      requestBody:
-        description: The token to check if the client is authorized to make the request
       parameters:
         - schema:
             type: string
@@ -214,8 +213,6 @@ paths:
                 $ref: '#/components/schemas/Error'
       operationId: get-games-gamesId
       description: Returns the entire game state of the game with the given Id. This is the endpoint used for polling during the game. Requires user token to check access permission
-      requestBody:
-        description: The request body holds the token of the requesting user to ensure that the games content is exclusively available to loged in users that are part of the game instance
       tags:
         - /games
         - '/{gamesId}'
