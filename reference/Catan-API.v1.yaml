@@ -158,16 +158,13 @@ paths:
         - /games
         - GET Request
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              description: Holds the clients token
-              properties:
-                token:
-                  type: string
-                  description: The clients userspecific token
         description: The token to check if the client is authorized to make the request
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Token
+          description: This header holds the token of the requesting user
     post:
       summary: POST /games
       operationId: post-games
@@ -233,20 +230,17 @@ paths:
       operationId: get-games-gamesId
       description: Returns the entire game state of the game with the given Id. This is the endpoint used for polling during the game. Requires user token to check access permission
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              description: The request body containing the token
-              properties:
-                token:
-                  type: string
-                  description: The users login token recieved upon login
         description: The request body holds the token of the requesting user to ensure that the games content is exclusively available to loged in users that are part of the game instance
       tags:
         - /games
         - '/{gamesId}'
         - GET Request
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Token
+          description: This header holds the token of the requesting user
 components:
   schemas:
     User:
