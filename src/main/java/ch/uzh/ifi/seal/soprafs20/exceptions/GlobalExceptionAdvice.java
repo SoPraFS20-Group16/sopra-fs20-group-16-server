@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.exceptions;
 
+import ch.uzh.ifi.seal.soprafs20.rest.dto.ErrorDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -38,5 +39,25 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
     public ResponseStatusException handleException(Exception ex) {
         log.error("Default Exception Handler -> caught:", ex);
         return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+    }
+
+    /**
+     * Handle ResponseStatusExceptions and create appropriate ResponseEntity
+     *
+     * @param ex the Exception handled by the method
+     * @return the response entity that will be passed to the client
+     */
+    @ExceptionHandler(RestException.class)
+    public ResponseEntity<ErrorDTO> handleRestException(RestException ex) {
+
+        //Getting information from exception
+        HttpStatus errorStatus = ex.getStatus();
+
+        //Setting up the client response
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setError(ex);
+        errorDTO.setErrorMessage(ex.getUserMessage());
+
+        return new ResponseEntity<>(errorDTO, errorStatus);
     }
 }
