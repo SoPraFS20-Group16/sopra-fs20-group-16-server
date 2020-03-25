@@ -179,6 +179,8 @@ paths:
               schema:
                 type: string
               description: The header contains the location of the created resource
+        '401':
+          description: Unauthorized - The token passed is not valid
         '503':
           description: Service Unavailable - If the game creation fails on the server
           content:
@@ -196,14 +198,13 @@ paths:
             schema:
               $ref: '#/components/schemas/GamePost'
         description: The Body holds the new game object and the users token to authenticate it
-  '/games/{gamesId}':
+  '/games/{gameId}':
     parameters:
       - schema:
           type: string
-        name: gamesId
+        name: gameId
         in: path
         required: true
-        description: The gameId
     get:
       summary: GET /games/gamesId
       responses:
@@ -302,7 +303,7 @@ components:
     UserCredentials:
       title: UserCredentials
       type: object
-      description: The username and password of a user. Can be used to log in or to create a new user
+      description: The username and password of a user. Can be used to log in or to create a new user Translates to UserPostDTO on server side
       properties:
         username:
           type: string
