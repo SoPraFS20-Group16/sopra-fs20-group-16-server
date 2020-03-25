@@ -2,7 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.UserPostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,8 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * UserControllerTest
@@ -42,13 +41,18 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    /**
+     * Tests the GET /users endpoint which has to return an array of UserGetDTOs
+     *
+     * @throws Exception -> An exception can be thrown by the perform method of mockMvc
+     */
     @Test
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
         // given
         User user = new User();
-        user.setName("Firstname Lastname");
         user.setUsername("firstname@lastname");
         user.setStatus(UserStatus.OFFLINE);
+        user.setId(1L);
 
         List<User> allUsers = Collections.singletonList(user);
 
@@ -61,24 +65,29 @@ public class UserControllerTest {
         // then
         mockMvc.perform(getRequest).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is(user.getName())))
+                .andExpect(jsonPath("$[0].userId", is(1)))
                 .andExpect(jsonPath("$[0].username", is(user.getUsername())))
                 .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())));
     }
 
+    /**
+     * Tests the POST /users endpoint which has to return a TokenDTO
+     * and a location Header with a link to the created user
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void createUser_validInput_userCreated() throws Exception {
         // given
         User user = new User();
         user.setId(1L);
-        user.setName("Test User");
         user.setUsername("testUsername");
-        user.setToken("1");
-        user.setStatus(UserStatus.ONLINE);
+        user.setPassword("password");
+        user.setToken("ThisIsTheUserToken");
 
         UserPostDTO userPostDTO = new UserPostDTO();
-        userPostDTO.setName("Test User");
         userPostDTO.setUsername("testUsername");
+        userPostDTO.setPassword("password");
 
         given(userService.createUser(Mockito.any())).willReturn(user);
 
@@ -90,11 +99,14 @@ public class UserControllerTest {
         // then
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
-                .andExpect(jsonPath("$.name", is(user.getName())))
-                .andExpect(jsonPath("$.username", is(user.getUsername())))
-                .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
+                .andExpect(header().exists("Location"))
+                .andExpect(header().stringValues("Location","/users/1"))
+                .andExpect(jsonPath("$.token", is(user.getToken())));
     }
+
+
+
+
 
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input can be processed

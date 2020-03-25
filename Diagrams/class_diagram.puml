@@ -1,0 +1,126 @@
+@startuml
+
+
+
+enum BuildingType {
+ROAD
+SETTLEMENT
+CITY
+}
+
+enum TileType{
+DESERT
+FIELD
+FOREST
+HILL
+MOUNTAIN
+PASTURE
+}
+
+enum ResourceType{
+BRICK
+WOOD
+STONE
+WHEAT
+SHEEP
+}
+
+interface Building{
+int coords;
+BuildingType buildingtype;
+int victoryPoints;
+}
+
+class City
+class Settlement
+class Road
+
+
+class Dice{
+roll()
+}
+
+
+class Player{
+
+String name;
+int age;
+int victoryPoints;
+ArrayList<Card>;
+ArrayList<Road>
+ArrayList<City>
+ArrayList<Settlement>
+getResources()
+}
+
+
+class Robber{
+move()
+drawCard()
+}
+
+
+
+
+interface Card{
+
+}
+
+
+class ResourceCard{
+ResourceType resourceType;
+}
+
+class DevelopementCard
+
+class Bank{
+trade()
+}
+
+
+class Board{
+
+ArrayList<Tile>;
+
+createBoard()
+
+}
+
+class Tile{
+int number;
+TileType tileType;
+
+}
+
+class Coordinates{
+int x;
+int y;
+ArrayList<Coordinates> adjacents;
+
+getCoordinates()
+getAdjacents()
+
+}
+
+
+
+Building <|.. City
+Building <|.. Settlement
+Building <|.. Road
+
+BuildingType -> Building
+TileType -> Tile
+
+Player -down-> Card
+Card <|.. ResourceCard
+Card <|.. DevelopementCard
+ResourceType -down-> ResourceCard
+
+Bank -down- Player
+Dice - Player
+
+
+Board o-- Tile
+Board o-left- Robber
+
+@enduml
