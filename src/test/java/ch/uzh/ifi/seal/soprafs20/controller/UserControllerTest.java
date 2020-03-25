@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,8 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -104,7 +104,79 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.token", is(user.getToken())));
     }
 
+    /**
+     * Tests POST /users given that the userService will throw a RestException
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void createUser_userAlreadyExists() throws Exception {
 
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("testUsername");
+        userPostDTO.setPassword("password");
+
+        // this mocks the UserService -> we define above what the userService should return when getUsers() is called
+        given(userService.createUser(Mockito.any())).willThrow(new RestException(HttpStatus.CONFLICT, "The Mocked Exception Reason"));
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        // then
+        mockMvc.perform(postRequest).andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorMessage", is("The Mocked Exception Reason")))
+                .andExpect(jsonPath("$.error", not("")));
+    }
+
+
+    /**
+     * Tests the GET /users/:userId endpoint which has to return a UserGetDTO
+     *
+     * @throws Exception -> An exception can be thrown by the perform method of mockMvc
+     */
+    @Test
+    public void getUsers_givenUserId_userExists() throws Exception {
+        // given
+        User user = new User();
+        user.setUsername("firstname@lastname");
+        user.setPassword("password");
+        user.setStatus(UserStatus.OFFLINE);
+        user.setId(1L);
+
+        // this mocks the UserService -> we define above what the userService should return when getUsers() is called
+        given(userService.findUser(Mockito.any())).willReturn(user);
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId", is(1)))
+                .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
+    }
+
+    /**
+     * Tests GET /users/1 given that the userService will throw a RestException
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void getUsers_givenUserId_userDoesNotExists() throws Exception {
+
+        // this mocks the UserService -> we define above what the userService should return when getUsers() is called
+        given(userService.findUser(Mockito.any())).willThrow(new RestException(HttpStatus.NOT_FOUND, "The Mocked Exception Reason"));
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorMessage", is("The Mocked Exception Reason")))
+                .andExpect(jsonPath("$.error", not("")));
+    }
 
 
 
@@ -119,7 +191,10 @@ public class UserControllerTest {
             return new ObjectMapper().writeValueAsString(object);
         }
         catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("The request body could not be created.%s", e.toString()));
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    String.format("The request body could not be created.%s", e.toString())
+            );
         }
     }
 }

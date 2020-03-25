@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
 
         // then -> attempt to create second user with same user -> check that an error is thrown
-        assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+        assertThrows(RestException.class, () -> userService.createUser(testUser));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
 
         // then -> attempt to create second user with same user -> check that an error is thrown
-        assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+        assertThrows(RestException.class, () -> userService.createUser(testUser));
     }
 
 

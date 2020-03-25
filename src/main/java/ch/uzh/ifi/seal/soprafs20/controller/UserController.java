@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.entity.User;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.TokenDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
@@ -65,10 +64,10 @@ public class UserController {
      * Success: 201 CREATED, Failure: 409 CONFLICT
      *
      * @param userPostDTO the user DTO
-     * @return the user DTO of the created user
+     * @return the appropriate ResponseEntity according to the API specification
      */
     @PostMapping("/users")
-    public ResponseEntity<TokenDTO> postUsers(@RequestBody UserPostDTO userPostDTO) {
+    public ResponseEntity<String> postUsers(@RequestBody UserPostDTO userPostDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
@@ -79,14 +78,11 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", String.format("/users/%d", createdUser.getId()));
 
-        // convert internal representation of user back to API representation
-        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
-
         //TODO: Generate a real Token
         createdUser.setToken("thisIsTheUserToken");
 
         //Compose Response
-        return new ResponseEntity<>(new TokenDTO(createdUser.getToken()), headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdUser.getToken(), headers, HttpStatus.CREATED);
 
     }
 
@@ -98,21 +94,22 @@ public class UserController {
      *
      * Success: 200 OK, Failure: 404 NOT FOUND
      *
-     * @param userPostDTO the user post dto
+     * @param userId the Path Variable of the url
      * @return the user with id
      */
-    @GetMapping("/users/:userId")
+    @GetMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public UserGetDTO getUserWithId(@RequestBody UserPostDTO userPostDTO) {
+    public UserGetDTO getUserWithId(@PathVariable(name = "userId") Long userId) {
         // convert API user to internal representation
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        User userInput = new User();
+        userInput.setId(userId);
 
-        // create user
-        User createdUser = userService.createUser(userInput);
+        // find user
+        User foundUser = userService.findUser(userInput);
 
         // convert internal representation of user back to API
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(foundUser);
     }
 
     /**
@@ -122,8 +119,9 @@ public class UserController {
      *
      * Success: 200 OK, Failure: 401 UNAUTHORIZED
      *
+     *
      * @param userPostDTO the user post dto
-     * @return the user get dto
+     * @return TODO: Make return conform to the API specification and write tests
      */
     @PutMapping("/login")
     @ResponseStatus(HttpStatus.OK)
@@ -138,79 +136,4 @@ public class UserController {
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
     }
-
-    /**
-     * POST /games
-     *
-     * creates a new game instance
-     *
-     * Success: 201 CREATED, Failure 503 SERVICE UNAVAILABLE
-     *
-     * @param userPostDTO the user post dto
-     * @return the user get dto
-     */
-    @PostMapping("/games")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public UserGetDTO postGames(@RequestBody UserPostDTO userPostDTO) {
-        // convert API user to internal representation
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-
-        // create user
-        User createdUser = userService.createUser(userInput);
-
-        // convert internal representation of user back to API
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
-    }
-
-    /**
-     * GET /games.
-     *
-     * returns for all games an Id and a link in an array
-     *
-     * Success: 200
-     *
-     * @param userPostDTO the user post dto
-     * @return the games
-     */
-    @GetMapping("/games")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public UserGetDTO getGames(@RequestBody UserPostDTO userPostDTO) {
-        // convert API user to internal representation
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-
-        // create user
-        User createdUser = userService.createUser(userInput);
-
-        // convert internal representation of user back to API
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
-    }
-
-    /**
-     * GET /games/:gameId
-     *
-     * returns the game that has the Id gameId
-     *
-     * Success: 200 OK, Failure: 403 FORBIDDEN, 404 NOT FOUND
-     *(If the game exists but the user lacks permission, then 403 is returned)
-     *
-     * @param userPostDTO the user post dto
-     * @return the game with id
-     */
-    @GetMapping("/games/:gameId")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public UserGetDTO getGameWithId(@RequestBody UserPostDTO userPostDTO) {
-        // convert API user to internal representation
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-
-        // create user
-        User createdUser = userService.createUser(userInput);
-
-        // convert internal representation of user back to API
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
-    }
-
-
 }
