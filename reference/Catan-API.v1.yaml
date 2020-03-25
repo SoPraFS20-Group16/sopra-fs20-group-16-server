@@ -16,13 +16,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    description: The array containing all users
-                    items:
-                      $ref: '#/components/schemas/User'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
       operationId: get-users
       description: Returns all the users currently in the database
       tags:
@@ -81,11 +77,7 @@ paths:
           content:
             application/json:
               schema:
-                description: The user with the corresponding id
-                type: object
-                properties:
-                  user:
-                    $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/User'
         '404':
           description: Not Found - There is no user with this userId
           content:
@@ -139,12 +131,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  games:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GameLink'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameLink'
               examples: {}
         '401':
           description: Unauthorized - the user is not authenticated and needs a valid token to perform the request
@@ -210,11 +199,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                description: The response body containing the game
-                properties:
-                  game:
-                    $ref: '#/components/schemas/Game'
+                $ref: '#/components/schemas/Game'
         '403':
           description: Forbidden - The user does not possess a valid token for this game instance
           content:
