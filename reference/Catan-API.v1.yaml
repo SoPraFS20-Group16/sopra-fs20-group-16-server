@@ -215,6 +215,33 @@ paths:
           in: header
           name: Token
           description: This header holds the token of the requesting user
+    post:
+      summary: POST /games/gamesId
+      operationId: post-games-gameId
+      responses:
+        '202':
+          description: Accepted - The post request was valid and the operation was performed
+        '403':
+          description: Forbidden - the user that posted is not permitted to perform the operation or the game id is not a legal operation (anymore)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found - The game that was posted to does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: This is the endpoint for all game related operations such as moves and trading. The game object recieved with the get request is responsible for providing the possible operations
+      tags:
+        - /games
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameOperation'
+        description: The request includes the users token to ensure that only the authorized user can perform the operation and the operations Id that the server generated to identify the available operation
 components:
   schemas:
     User:
@@ -289,4 +316,15 @@ components:
           description: The clients user token
         game:
           $ref: '#/components/schemas/Game'
+    GameOperation:
+      title: GameOperation
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token of the user performing the operation
+        operationId:
+          type: string
+          description: the Id of the operation that can be performed
+      description: 'The object holding token and operation Id '
   securitySchemes: {}
