@@ -83,7 +83,6 @@ public class GameController {
      * Success: 200 OK, Failure: 403 FORBIDDEN, 404 NOT FOUND
      *(If the game exists but the user lacks permission, then 403 is returned)
      *
-     * @param token the users token
      * @param gameId the games unique id
      * @return the game
      */
