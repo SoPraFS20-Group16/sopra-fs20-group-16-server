@@ -25,6 +25,20 @@ WHEAT
 SHEEP
 }
 
+enum DevelopmentType{
+KNIGHT
+ROADPROGRESS
+PLENTYPROGRESS
+MONOPOLYPROGRESS
+VICTORYPOINT
+}
+
+enum LocationType{
+EDGE
+VERTEX
+
+}
+
 interface Building{
 int coords;
 BuildingType buildingtype;
@@ -89,6 +103,9 @@ createBoard()
 class Tile{
 int number;
 TileType tileType;
+ArrayList<Coordinates>;
+
+getCoordinates()
 
 }
 
@@ -108,19 +125,24 @@ Building <|.. City
 Building <|.. Settlement
 Building <|.. Road
 
-BuildingType -> Building
-TileType -> Tile
+BuildingType -left-> Building
+TileType -left-> Tile
 
 Player -down-> Card
 Card <|.. ResourceCard
 Card <|.. DevelopementCard
-ResourceType -down-> ResourceCard
+ResourceType -up-> ResourceCard
+DevelopmentType -up-> DevelopementCard
 
 Bank -down- Player
 Dice - Player
 
 
 Board o-- Tile
-Board o-left- Robber
+Board o-up- Robber
+Board -up- Coordinates
+Player . Board
+Building .left. Board
+LocationType -down- Coordinates
 
 @enduml
