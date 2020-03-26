@@ -60,7 +60,6 @@ paths:
         description: The chosen username and password of the new user wrapped in a UserCredentials object
       tags:
         - /users
-        - POST Request
   '/users/{userId}':
     parameters:
       - schema:
