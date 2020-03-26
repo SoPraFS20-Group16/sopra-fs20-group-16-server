@@ -50,7 +50,7 @@ public class UserController {
 
         //For testing heroku deployment
 
-        throw new RestException(HttpStatus.NOT_ACCEPTABLE, "This is the server telling the client to change the requuest")
+        throw new RestException(HttpStatus.NOT_ACCEPTABLE, "This is the server telling the client to change the requuest");
 
 
         // fetch all users in the internal representation
