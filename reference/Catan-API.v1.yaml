@@ -34,11 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                description: The Response body contains the login token for the created user
-                properties:
-                  token:
-                    type: string
+                $ref: '#/components/schemas/Token'
           headers:
             Location:
               schema:
@@ -99,10 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
+                $ref: '#/components/schemas/Token'
         '401':
           description: Unauthorized - the login credentials where wrong
           content:
@@ -326,4 +319,11 @@ components:
           type: string
           description: the Id of the operation that can be performed
       description: 'The object holding token and operation Id '
+    Token:
+      title: Token
+      type: object
+      properties:
+        token:
+          type: string
+      description: This object holds the string token in the instances it is used on its own either as a response or request body
   securitySchemes: {}
