@@ -65,10 +65,16 @@ ArrayList<Road>
 ArrayList<City>
 ArrayList<Settlement>
 getResources()
+giveResources()
+build()
+buyDevelopmentCard()
+playDevelopmentCard()
+passTurn()
 }
 
 
 class Robber{
+currentTile;
 move()
 drawCard()
 }
@@ -85,7 +91,9 @@ class ResourceCard{
 ResourceType resourceType;
 }
 
-class DevelopementCard
+class DevelopementCard{
+DevelopmentType developmentType;
+}
 
 class Bank{
 trade()
@@ -97,6 +105,7 @@ class Board{
 ArrayList<Tile>;
 
 createBoard()
+update()
 
 }
 
@@ -119,30 +128,39 @@ getAdjacents()
 
 }
 
+note "<b>main class</b>" as N1
+class Game
+
+N1 -down- Game
+
+Game -down-> Board
+Game -left-> Player
 
 
 Building <|.. City
 Building <|.. Settlement
 Building <|.. Road
 
-BuildingType -left-> Building
-TileType -left-> Tile
+BuildingType <-left- Building
+TileType <-up- Tile
 
-Player -down-> Card
+Player --> Card
 Card <|.. ResourceCard
 Card <|.. DevelopementCard
-ResourceType -up-> ResourceCard
-DevelopmentType -up-> DevelopementCard
+ResourceType <-down- ResourceCard
+DevelopmentType <-down- DevelopementCard
 
 Bank -down- Player
-Dice - Player
+Dice -right- Player
+Player --> Building
 
 
-Board o-- Tile
-Board o-up- Robber
-Board -up- Coordinates
-Player . Board
-Building .left. Board
-LocationType -down- Coordinates
+Board o-right- Tile
+Board o-down- Robber
+Robber . Tile
+Tile *-- Coordinates
+Player .. Board
+
+LocationType <-down- Coordinates
 
 @enduml
