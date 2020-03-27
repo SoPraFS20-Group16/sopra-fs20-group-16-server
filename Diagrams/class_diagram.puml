@@ -151,8 +151,8 @@ ResourceType <-down- ResourceCard
 DevelopmentType <-down- DevelopementCard
 
 Bank -down- Player
-Dice -right- Player
-Player --> Building
+Dice -up- Player
+Player -left-> Building
 
 
 Board o-right- Tile
