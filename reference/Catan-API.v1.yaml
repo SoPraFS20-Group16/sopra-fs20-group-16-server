@@ -153,6 +153,10 @@ paths:
               description: The header contains the location of the created resource
         '401':
           description: Unauthorized - The token passed is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '503':
           description: Service Unavailable - If the game creation fails on the server
           content:
@@ -160,7 +164,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       description: Creates a new game on the server and returns gameId and game url
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Token
+          description: The users token
       tags:
         - /games
       requestBody:
@@ -234,6 +243,12 @@ paths:
             schema:
               $ref: '#/components/schemas/GameOperation'
         description: The request includes the users token to ensure that only the authorized user can perform the operation and the operations Id that the server generated to identify the available operation
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Token
+          description: The users token
 components:
   schemas:
     User:
@@ -303,22 +318,24 @@ components:
       type: object
       description: The object containing a game with all initial field and the user token used for authentication
       properties:
-        token:
+        name:
           type: string
-          description: The clients user token
-        game:
-          $ref: '#/components/schemas/Game'
+          description: The name of the game
+        withBots:
+          type: boolean
+          description: |
+            Bots enabled or disabled
     GameOperation:
       title: GameOperation
       type: object
+      description: 'The object holding token and operation Id '
       properties:
-        token:
-          type: string
-          description: The token of the user performing the operation
         operationId:
           type: string
           description: the Id of the operation that can be performed
-      description: 'The object holding token and operation Id '
+        token:
+          type: string
+          description: The token of the user performing the operation
     Token:
       title: Token
       type: object
