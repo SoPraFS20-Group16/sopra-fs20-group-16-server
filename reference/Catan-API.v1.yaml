@@ -194,8 +194,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Game'
+        '401':
+          description: Unauthorized - The user has no valid token
         '403':
-          description: Forbidden - The user does not possess a valid token for this game instance
+          description: Forbidden - The user does not possess a valid token for this game instance but is logged in
           content:
             application/json:
               schema:
