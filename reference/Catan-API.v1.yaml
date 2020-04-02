@@ -281,6 +281,10 @@ components:
           description: An array containing the players
           items:
             $ref: '#/components/schemas/User'
+        withBots:
+          type: boolean
+        name:
+          type: string
     Error:
       title: Error
       type: object
