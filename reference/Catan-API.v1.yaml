@@ -314,6 +314,8 @@ components:
         url:
           type: string
           description: The link that directs to the game
+      x-tags:
+        - Response Object
     UserCredentials:
       title: UserCredentials
       type: object
@@ -325,6 +327,8 @@ components:
         password:
           type: string
           description: the password of the user
+      x-tags:
+        - RequestObject
     GamePost:
       title: GamePost
       type: object
@@ -337,7 +341,9 @@ components:
           type: boolean
           description: |
             Bots enabled or disabled
-    GameOperation:
+      x-tags:
+        - RequestObject
+    Move:
       title: Move
       type: object
       description: 'The object holding token and operation Id '
@@ -348,6 +354,8 @@ components:
         token:
           type: string
           description: The token of the user performing the operation
+      x-tags:
+        - RequestObject
     Token:
       title: Token
       type: object
@@ -355,4 +363,7 @@ components:
         token:
           type: string
       description: This object holds the string token in the instances it is used on its own either as a response or request body
+      x-tags:
+        - Response Object
+        - RequestObject
   securitySchemes: {}
