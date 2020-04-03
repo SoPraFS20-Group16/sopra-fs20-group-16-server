@@ -1,9 +1,17 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameLinkDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GamePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -30,4 +38,26 @@ public interface DTOMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "status", target = "status")
     UserGetDTO convertEntityToUserGetDTO(User user);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "gameId")
+    @Mapping(source = "id", target = "url")
+    GameLinkDTO convertGameToGameLinkDTO(Game game);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "withBots", target = "withBots")
+    Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
+
+    @Mapping(source = "id", target = "gameId")
+    @Mapping(source = "withBots", target = "withBots")
+    @Mapping(source = "name", target = "name")
+        //Map and test all new fields as the game evolves!
+        //Warnings are generated if a property is unmapped
+        //If it should not be revealed, ignore it individually!
+    GameDTO convertGameToGameDTO(Game game);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "moveId", target = "id")
+    Move convertMovePostDTOtoEntity(MovePostDTO move);
 }

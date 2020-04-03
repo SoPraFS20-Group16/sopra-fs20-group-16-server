@@ -2,27 +2,27 @@ package ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs;
 
 /**
  * The GameLinkDTO represents an element in the array when a GET request is sent to /games
- *
- * TODO: Could be extended with additional information (for Join Game functionality)
+ * <p>
+ * TODO: GameLinkDTO could be extended with additional information (for Join Game functionality)
  */
 public class GameLinkDTO {
 
-    private String id;
+    private Long gameId;
     private String url;
 
-    public String getId() {
-        return id;
+    public Long getGameId() {
+        return gameId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrl(Long gameId) {
+        this.url = String.format("/games/%d", gameId);
     }
 }

@@ -1,7 +1,13 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameLinkDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GamePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
 import org.junit.jupiter.api.Test;
@@ -41,5 +47,86 @@ public class DTOMapperTest {
         assertEquals(user.getId(), userGetDTO.getUserId());
         assertEquals(user.getUsername(), userGetDTO.getUsername());
         assertEquals(user.getStatus(), userGetDTO.getStatus());
+    }
+
+    @Test
+    public void testGameToGameLinkDTO() {
+
+        //Game instance
+        Game game = new Game();
+        game.setId(1L);
+
+        //Expected Result
+        GameLinkDTO expected = new GameLinkDTO();
+        expected.setGameId(1L);
+        expected.setUrl(1L);
+
+        //Actual result
+        GameLinkDTO result = DTOMapper.INSTANCE.convertGameToGameLinkDTO(game);
+        assertEquals(expected.getGameId(), result.getGameId(), "The gameId is not mapped correctly");
+        assertEquals(expected.getUrl(), result.getUrl(), "The game url is not mapped correctly");
+        assertEquals(expected.getUrl(), "/games/1",
+                "The setUrl method of GameLinkDTO does not work correctly");
+    }
+
+    @Test
+    public void testGamePostDTOtoEntity() {
+        //GamePostDTO instance
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setName("GameName");
+        gamePostDTO.setWithBots(false);
+
+        //Expected Result
+        Game expected = new Game();
+        expected.setName("GameName");
+        expected.setWithBots(false);
+
+        //Actual result
+        Game result = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
+        assertEquals(expected.getName(), result.getName(),
+                "The name is not mapped correctly from GamePostDTO");
+        assertEquals(expected.isWithBots(), result.isWithBots(),
+                "The withBots property is not mapped correctly from GamePostDTO");
+    }
+
+    @Test
+    public void testGameToGameDTO() {
+        //Game instance
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+
+        //Expected Result
+        GameDTO expected = new GameDTO();
+        expected.setGameId(1L);
+        expected.setName("GameName");
+        expected.setWithBots(false);
+
+        //Actual result
+        GameDTO result = DTOMapper.INSTANCE.convertGameToGameDTO(game);
+        assertEquals(expected.getGameId(), result.getGameId(),
+                "The id is not mapped correctly");
+        assertEquals(expected.getName(), result.getName(),
+                "The name is not mapped correctly");
+        assertEquals(expected.isWithBots(), result.isWithBots(),
+                "the withBot property is not mapped correctly");
+    }
+
+    @Test
+    public void testMovePostDTOtoEntity() {
+
+        //MovePostDTO instance
+        MovePostDTO movePostDTO = new MovePostDTO();
+        movePostDTO.setMoveId(1L);
+        movePostDTO.setToken("The Users Token");
+
+        //Expected Move object
+        Move expected = new Move();
+        expected.setId(1L);
+
+        //Actual
+        Move result = DTOMapper.INSTANCE.convertMovePostDTOtoEntity(movePostDTO);
+        assertEquals(expected.getId(), result.getId(), "The Id is not mapped correctly");
     }
 }

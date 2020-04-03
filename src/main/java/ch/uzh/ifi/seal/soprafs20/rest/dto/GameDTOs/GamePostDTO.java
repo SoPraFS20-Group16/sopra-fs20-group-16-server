@@ -2,22 +2,22 @@ package ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs;
 
 public class GamePostDTO {
 
-    private String token;
-    private GameDTO game;
+    private String name;
+    private boolean withBots;
 
-    public String getToken() {
-        return token;
+    public String getName() {
+        return name;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public GameDTO getGame() {
-        return game;
+    public boolean isWithBots() {
+        return withBots;
     }
 
-    public void setGame(GameDTO game) {
-        this.game = game;
+    public void setWithBots(boolean withBots) {
+        this.withBots = withBots;
     }
 }
