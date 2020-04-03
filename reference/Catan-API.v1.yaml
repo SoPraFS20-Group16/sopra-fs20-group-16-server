@@ -224,6 +224,12 @@ paths:
       responses:
         '202':
           description: Accepted - The post request was valid and the operation was performed
+        '401':
+          description: 'Unauthorized - The user has no valid token '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '403':
           description: Forbidden - the user that posted is not permitted to perform the operation or the game id is not a legal operation (anymore)
           content:
