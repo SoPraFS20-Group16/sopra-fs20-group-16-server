@@ -338,12 +338,12 @@ components:
           description: |
             Bots enabled or disabled
     GameOperation:
-      title: GameOperation
+      title: Move
       type: object
       description: 'The object holding token and operation Id '
       properties:
-        operationId:
-          type: string
+        moveId:
+          type: number
           description: the Id of the operation that can be performed
         token:
           type: string
