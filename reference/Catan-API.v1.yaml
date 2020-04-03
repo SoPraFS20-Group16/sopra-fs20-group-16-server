@@ -159,10 +159,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '409':
           description: Conflict - The game name already exists or some other conflict occured
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '503':
           description: Service Unavailable - If the game creation fails on the server
           content:
