@@ -41,7 +41,11 @@ public class UserService {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.OFFLINE);
 
+        // verify the uniqueness of the newUser credentials
         checkIfUserAlreadyExists(newUser);
+
+        // check for empty words
+        checkEmptyWords(newUser);
 
         // saves the given entity but data is only persisted in the database once flush() is called
         newUser = userRepository.save(newUser);
@@ -58,28 +62,48 @@ public class UserService {
      * @return the user
      */
     public User findUser(User user) {
-        //TODO Implement findUser method in UserService
 
-        //Should be able to find the user given any of its unique fields
-        //At the moment of writing those are id, username and token
-        //Throw Exception if the search fails with status code 404 NOT FOUND
+        // finds user given any of its unique fields (id, username and token)
+        // throws exception 404 NOT FOUND otherwise
 
-        return null;
+        if (user.getId() != null) {
+            return userRepository.findUserById(user.getId());
+        } else if (user.getUsername() != null) {
+            return userRepository.findByUsername(user.getUsername());
+        } else if (user.getToken() != null) {
+            return userRepository.findByToken(user.getToken());
+        } else
+            throw new RestException(HttpStatus.NOT_FOUND, "user does not exist");
+
     }
 
-    public User loginUser(User user) {
-        //TODO: Implement loginUser method in UserService
-        //Should look for the user
+    public User loginUser(User userToBeLoggedIn) {
 
-        //If it doesn't exist make error according to API spec
-        //Return Status 401 Unauthorized
+        // get user by username
+        User userByUsername = userRepository.findByUsername(userToBeLoggedIn.getUsername());
 
-        //Generate new Token only if user is not yet logged in
+        // if user exists, get the corresponding password
+        String password = null;
+        if (userByUsername != null) {
+            password = userByUsername.getPassword();
+        }
 
-        //Set Status
+        // get input password for comparison
+        String password_input = userToBeLoggedIn.getPassword();
 
-        //return user
-        return null;
+        // verifies the user by its username and password
+        if (userByUsername != null && !password.equals(password_input)) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "invalid password, try again");
+        } else if (userByUsername == null) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
+        }
+
+        // after verification, set userStatus accordingly
+        userByUsername.setStatus(UserStatus.ONLINE);
+
+        //return logged in user
+        return userByUsername;
+
     }
 
     /**
@@ -91,6 +115,7 @@ public class UserService {
      * @see User
      */
     private void checkIfUserAlreadyExists(User userToBeCreated) {
+
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
         String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
@@ -99,6 +124,21 @@ public class UserService {
             throw new RestException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
         }
     }
-}
 
-// TODO: M3-roman branch initialization-test -- pull
+    private void checkEmptyWords(User userToBeCreated) {
+
+        if (userToBeCreated.getUsername().trim().length() == 0 ||
+            userToBeCreated.getPassword().trim().length() == 0) {
+            throw new RestException(HttpStatus.CONFLICT, "empty words are not allowed");
+        }
+    }
+
+
+    public void logoutUser(User userToBeLoggedOut) {
+        // find user by its username
+        User userByUsername = userRepository.findByUsername(userToBeLoggedOut.getUsername());
+
+        // set status accordingly
+        userByUsername.setStatus(UserStatus.OFFLINE);
+    }
+}
