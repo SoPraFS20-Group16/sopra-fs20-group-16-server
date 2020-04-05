@@ -7,11 +7,14 @@ import java.io.Serializable;
 @Table(name = "GAME")
 public class Game implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String name;
 
     @Column

@@ -1,11 +1,14 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
-
 import javax.persistence.*;
+import java.io.Serializable;
+
 
 @Entity
 @Table(name = "MOVE")
-public class Move {
+public class Move implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue

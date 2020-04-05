@@ -7,6 +7,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.MoveService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +46,9 @@ public class GameControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private MoveService moveService;
 
 
     /**
@@ -180,44 +184,6 @@ public class GameControllerTest {
                 .andExpect(header().string("Location", String.format("/games/%d", game.getId())));
     }
 
-    /**
-     * Tests the POST /games endpoint.
-     * Assumes the game creation fails
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void testPostGames_tokenValid_creationFails() throws Exception {
-
-        // given
-        Game game = new Game();
-        game.setId(1L);
-
-        GamePostDTO gamePostDTO = new GamePostDTO();
-        gamePostDTO.setWithBots(false);
-        gamePostDTO.setName("NewGameName");
-
-        // this mocks the GameService
-        given(gameService.createGame(Mockito.any())).willReturn(null);
-
-        //This mocks the UserService for the token
-        String testToken = "ThisIsTheUserToken";
-        User user = new User();
-        user.setToken(testToken);
-        given(userService.findUser(Mockito.any())).willReturn(user);
-
-        // when
-        MockHttpServletRequestBuilder postRequest = post("/games")
-                .header("Token", testToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(gamePostDTO));
-
-        // then
-        mockMvc.perform(postRequest)
-                .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.errorMessage",
-                        is("The game could not be created. Try again!")));
-    }
 
     /**
      * Tests the POST /games endpoint.
@@ -255,6 +221,45 @@ public class GameControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorMessage", is("You are not logged in!")));
+    }
+
+    /**
+     * Tests the POST /games endpoint.
+     * Assumes the token is not valid
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testPostGames_gameCreationFails() throws Exception {
+
+        // given
+        Game game = new Game();
+        game.setId(1L);
+
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setWithBots(false);
+        gamePostDTO.setName("NewGameName");
+
+        // this mocks the GameService
+        given(gameService.createGame(Mockito.any())).willReturn(null);
+
+        //This mocks the UserService for the token
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        given(userService.findUser(Mockito.any())).willReturn(user);
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/games")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(gamePostDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorMessage",
+                        is("There is already a game with this Name!")));
     }
 
     /**
@@ -439,8 +444,9 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(game);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(gameService.findMove(Mockito.any())).willReturn(move);
 
+        //this mocks the MoveService
+        given(moveService.findMove(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -488,8 +494,9 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(game);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(gameService.findMove(Mockito.any())).willReturn(move);
 
+        //this mocks the MoveService
+        given(moveService.findMove(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(null);
@@ -538,7 +545,7 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(null);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(gameService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMove(Mockito.any())).willReturn(move);
 
 
         //this mocks the UserService
@@ -588,8 +595,9 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(game);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(gameService.findMove(Mockito.any())).willReturn(null);
 
+        //this mocks the MoveService
+        given(moveService.findMove(Mockito.any())).willReturn(null);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -638,8 +646,9 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(game);
         given(gameService.userCanAccessGame(user, game)).willReturn(false);
-        given(gameService.findMove(Mockito.any())).willReturn(move);
 
+        //this mocks the MoveService
+        given(moveService.findMove(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -688,8 +697,9 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(game);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(gameService.findMove(Mockito.any())).willReturn(move);
 
+        //this mocks the MoveService
+        given(moveService.findMove(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -738,8 +748,9 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(game);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(gameService.findMove(Mockito.any())).willReturn(move);
 
+        //this mocks the MoveService
+        given(moveService.findMove(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);

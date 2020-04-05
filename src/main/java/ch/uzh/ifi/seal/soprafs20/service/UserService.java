@@ -62,7 +62,7 @@ public class UserService {
 
         //Should be able to find the user given any of its unique fields
         //At the moment of writing those are id, username and token
-        //Throw Exception if the search fails with status code 404 NOT FOUND
+        //if the user cannot be found return null
 
         return null;
     }
@@ -71,8 +71,7 @@ public class UserService {
         //TODO: Implement loginUser method in UserService
         //Should look for the user
 
-        //If it doesn't exist make error according to API spec
-        //Return Status 401 Unauthorized
+        //If it doesn't exist return null
 
         //Generate new Token only if user is not yet logged in
 

@@ -10,6 +10,7 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.MoveService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,12 @@ public class GameController {
 
     private final GameService gameService;
     private final UserService userService;
+    private final MoveService moveService;
 
-    GameController(GameService gameService, UserService userService) {
+    GameController(GameService gameService, UserService userService, MoveService moveService) {
         this.gameService = gameService;
         this.userService = userService;
+        this.moveService = moveService;
     }
 
 
@@ -91,11 +94,11 @@ public class GameController {
         // create game
         Game createdGame = gameService.createGame(gameInput);
 
-        //if the created game is null the creation of the game was not successful
+        //if created game is null there was a conflict
         if (createdGame == null) {
-            throw new RestException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "The gameService.createGame() method did not work",
-                    "The game could not be created. Try again!");
+            throw new RestException(HttpStatus.CONFLICT,
+                    "The game creation ran into a conflict",
+                    "There is already a game with this Name!");
         }
 
         // add game location to header
@@ -190,7 +193,7 @@ public class GameController {
 
         //Find move
         Move requestedMove = DTOMapper.INSTANCE.convertMovePostDTOtoEntity(move);
-        Move foundMove = gameService.findMove(requestedMove);
+        Move foundMove = moveService.findMove(requestedMove);
 
         //If move does not exist return 403
         if (foundMove == null) {
@@ -227,7 +230,7 @@ public class GameController {
         }
 
         //If everything is correct perform the move
-        gameService.performMove(foundMove);
+        moveService.performMove(foundMove);
     }
 
     /**
