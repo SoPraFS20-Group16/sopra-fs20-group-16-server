@@ -66,14 +66,21 @@ public class UserService {
         // finds user given any of its unique fields (id, username and token)
         // throws exception 404 NOT FOUND otherwise
 
+        User foundUser = new User();
+
         if (user.getId() != null) {
-            return userRepository.findUserById(user.getId());
+            foundUser = userRepository.findUserById(user.getId());
         } else if (user.getUsername() != null) {
-            return userRepository.findByUsername(user.getUsername());
+            foundUser = userRepository.findByUsername(user.getUsername());
         } else if (user.getToken() != null) {
-            return userRepository.findByToken(user.getToken());
-        } else
+            foundUser = userRepository.findByToken(user.getToken());
+        }
+
+        if (foundUser == null) {
             throw new RestException(HttpStatus.NOT_FOUND, "user does not exist");
+        }
+
+        return foundUser;
 
     }
 
