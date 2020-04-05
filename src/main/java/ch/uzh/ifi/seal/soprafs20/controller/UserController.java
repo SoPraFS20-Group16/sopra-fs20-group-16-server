@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.TokenDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
@@ -132,6 +133,10 @@ public class UserController {
 
         // login
         User loggedInUser = userService.loginUser(userInput);
+
+        if (loggedInUser == null) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
+        }
 
         // convert internal representation of user back to API
         return new TokenDTO(loggedInUser.getToken());

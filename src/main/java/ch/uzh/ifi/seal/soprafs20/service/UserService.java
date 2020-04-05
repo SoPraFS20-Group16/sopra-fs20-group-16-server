@@ -106,7 +106,7 @@ public class UserService {
         if (userByUsername != null && !password.equals(password_input)) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "invalid password, try again");
         } else if (userByUsername == null) {
-            throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
+            return null;
         }
 
         // after verification, set userStatus accordingly
