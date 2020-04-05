@@ -27,15 +27,15 @@ public class MoveRepositoryIntegrationTest {
         // given
         Move move = new Move();
         move.setPlayerId(12L);
-        move.setGameId(1L);
+
 
         //Id is set by automatically, if it is the first element, the id is 1
 
-        entityManager.persist(move);
+        Move persistedMove = entityManager.persist(move);
         entityManager.flush();
 
-        // Assumes that the move is the first element that is persisted
-        Optional<Move> optionalFound = moveRepository.findById(1L);
+
+        Optional<Move> optionalFound = moveRepository.findById(persistedMove.getId());
 
         assertTrue(optionalFound.isPresent(), "The move is not present in the database!");
         Move found = optionalFound.get();
