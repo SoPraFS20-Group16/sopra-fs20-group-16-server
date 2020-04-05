@@ -10,7 +10,7 @@ import java.io.Serializable;
  * This class composes the internal representation of the user and defines how the user is stored in the database.
  * Every variable will be mapped into a database field with the @Column annotation
  * - nullable = false -> this cannot be left empty
- * - unique = true -> this value must be unqiue across the database -> composes the primary key
+ * - unique = true -> this value must be unique across the database -> composes the primary key
  */
 @Entity
 @Table(name = "USER")

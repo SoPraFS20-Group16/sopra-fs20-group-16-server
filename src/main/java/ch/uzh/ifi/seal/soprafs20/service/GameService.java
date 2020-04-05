@@ -4,6 +4,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
+import com.sun.istack.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -56,13 +58,43 @@ public class GameService {
     }
 
     public Game findGame(Game gameInput) {
+
+
         //Must be able to find game from Id
-        //If no game exists return null
-        return null;
+        Optional<Game> foundGameOptional = gameRepository.findById(gameInput.getId());
+        Game foundGame = foundGameOptional.orElse(null);
+
+        //find by name if not found already
+        if (foundGame == null && !(gameInput.getName() == null)) {
+            foundGame = gameRepository.findByName(gameInput.getName());
+        }
+
+
+        //If no game exists found game is null
+        return foundGame;
     }
 
-    public boolean userCanAccessGame(User user, Game game) {
-        //TODO: Implement userCanAccessGame() method in GameService
+    /**
+     * A boolean stating if a user can access the game
+     *
+     * @param user the user as returned by the userService
+     * @param game the game as returned by the gameService
+     * @return the boolean
+     */
+    public boolean userCanAccessGame(@NotNull User user, @NotNull Game game) {
+
+        //The players of the game
+        List<User> candidateUsers = game.getPlayers();
+
+        //Compare each candidate to user
+        for (User candidateUser : candidateUsers) {
+
+            //Compare based on userId
+            if (user.getId().equals(candidateUser.getId())) {
+                return true;
+            }
+        }
+
         return false;
     }
 }

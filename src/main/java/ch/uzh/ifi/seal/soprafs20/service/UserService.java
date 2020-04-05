@@ -122,7 +122,7 @@ public class UserService {
      * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
      *
      * @param userToBeCreated
-     * @throws org.springframework.web.server.ResponseStatusException
+     * @throws RestException throws if the username is set to be an empty word
      * @see User
      */
     private void checkIfUserAlreadyExists(User userToBeCreated) {
