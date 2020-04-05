@@ -153,6 +153,12 @@ paths:
               description: The header contains the location of the created resource
         '401':
           description: Unauthorized - The token passed is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - The game name already exists or some other conflict occured
         '503':
           description: Service Unavailable - If the game creation fails on the server
           content:
@@ -160,7 +166,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       description: Creates a new game on the server and returns gameId and game url
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Token
+          description: The users token
       tags:
         - /games
       requestBody:
@@ -185,8 +196,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Game'
+        '401':
+          description: Unauthorized - The user has no valid token
         '403':
-          description: Forbidden - The user does not possess a valid token for this game instance
+          description: Forbidden - The user does not possess a valid token for this game instance but is logged in
           content:
             application/json:
               schema:
@@ -213,6 +226,12 @@ paths:
       responses:
         '202':
           description: Accepted - The post request was valid and the operation was performed
+        '401':
+          description: 'Unauthorized - The user has no valid token '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '403':
           description: Forbidden - the user that posted is not permitted to perform the operation or the game id is not a legal operation (anymore)
           content:
@@ -234,6 +253,12 @@ paths:
             schema:
               $ref: '#/components/schemas/GameOperation'
         description: The request includes the users token to ensure that only the authorized user can perform the operation and the operations Id that the server generated to identify the available operation
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Token
+          description: The users token
 components:
   schemas:
     User:
@@ -264,6 +289,10 @@ components:
           description: An array containing the players
           items:
             $ref: '#/components/schemas/User'
+        withBots:
+          type: boolean
+        name:
+          type: string
     Error:
       title: Error
       type: object
@@ -287,6 +316,8 @@ components:
         url:
           type: string
           description: The link that directs to the game
+      x-tags:
+        - Response Object
     UserCredentials:
       title: UserCredentials
       type: object
@@ -298,27 +329,35 @@ components:
         password:
           type: string
           description: the password of the user
+      x-tags:
+        - RequestObject
     GamePost:
       title: GamePost
       type: object
       description: The object containing a game with all initial field and the user token used for authentication
       properties:
-        token:
+        name:
           type: string
-          description: The clients user token
-        game:
-          $ref: '#/components/schemas/Game'
-    GameOperation:
-      title: GameOperation
+          description: The name of the game
+        withBots:
+          type: boolean
+          description: |
+            Bots enabled or disabled
+      x-tags:
+        - RequestObject
+    Move:
+      title: Move
       type: object
+      description: 'The object holding token and operation Id '
       properties:
+        moveId:
+          type: number
+          description: the Id of the operation that can be performed
         token:
           type: string
           description: The token of the user performing the operation
-        operationId:
-          type: string
-          description: the Id of the operation that can be performed
-      description: 'The object holding token and operation Id '
+      x-tags:
+        - RequestObject
     Token:
       title: Token
       type: object
@@ -326,4 +365,7 @@ components:
         token:
           type: string
       description: This object holds the string token in the instances it is used on its own either as a response or request body
+      x-tags:
+        - Response Object
+        - RequestObject
   securitySchemes: {}

@@ -70,6 +70,7 @@ public class UserController {
      */
     @PostMapping("/users")
     public ResponseEntity<TokenDTO> postUsers(@RequestBody UserPostDTO userPostDTO) {
+
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
@@ -80,10 +81,7 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", String.format("/users/%d", createdUser.getId()));
 
-        //TODO: Generate a real Token
-        createdUser.setToken("thisIsTheUserToken");
-
-        //Compose Response
+        // Compose Response
         return new ResponseEntity<>(new TokenDTO(createdUser.getToken()), headers, HttpStatus.CREATED);
 
     }
@@ -137,5 +135,17 @@ public class UserController {
 
         // convert internal representation of user back to API
         return new TokenDTO(loggedInUser.getToken());
+    }
+
+    @PutMapping("/logout")
+    @ResponseBody
+    public ResponseEntity logoutUser(@RequestBody UserPostDTO userPostDTO) {
+        // convert API user to internal representation
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+        // logout user
+        userService.logoutUser(userInput);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

@@ -41,7 +41,11 @@ public class UserService {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.OFFLINE);
 
+        // verify the uniqueness of the newUser credentials
         checkIfUserAlreadyExists(newUser);
+
+        // check for empty words
+        checkEmptyWords(newUser);
 
         // saves the given entity but data is only persisted in the database once flush() is called
         newUser = userRepository.save(newUser);
@@ -58,27 +62,59 @@ public class UserService {
      * @return the user
      */
     public User findUser(User user) {
-        //TODO Implement findUser method in UserService
+
 
         //Should be able to find the user given any of its unique fields
         //At the moment of writing those are id, username and token
         //if the user cannot be found return null
 
-        return null;
+        User foundUser = new User();
+
+        if (user.getId() != null) {
+            foundUser = userRepository.findUserById(user.getId());
+        } else if (user.getUsername() != null) {
+            foundUser = userRepository.findByUsername(user.getUsername());
+        } else if (user.getToken() != null) {
+            foundUser = userRepository.findByToken(user.getToken());
+        }
+
+        if (foundUser == null) {
+            throw new RestException(HttpStatus.NOT_FOUND, "user does not exist");
+        }
+
+        return foundUser;
+
     }
 
-    public User loginUser(User user) {
-        //TODO: Implement loginUser method in UserService
-        //Should look for the user
+    public User loginUser(User userToBeLoggedIn) {
+
+        // get user by username
+        User userByUsername = userRepository.findByUsername(userToBeLoggedIn.getUsername());
+
+        // if user exists, get the corresponding password
+        String password = null;
+        if (userByUsername != null) {
+            password = userByUsername.getPassword();
+        }
+
+        // get input password for comparison
+        String password_input = userToBeLoggedIn.getPassword();
 
         //If it doesn't exist return null
 
-        //Generate new Token only if user is not yet logged in
+        // verifies the user by its username and password
+        if (userByUsername != null && !password.equals(password_input)) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "invalid password, try again");
+        } else if (userByUsername == null) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
+        }
 
-        //Set Status
+        // after verification, set userStatus accordingly
+        userByUsername.setStatus(UserStatus.ONLINE);
 
-        //return user
-        return null;
+        //return logged in user
+        return userByUsername;
+
     }
 
     /**
@@ -90,6 +126,7 @@ public class UserService {
      * @see User
      */
     private void checkIfUserAlreadyExists(User userToBeCreated) {
+
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
         String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
@@ -97,5 +134,22 @@ public class UserService {
         if (userByUsername != null) {
             throw new RestException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
         }
+    }
+
+    private void checkEmptyWords(User userToBeCreated) {
+
+        if (userToBeCreated.getUsername().trim().length() == 0 ||
+            userToBeCreated.getPassword().trim().length() == 0) {
+            throw new RestException(HttpStatus.CONFLICT, "empty words are not allowed");
+        }
+    }
+
+
+    public void logoutUser(User userToBeLoggedOut) {
+        // find user by its username
+        User userByUsername = userRepository.findByUsername(userToBeLoggedOut.getUsername());
+
+        // set status accordingly
+        userByUsername.setStatus(UserStatus.OFFLINE);
     }
 }
