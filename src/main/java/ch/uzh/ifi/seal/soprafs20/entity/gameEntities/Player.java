@@ -1,23 +1,31 @@
 package ch.uzh.ifi.seal.soprafs20.entity.gameEntities;
 
-import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.cards.Card;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "PLAYER")
-public class Player extends User {
+public class Player {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    @Column(nullable = false, updatable = false)
+    private Long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    private Long userId;
+
+    @Column(nullable = false)
+    private String username;
+
     @OneToMany
     List<Card> cards;
     @OneToMany
@@ -29,8 +37,6 @@ public class Player extends User {
     @Column
     private int victoryPoints;
 
-    //TODO: Check if it is possible to delete a player without also destroying the user
-    //User should exist forever, player should be deleted after the game
     public Player() {
 
         //Set up empty arrays
@@ -97,6 +103,30 @@ public class Player extends User {
 
     public void addSettlement(Settlement settlement) {
         settlements.add(settlement);
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     // Worker Methods

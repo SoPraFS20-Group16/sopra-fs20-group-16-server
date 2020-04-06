@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameTest {
 
     private Game testGame;
-    private User testPlayer;
+    private Player testPlayer;
 
     @BeforeEach
     public void setup() {
@@ -21,9 +22,9 @@ public class GameTest {
         testGame.setName("TestGame");
         testGame.setWithBots(false);
 
-        testPlayer = new User();
-        testPlayer.setToken("TheTestUserToken");
+        testPlayer = new Player();
         testPlayer.setId(12L);
+        testPlayer.setUserId(11L);
         testPlayer.setUsername("TestUser");
     }
 
@@ -50,7 +51,7 @@ public class GameTest {
         int onePlayer = testGame.getPlayers().size();
         assertEquals(1, onePlayer, "The player array should hold one player!");
 
-        User foundPlayer = testGame.getPlayers().get(0);
+        Player foundPlayer = testGame.getPlayers().get(0);
         assertEquals(testPlayer.getId(), foundPlayer.getId(),
                 "The player that was added does not match the player found!");
     }
@@ -80,9 +81,9 @@ public class GameTest {
 
         testGame.addPlayer(testPlayer);
 
-        List<User> expected = Collections.singletonList(testPlayer);
+        List<Player> expected = Collections.singletonList(testPlayer);
 
-        List<User> result = testGame.getPlayers();
+        List<Player> result = testGame.getPlayers();
 
         assertEquals(expected.size(), result.size(), "The returned array has unexpected size!");
         assertEquals(expected.get(0), result.get(0), "The user in the array is not the expected one!");
@@ -92,7 +93,7 @@ public class GameTest {
     @Test
     public void testGetPlayers_isEmpty() {
 
-        List<User> result = testGame.getPlayers();
+        List<Player> result = testGame.getPlayers();
 
         assertEquals(0, result.size(), "The list should be empty!");
 

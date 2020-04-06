@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
@@ -23,10 +24,13 @@ public class Game implements Serializable {
     private String name;
 
     @OneToMany
-    private List<User> players;
+    private List<Player> players;
 
     @Column
     private boolean withBots;
+
+    @Column(nullable = false, updatable = false)
+    private Long creatorId;     //Id of the user that created the game
 
     public Game() {
         players = new ArrayList<>();
@@ -56,13 +60,21 @@ public class Game implements Serializable {
         this.withBots = withBots;
     }
 
+    public Long getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(Long userId) {
+        this.creatorId = userId;
+    }
+
     /**
      * Adds a player to the game.
      * Players must already be saved
      *
      * @param player the player
      */
-    public void addPlayer(@NotNull User player) {
+    public void addPlayer(@NotNull Player player) {
 
         if (player == null) {
             throw new NullPointerException("Game.addPlayer does not take null as input!");
@@ -71,11 +83,11 @@ public class Game implements Serializable {
         players.add(player);
     }
 
-    public List<User> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<User> players) {
+    public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
@@ -85,8 +97,11 @@ public class Game implements Serializable {
      * @param player the player
      * @return the boolean
      */
-    public boolean isPlayer(User player) {
-        for (User candidatePlayer : this.players) {
+    public boolean isPlayer(Player player) {
+        if (players.isEmpty()) {
+            return false;
+        }
+        for (Player candidatePlayer : this.players) {
             if (player.getId().equals(candidatePlayer.getId())) {
                 return true;
             }

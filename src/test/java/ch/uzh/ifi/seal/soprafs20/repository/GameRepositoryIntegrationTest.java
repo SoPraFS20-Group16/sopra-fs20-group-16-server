@@ -1,8 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.repository;
 
-import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,9 +23,9 @@ public class GameRepositoryIntegrationTest {
     @Autowired
     private GameRepository gameRepository;
 
-    @Qualifier("userRepository")
+    @Qualifier("playerRepository")
     @Autowired
-    private UserRepository userRepository;
+    private PlayerRepository playerRepository;
 
     @Test
     public void findById_success() {
@@ -34,6 +33,7 @@ public class GameRepositoryIntegrationTest {
         Game game = new Game();
         game.setName("GameName");
         game.setWithBots(false);
+        game.setCreatorId(1L);
 
         //Id is set by automatically, if it is the first element, the id is 1
         Game savedGame = entityManager.persistAndFlush(game);
@@ -55,6 +55,7 @@ public class GameRepositoryIntegrationTest {
         Game game = new Game();
         game.setName("GameName");
         game.setWithBots(false);
+        game.setCreatorId(1L);
 
         entityManager.persist(game);
         entityManager.flush();
@@ -73,6 +74,7 @@ public class GameRepositoryIntegrationTest {
         Game game = new Game();
         game.setName("GameName");
         game.setWithBots(false);
+        game.setCreatorId(1L);
 
 
         entityManager.persist(game);
@@ -90,6 +92,7 @@ public class GameRepositoryIntegrationTest {
         // given
         Game game = new Game();
         game.setWithBots(false);
+        game.setCreatorId(1L);
 
         Game found = gameRepository.findByName("NotGameName");
 
@@ -104,6 +107,7 @@ public class GameRepositoryIntegrationTest {
         Game game = new Game();
         game.setWithBots(false);
         game.setName("TestGame");
+        game.setCreatorId(1L);
 
         // given
         entityManager.persist(game);
@@ -123,6 +127,7 @@ public class GameRepositoryIntegrationTest {
         Game game = new Game();
         game.setName("TestGame");
         game.setWithBots(false);
+        game.setCreatorId(1L);
         entityManager.persist(game);
         entityManager.flush();
 
@@ -143,21 +148,20 @@ public class GameRepositoryIntegrationTest {
     }
 
     @Test
-    public void persistGameWithUsers_userAlreadyExists() {
+    public void persistGameWithPlayer_userAlreadyExists() {
 
-        User player = new User();
-        player.setToken("TheToken");
+        Player player = new Player();
         player.setUsername("ThePlayer");
-        player.setPassword("ThePassword");
-        player.setStatus(UserStatus.ONLINE);
+        player.setUserId(1L);
 
         //save player
-        player = userRepository.saveAndFlush(player);
+        player = playerRepository.saveAndFlush(player);
 
         Game testGame = new Game();
         testGame.setWithBots(false);
         testGame.setName("TestGame");
         testGame.addPlayer(player);
+        testGame.setCreatorId(1L);
 
         //Save the game
         entityManager.persist(testGame);
@@ -167,11 +171,10 @@ public class GameRepositoryIntegrationTest {
         assertEquals(testGame.getPlayers().size(), resultGame.getPlayers().size(),
                 "The array size does not match!");
 
-        User resultPlayer = resultGame.getPlayers().get(0);
+        Player resultPlayer = resultGame.getPlayers().get(0);
 
         //Check if the user still has all fields
         assertEquals(player.getId(), resultPlayer.getId(), "The id does not match!");
         assertEquals(player.getUsername(), resultPlayer.getUsername(), "The username does not match");
-        assertEquals(player.getPassword(), resultPlayer.getPassword(), "The password does not match");
     }
 }

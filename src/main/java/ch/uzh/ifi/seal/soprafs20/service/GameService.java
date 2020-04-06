@@ -3,7 +3,9 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import com.sun.istack.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,13 @@ public class GameService {
     private final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final GameRepository gameRepository;
+    private final PlayerRepository playerRepository;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
+                       @Qualifier("playerRepository") PlayerRepository playerRepository) {
         this.gameRepository = gameRepository;
+        this.playerRepository = playerRepository;
     }
 
     /**
@@ -83,18 +88,10 @@ public class GameService {
      */
     public boolean userCanAccessGame(@NotNull User user, @NotNull Game game) {
 
-        //The players of the game
-        List<User> candidateUsers = game.getPlayers();
-
-        //Compare each candidate to user
-        for (User candidateUser : candidateUsers) {
-
-            //Compare based on userId
-            if (user.getId().equals(candidateUser.getId())) {
-                return true;
-            }
+        Player player = playerRepository.findByUserId(user.getId());
+        if (player == null) {
+            return false;
         }
-
-        return false;
+        return game.isPlayer(player);
     }
 }

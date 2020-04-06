@@ -13,7 +13,6 @@ import java.io.Serializable;
  * - unique = true -> this value must be unique across the database -> composes the primary key
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "USER")
 public class User implements Serializable {
 

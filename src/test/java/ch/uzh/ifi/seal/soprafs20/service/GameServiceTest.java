@@ -2,7 +2,9 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +25,9 @@ public class GameServiceTest {
     @Mock
     private GameRepository gameRepository;
 
+    @Mock
+    PlayerRepository playerRepository;
+
     @InjectMocks
     private GameService gameService;
 
@@ -37,6 +42,7 @@ public class GameServiceTest {
         testGame.setId(1L);
         testGame.setName("TestGameName");
         testGame.setWithBots(true);
+        testGame.setCreatorId(12L);
 
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
@@ -136,7 +142,15 @@ public class GameServiceTest {
         testUser.setToken("TestToken");
         testUser.setId(1L);
         testUser.setUsername("TestName");
-        testGame.setPlayers(Collections.singletonList(testUser));
+
+        Player testPlayer = new Player();
+        testPlayer.setUserId(1L);
+        testPlayer.setId(12L);
+        testPlayer.setUsername("TestName");
+
+        testGame.setPlayers(Collections.singletonList(testPlayer));
+
+        given(playerRepository.findByUserId(Mockito.any())).willReturn(testPlayer);
 
         boolean result = gameService.userCanAccessGame(testUser, testGame);
 
@@ -149,6 +163,8 @@ public class GameServiceTest {
         testUser.setToken("TestToken");
         testUser.setId(1L);
         testUser.setUsername("TestName");
+
+        given(playerRepository.findByUserId(Mockito.any())).willReturn(null);
 
         boolean result = gameService.userCanAccessGame(testUser, testGame);
 
