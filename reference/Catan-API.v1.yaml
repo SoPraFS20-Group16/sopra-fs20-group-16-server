@@ -159,8 +159,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '409':
           description: Conflict - The game name already exists or some other conflict occured
-        '503':
-          description: Service Unavailable - If the game creation fails on the server
           content:
             application/json:
               schema:
@@ -251,7 +249,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GameOperation'
+              $ref: '#/components/schemas/Move'
         description: The request includes the users token to ensure that only the authorized user can perform the operation and the operations Id that the server generated to identify the available operation
       parameters:
         - schema:
