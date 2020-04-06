@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import com.sun.istack.NotNull;
 
@@ -25,6 +26,9 @@ public class Game implements Serializable {
 
     @OneToMany
     private List<Player> players;
+
+    @OneToOne
+    private Board board;
 
     @Column
     private boolean withBots;
@@ -66,6 +70,14 @@ public class Game implements Serializable {
 
     public void setCreatorId(Long userId) {
         this.creatorId = userId;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     /**

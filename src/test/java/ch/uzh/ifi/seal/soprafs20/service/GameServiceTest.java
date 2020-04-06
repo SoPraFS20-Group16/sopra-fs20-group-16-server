@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
@@ -27,6 +28,12 @@ public class GameServiceTest {
 
     @Mock
     PlayerRepository playerRepository;
+
+    @Mock
+    PlayerService playerService;
+
+    @Mock
+    BoardService boardService;
 
     @InjectMocks
     private GameService gameService;
@@ -77,9 +84,17 @@ public class GameServiceTest {
     @Test
     public void testCreateGame_success() {
 
+        Player testPlayer = new Player();
+        testPlayer.setUserId(1L);
+        testPlayer.setUsername("Username");
+
+        Board testBoard = new Board();
+
         //setup
         given(gameRepository.saveAndFlush(testGame)).willReturn(testGame);
         given(gameRepository.findByName(testGame.getName())).willReturn(null);
+        given(playerService.createPlayerFromUser(Mockito.any())).willReturn(testPlayer);
+        given(boardService.createBoard()).willReturn(testBoard);
 
         Game createdGame = gameService.createGame(testGame);
 

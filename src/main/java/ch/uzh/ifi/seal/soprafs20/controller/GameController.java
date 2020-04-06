@@ -91,6 +91,14 @@ public class GameController {
         // convert API game to internal representation
         Game gameInput = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
 
+        //findUser that posted the game
+        User tmp = new User();
+        tmp.setToken(token);
+        User postUser = userService.findUser(tmp);
+
+        //Set creator id
+        gameInput.setCreatorId(postUser.getId());
+
         // create game
         Game createdGame = gameService.createGame(gameInput);
 

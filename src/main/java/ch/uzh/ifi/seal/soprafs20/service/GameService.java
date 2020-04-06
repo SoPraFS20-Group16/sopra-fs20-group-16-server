@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
@@ -25,12 +26,19 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
+    private final BoardService boardService;
+    private final PlayerService playerService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
-                       @Qualifier("playerRepository") PlayerRepository playerRepository) {
+                       @Qualifier("playerRepository") PlayerRepository playerRepository,
+                       BoardService boardService,
+                       PlayerService playerService) {
+
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
+        this.boardService = boardService;
+        this.playerService = playerService;
     }
 
     /**
@@ -43,6 +51,17 @@ public class GameService {
         return gameRepository.findAll();
     }
 
+    /**
+     * Creates a new game
+     * <p>
+     * The game input has to hold the following fields:
+     * -CreatorId
+     * -WithBots
+     * -Name
+     *
+     * @param gameInput the game input
+     * @return the game
+     */
     public Game createGame(Game gameInput) {
 
         //Check for conflict
@@ -54,10 +73,21 @@ public class GameService {
             return null;
         }
 
-        //Update fields of input game here if need be
-        //
-        //...
+        //Add creator as first player
+        User creator = new User();
+        creator.setId(gameInput.getCreatorId());
 
+        Player creatorPlayer = playerService.createPlayerFromUser(creator);
+
+        gameInput.addPlayer(creatorPlayer);
+
+        //Add a Board
+        Board newBoard = boardService.createBoard();
+        gameInput.setBoard(newBoard);
+
+
+        //Add more options here!
+        //...
 
         return gameRepository.saveAndFlush(gameInput);
     }
