@@ -13,6 +13,7 @@ import java.io.Serializable;
  * - unique = true -> this value must be unique across the database -> composes the primary key
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "USER")
 public class User implements Serializable {
 
@@ -20,6 +21,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue
+    @Column(updatable = false, nullable = false)
     private Long id;
 
     @Column(nullable = false, unique = true)

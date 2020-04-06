@@ -13,13 +13,15 @@ public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(unique = true, nullable = false)
-    private String name;
-
 
     @Id
     @GeneratedValue
+    @Column(updatable = false, nullable = false)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String name;
+
     @OneToMany
     private List<User> players;
 

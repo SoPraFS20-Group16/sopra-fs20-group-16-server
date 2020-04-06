@@ -12,6 +12,7 @@ public class Move implements Serializable {
 
     @Id
     @GeneratedValue
+    @Column(updatable = false, nullable = false)
     private Long id;
 
     @Column
