@@ -25,13 +25,12 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "This should be application specific";
-        ex.printStackTrace();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseStatusException handleTransactionSystemException(Exception ex, HttpServletRequest request) {
-        log.error("Request: {} raised {}", request.getRequestURL(), ex);
+        log.error(String.format("Request: %s raised %s", request.getRequestURL(), ex));
         return new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage(), ex);
     }
 
