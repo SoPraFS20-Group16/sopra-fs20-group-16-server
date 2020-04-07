@@ -22,12 +22,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.hamcrest.Matchers.hasSize;
+import javax.persistence.EntityManager;
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -50,9 +53,15 @@ public class GameControllerIntegrationTest {
     @Qualifier("userRepository")
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    EntityManager entityManager;
 
     @BeforeEach
     public void setup() {
+
+        //Empty the repositories
+        entityManager.clear();
+
         //A test game
         testGame = new Game();
         testGame.setName("TestName");
@@ -64,9 +73,13 @@ public class GameControllerIntegrationTest {
         testPassword = "TestPassword";
         testStatus = UserStatus.ONLINE;
 
-
         //Create the user in the database from whom the calls are made
-        testUser = new User();
+
+        //Check if the user already exists
+        User found = userRepository.findByUsername(testUsername);
+        testUser = Objects.requireNonNullElseGet(found, User::new);
+
+        //Reset all user fields
         testUser.setToken(testToken);
         testUser.setUsername(testUsername);
         testUser.setPassword(testPassword);
@@ -96,8 +109,7 @@ public class GameControllerIntegrationTest {
 
         // then
         mockMvc.perform(getRequest)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(status().isOk());
     }
 
     @Test
