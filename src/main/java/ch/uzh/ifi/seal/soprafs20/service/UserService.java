@@ -41,7 +41,11 @@ public class UserService {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.OFFLINE);
 
+        // verify the uniqueness of the newUser credentials
         checkIfUserAlreadyExists(newUser);
+
+        // check for empty words
+        checkEmptyWords(newUser);
 
         // saves the given entity but data is only persisted in the database once flush() is called
         newUser = userRepository.save(newUser);
@@ -58,28 +62,55 @@ public class UserService {
      * @return the user
      */
     public User findUser(User user) {
-        //TODO Implement findUser method in UserService
+
 
         //Should be able to find the user given any of its unique fields
         //At the moment of writing those are id, username and token
-        //Throw Exception if the search fails with status code 404 NOT FOUND
+        //if the user cannot be found return null
 
-        return null;
+        User foundUser = new User();
+
+        if (user.getId() != null) {
+            foundUser = userRepository.findUserById(user.getId());
+        } else if (user.getUsername() != null) {
+            foundUser = userRepository.findByUsername(user.getUsername());
+        } else if (user.getToken() != null) {
+            foundUser = userRepository.findByToken(user.getToken());
+        }
+
+        return foundUser;
+
     }
 
-    public User loginUser(User user) {
-        //TODO: Implement loginUser method in UserService
-        //Should look for the user
+    public User loginUser(User userToBeLoggedIn) {
 
-        //If it doesn't exist make error according to API spec
-        //Return Status 401 Unauthorized
+        // get user by username
+        User userByUsername = userRepository.findByUsername(userToBeLoggedIn.getUsername());
 
-        //Generate new Token only if user is not yet logged in
+        // if user exists, get the corresponding password
+        String password = null;
+        if (userByUsername != null) {
+            password = userByUsername.getPassword();
+        }
 
-        //Set Status
+        // get input password for comparison
+        String password_input = userToBeLoggedIn.getPassword();
 
-        //return user
-        return null;
+        //If it doesn't exist return null
+
+        // verifies the user by its username and password
+        if (userByUsername != null && !password.equals(password_input)) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "invalid password, try again");
+        } else if (userByUsername == null) {
+            return null;
+        }
+
+        // after verification, set userStatus accordingly
+        userByUsername.setStatus(UserStatus.ONLINE);
+
+        //return logged in user
+        return userByUsername;
+
     }
 
     /**
@@ -87,10 +118,11 @@ public class UserService {
      * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
      *
      * @param userToBeCreated
-     * @throws org.springframework.web.server.ResponseStatusException
+     * @throws RestException throws if the username is set to be an empty word
      * @see User
      */
     private void checkIfUserAlreadyExists(User userToBeCreated) {
+
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
         String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
@@ -98,5 +130,22 @@ public class UserService {
         if (userByUsername != null) {
             throw new RestException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
         }
+    }
+
+    private void checkEmptyWords(User userToBeCreated) {
+
+        if (userToBeCreated.getUsername().trim().length() == 0 ||
+            userToBeCreated.getPassword().trim().length() == 0) {
+            throw new RestException(HttpStatus.CONFLICT, "empty words are not allowed");
+        }
+    }
+
+
+    public void logoutUser(User userToBeLoggedOut) {
+        // find user by its username
+        User userByUsername = userRepository.findByUsername(userToBeLoggedOut.getUsername());
+
+        // set status accordingly
+        userByUsername.setStatus(UserStatus.OFFLINE);
     }
 }
