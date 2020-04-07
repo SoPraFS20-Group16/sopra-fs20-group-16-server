@@ -74,10 +74,7 @@ public class GameService {
         }
 
         //Add creator as first player
-        User creator = new User();
-        creator.setId(gameInput.getCreatorId());
-
-        Player creatorPlayer = playerService.createPlayerFromUser(creator);
+        Player creatorPlayer = playerService.createPlayerFromUserId(gameInput.getCreatorId());
 
         gameInput.addPlayer(creatorPlayer);
 
@@ -94,13 +91,20 @@ public class GameService {
 
     public Game findGame(Game gameInput) {
 
+        if (gameInput == null) {
+            return null;
+        }
 
-        //Must be able to find game from Id
-        Optional<Game> foundGameOptional = gameRepository.findById(gameInput.getId());
-        Game foundGame = foundGameOptional.orElse(null);
+        Game foundGame = null;
+
+        if (gameInput.getId() != null) {
+            //Must be able to find game from Id
+            Optional<Game> foundGameOptional = gameRepository.findById(gameInput.getId());
+            foundGame = foundGameOptional.orElse(null);
+        }
 
         //find by name if not found already
-        if (foundGame == null && !(gameInput.getName() == null)) {
+        if (foundGame == null && gameInput.getName() != null) {
             foundGame = gameRepository.findByName(gameInput.getName());
         }
 

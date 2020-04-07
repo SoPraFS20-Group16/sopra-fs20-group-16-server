@@ -78,10 +78,6 @@ public class UserService {
             foundUser = userRepository.findByToken(user.getToken());
         }
 
-        if (foundUser == null) {
-            throw new RestException(HttpStatus.NOT_FOUND, "user does not exist");
-        }
-
         return foundUser;
 
     }

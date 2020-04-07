@@ -93,7 +93,7 @@ public class GameServiceTest {
         //setup
         given(gameRepository.saveAndFlush(testGame)).willReturn(testGame);
         given(gameRepository.findByName(testGame.getName())).willReturn(null);
-        given(playerService.createPlayerFromUser(Mockito.any())).willReturn(testPlayer);
+        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(testPlayer);
         given(boardService.createBoard()).willReturn(testBoard);
 
         Game createdGame = gameService.createGame(testGame);
