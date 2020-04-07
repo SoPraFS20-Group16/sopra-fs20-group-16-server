@@ -20,10 +20,6 @@ public class PlayerRepositoryIntegrationTest {
     @Autowired
     private PlayerRepository playerRepository;
 
-    @Qualifier("userRepository")
-    @Autowired
-    private UserRepository userRepository;
-
 
     @Test
     public void findByUsername_success() {
