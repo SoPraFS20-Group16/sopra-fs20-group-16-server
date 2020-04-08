@@ -2,10 +2,11 @@ package ch.uzh.ifi.seal.soprafs20.entity.game;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "COORDINATE")
-public class Coordinate {
+public class Coordinate implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

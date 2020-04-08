@@ -88,10 +88,6 @@ public class Game implements Serializable {
      */
     public void addPlayer(@NotNull Player player) {
 
-        if (player == null) {
-            throw new NullPointerException("Game.addPlayer does not take null as input!");
-        }
-
         players.add(player);
     }
 

@@ -1,12 +1,13 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "BOARD")
-public class Board {
+public class Board implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

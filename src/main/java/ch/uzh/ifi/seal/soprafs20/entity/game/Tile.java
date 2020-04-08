@@ -3,12 +3,13 @@ package ch.uzh.ifi.seal.soprafs20.entity.game;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "TILE")
-public class Tile {
+public class Tile implements Serializable {
 
     @Id
     @GeneratedValue

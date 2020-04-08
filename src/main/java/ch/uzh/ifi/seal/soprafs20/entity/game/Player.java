@@ -6,12 +6,13 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.Card;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "PLAYER")
-public class Player {
+public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
