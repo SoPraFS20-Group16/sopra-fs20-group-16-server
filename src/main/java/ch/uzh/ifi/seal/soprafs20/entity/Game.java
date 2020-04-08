@@ -91,9 +91,6 @@ public class Game implements Serializable {
             throw new NullPointerException("Player to be added should not be null!");
         }
 
-        if (player == null) {
-            throw new NullPointerException("Game.addPlayer does not take null as input!");
-        }
         players.add(player);
     }
 
