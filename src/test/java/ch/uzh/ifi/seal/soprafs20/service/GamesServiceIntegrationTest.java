@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -110,5 +111,19 @@ public class GamesServiceIntegrationTest {
 
         assertNotNull(foundByName, "There should exist a game!");
         assertEquals(testGame.getId(), foundByName.getId(), "The id should match!");
+    }
+
+    @Test
+    public void testGetGames() {
+
+        Game createdGame = gameService.createGame(testGame);
+
+        assertNotNull(createdGame, "A game should be created!");
+
+        List<Game> foundGames = gameService.getGames();
+
+        assertNotNull(foundGames, "There should be a list of game objects!");
+        assertEquals(1, foundGames.size(), "There should be one game in the repository!");
+        assertEquals(testGame.getName(), foundGames.get(0).getName(), "The names does not match!");
     }
 }
