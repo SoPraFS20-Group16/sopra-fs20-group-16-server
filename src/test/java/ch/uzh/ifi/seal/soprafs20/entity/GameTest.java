@@ -61,9 +61,10 @@ public class GameTest {
 
         Exception exception = assertThrows(NullPointerException.class, () -> testGame.addPlayer(null));
 
-        String expected = "Game.addPlayer does not take null as input!";
+        String expected = "Player to be added should not be null!";
         String result = exception.getMessage();
 
+        assertEquals(0, testGame.getPlayers().size(), "The array should not contain elements");
         assertEquals(expected, result, "The message does not match!");
     }
 

@@ -4,7 +4,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,11 +81,15 @@ public class Game implements Serializable {
 
     /**
      * Adds a player to the game.
-     * Players must already be saved
+     * Players must already be saved and not null
      *
      * @param player the player
      */
-    public void addPlayer(@NotNull Player player) {
+    public void addPlayer(Player player) {
+
+        if (player == null) {
+            throw new NullPointerException("Player to be added should not be null!");
+        }
 
         players.add(player);
     }

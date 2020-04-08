@@ -28,13 +28,13 @@ public class Player implements Serializable {
     private String username;
 
     @OneToMany
-    List<Card> cards;
+    private List<Card> cards;
     @OneToMany
-    List<Road> roads;
+    private List<Road> roads;
     @OneToMany
-    List<City> cities;
+    private List<City> cities;
     @OneToMany
-    List<Settlement> settlements;
+    private List<Settlement> settlements;
     @Column
     private int victoryPoints;
 

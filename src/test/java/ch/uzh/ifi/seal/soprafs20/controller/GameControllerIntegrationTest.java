@@ -3,7 +3,9 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,6 +55,10 @@ public class GameControllerIntegrationTest {
     @Qualifier("userRepository")
     @Autowired
     private UserRepository userRepository;
+
+    @Qualifier("playerRepository")
+    @Autowired
+    PlayerRepository playerRepository;
     @Autowired
     EntityManager entityManager;
 
@@ -133,8 +139,11 @@ public class GameControllerIntegrationTest {
                         gameRepository.findByName("TestName").getId())));
 
         //test the game was saved correctly
-        Game found = gameRepository.findByName("TestName");
-        assertNotNull(found, "There should exist a game!");
+        Game foundGame = gameRepository.findByName("TestName");
+        Player foundPlayer = playerRepository.findByUsername(testUsername);
+
+        assertNotNull(foundGame, "There should exist a game!");
+        assertNotNull(foundPlayer, "There should be a player with that username!");
     }
 
 
