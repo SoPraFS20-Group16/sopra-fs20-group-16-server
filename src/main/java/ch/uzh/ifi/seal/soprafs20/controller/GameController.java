@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
@@ -51,8 +52,8 @@ public class GameController {
         //Check token for validity
         if (tokenNotValid(token)) {
             throw new RestException(HttpStatus.UNAUTHORIZED,
-                    "The token was not valid",
-                    "You are not logged in!");
+                    ErrorMsg.TOKEN_INVALID,
+                    ErrorMsg.NOT_LOGGED_IN);
         }
 
         //Get list of games from game service
@@ -84,8 +85,8 @@ public class GameController {
         //Check token for validity
         if (tokenNotValid(token)) {
             throw new RestException(HttpStatus.UNAUTHORIZED,
-                    "The token was not valid",
-                    "You are not logged in!");
+                    ErrorMsg.TOKEN_INVALID,
+                    ErrorMsg.NOT_LOGGED_IN);
         }
 
         // convert API game to internal representation
@@ -105,8 +106,8 @@ public class GameController {
         //if created game is null there was a conflict
         if (createdGame == null) {
             throw new RestException(HttpStatus.CONFLICT,
-                    "The game creation ran into a conflict",
-                    "There is already a game with this Name!");
+                    ErrorMsg.GAME_CREATION_CONFLICT,
+                    ErrorMsg.ALREADY_GAME_WITH_NAME);
         }
 
         // add game location to header
@@ -138,8 +139,8 @@ public class GameController {
         //Check token for validity
         if (tokenNotValid(token)) {
             throw new RestException(HttpStatus.UNAUTHORIZED,
-                    "The token was not valid",
-                    "You are not logged in!");
+                    ErrorMsg.TOKEN_INVALID,
+                    ErrorMsg.NOT_LOGGED_IN);
         }
 
         //find game
@@ -150,8 +151,8 @@ public class GameController {
 
         //if game is null then there exists no game with that id
         if (foundGame == null) {
-            throw new RestException(HttpStatus.NOT_FOUND, "No game with that Id",
-                    "This game does not exist!");
+            throw new RestException(HttpStatus.NOT_FOUND, ErrorMsg.NO_GAME_WITH_ID,
+                    ErrorMsg.GAME_NOT_EXISTS);
         }
 
         //check if the user is also a player
@@ -162,8 +163,8 @@ public class GameController {
         //If user is not a player return  403 forbidden
         if (!gameService.userCanAccessGame(requestingUser, foundGame)) {
 
-            throw new RestException(HttpStatus.FORBIDDEN, "The user is not a player in the game",
-                    "Game access denied!");
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_PLAYER_IN_GAME,
+                    ErrorMsg.GAME_ACCESS_DENIED);
         }
 
         //If user has access return the GameDTO
@@ -182,8 +183,8 @@ public class GameController {
         //If user does not possess a valid token return 401
         if (tokenNotValid(token)) {
             throw new RestException(HttpStatus.UNAUTHORIZED,
-                    "The token was not valid",
-                    "You are not logged in!");
+                    ErrorMsg.TOKEN_INVALID,
+                    ErrorMsg.NOT_LOGGED_IN);
         }
 
         //If game does not exists return 404
@@ -194,8 +195,8 @@ public class GameController {
 
         //if game is null then there exists no game with that id
         if (foundGame == null) {
-            throw new RestException(HttpStatus.NOT_FOUND, "No game with this Id",
-                    "This game does not exist!");
+            throw new RestException(HttpStatus.NOT_FOUND, ErrorMsg.NO_GAME_WITH_ID,
+                    ErrorMsg.GAME_NOT_EXISTS);
         }
 
 
@@ -205,8 +206,8 @@ public class GameController {
 
         //If move does not exist return 403
         if (foundMove == null) {
-            throw new RestException(HttpStatus.FORBIDDEN, "There is no move with that id",
-                    "This is not a valid move!");
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.NO_MOVE_WITH_ID,
+                    ErrorMsg.MOVE_INVALID);
         }
 
         //Check if move and game and user build a valid set of instructions
@@ -219,22 +220,22 @@ public class GameController {
         //If user is not a player of the game return  403 forbidden
         if (!gameService.userCanAccessGame(requestingUser, foundGame)) {
 
-            throw new RestException(HttpStatus.FORBIDDEN, "The user is not a player in the game",
-                    "Game access denied!");
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_PLAYER_IN_GAME,
+                    ErrorMsg.GAME_ACCESS_DENIED);
         }
 
         //The move is not part of the game that was posted to
         if (!foundMove.getGameId().equals(foundGame.getId())) {
 
-            throw new RestException(HttpStatus.FORBIDDEN, "The gameId and the PathVariable do not match!",
-                    "This is not a valid move!");
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.PATHVARIABLE_NOT_MATCH_ID,
+                    ErrorMsg.MOVE_INVALID);
         }
 
         //If the users Id does not match the moves PlayerId return 403
         if (!requestingUser.getId().equals(foundMove.getPlayerId())) {
 
-            throw new RestException(HttpStatus.FORBIDDEN, "Users id does not match moves playerId",
-                    "You are not allowed to make this move!");
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_MATCH_PLAYER_ID,
+                    ErrorMsg.NOT_ALLOWED_TO_MAKE_MOVE);
         }
 
         //If everything is correct perform the move
