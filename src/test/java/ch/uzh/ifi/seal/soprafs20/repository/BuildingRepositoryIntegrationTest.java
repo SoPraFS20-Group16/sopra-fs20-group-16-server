@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.repository;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Building;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.City;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Road;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

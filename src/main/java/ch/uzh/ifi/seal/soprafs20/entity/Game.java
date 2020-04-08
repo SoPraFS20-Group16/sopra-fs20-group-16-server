@@ -1,10 +1,10 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Board;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
-import com.sun.istack.NotNull;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

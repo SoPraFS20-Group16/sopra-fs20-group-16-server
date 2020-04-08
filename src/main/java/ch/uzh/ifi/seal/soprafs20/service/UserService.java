@@ -94,14 +94,15 @@ public class UserService {
         }
 
         // get input password for comparison
-        String password_input = userToBeLoggedIn.getPassword();
+        String passwordInput = userToBeLoggedIn.getPassword();
 
         //If it doesn't exist return null
 
         // verifies the user by its username and password
-        if (userByUsername != null && !password.equals(password_input)) {
+        if (userByUsername != null && !password.equals(passwordInput)) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "invalid password, try again");
-        } else if (userByUsername == null) {
+        }
+        else if (userByUsername == null) {
             return null;
         }
 
@@ -117,7 +118,7 @@ public class UserService {
      * This is a helper method that will check the uniqueness criteria of the username
      * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
      *
-     * @param userToBeCreated
+     * @param userToBeCreated the user that should be added to the database
      * @throws RestException throws if the username is set to be an empty word
      * @see User
      */

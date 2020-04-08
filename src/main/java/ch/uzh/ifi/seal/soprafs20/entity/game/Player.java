@@ -1,9 +1,9 @@
-package ch.uzh.ifi.seal.soprafs20.entity.gameEntities;
+package ch.uzh.ifi.seal.soprafs20.entity.game;
 
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.City;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Road;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Settlement;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.cards.Card;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.Card;
 
 import javax.persistence.*;
 import java.util.ArrayList;

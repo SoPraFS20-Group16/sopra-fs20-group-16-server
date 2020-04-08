@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs;
+package ch.uzh.ifi.seal.soprafs20.rest.dto.user;
 
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 

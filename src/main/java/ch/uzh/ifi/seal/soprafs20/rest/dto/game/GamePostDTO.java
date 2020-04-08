@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs;
+package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
 public class GamePostDTO {
 

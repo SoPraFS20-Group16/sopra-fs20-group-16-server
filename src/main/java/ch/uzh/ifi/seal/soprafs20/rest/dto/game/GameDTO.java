@@ -1,14 +1,14 @@
-package ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs;
+package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
-import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserGetDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GameDTO {
 
     private Long gameId;
     private String name;
-    private ArrayList<UserGetDTO> players;
+    private List<UserGetDTO> players;
     private boolean withBots;
 
     public Long getGameId() {
@@ -27,11 +27,11 @@ public class GameDTO {
         this.name = name;
     }
 
-    public ArrayList<UserGetDTO> getPlayers() {
+    public List<UserGetDTO> getPlayers() {
         return players;
     }
 
-    public void setPlayers(ArrayList<UserGetDTO> players) {
+    public void setPlayers(List<UserGetDTO> players) {
         this.players = players;
     }
 

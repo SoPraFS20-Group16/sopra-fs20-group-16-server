@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.entity.gameEntities;
+package ch.uzh.ifi.seal.soprafs20.entity.game;
 
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 

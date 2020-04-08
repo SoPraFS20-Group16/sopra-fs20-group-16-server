@@ -4,12 +4,12 @@ import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GameLinkDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.GameDTOs.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserGetDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.UserDTOs.UserPostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,7 +65,7 @@ public class DTOMapperTest {
         GameLinkDTO result = DTOMapper.INSTANCE.convertGameToGameLinkDTO(game);
         assertEquals(expected.getGameId(), result.getGameId(), "The gameId is not mapped correctly");
         assertEquals(expected.getUrl(), result.getUrl(), "The game url is not mapped correctly");
-        assertEquals(expected.getUrl(), "/games/1",
+        assertEquals("/games/1", expected.getUrl(),
                 "The setUrl method of GameLinkDTO does not work correctly");
     }
 

@@ -73,10 +73,10 @@ public class UserRepositoryIntegrationTest {
         User found = foundList.get(0);
 
         assertNotNull(found.getId());
-        assertEquals(found.getUsername(), "NewUsername");
-        assertEquals(found.getUsername(), updatedUser.getUsername());
-        assertEquals(found.getToken(), "NewToken");
-        assertEquals(found.getStatus(), updatedUser.getStatus());
+        assertEquals("NewUsername", found.getUsername());
+        assertEquals(updatedUser.getUsername(), found.getUsername());
+        assertEquals("NewToken", found.getToken());
+        assertEquals(updatedUser.getStatus(), found.getStatus());
 
     }
 }

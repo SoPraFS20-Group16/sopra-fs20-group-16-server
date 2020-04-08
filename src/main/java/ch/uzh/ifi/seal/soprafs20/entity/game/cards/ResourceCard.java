@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.entity.gameEntities.cards;
+package ch.uzh.ifi.seal.soprafs20.entity.game.cards;
 
 import ch.uzh.ifi.seal.soprafs20.constant.CardType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;

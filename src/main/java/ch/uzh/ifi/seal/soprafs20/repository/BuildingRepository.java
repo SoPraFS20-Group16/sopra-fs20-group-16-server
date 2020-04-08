@@ -1,7 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.repository;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.buildings.Building;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

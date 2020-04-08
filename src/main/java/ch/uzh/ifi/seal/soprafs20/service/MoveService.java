@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 @Transactional
 public class MoveService {
 
-    private final Logger log = LoggerFactory.getLogger(GameService.class);
+    private final Logger log = LoggerFactory.getLogger(MoveService.class);
 
 
 //    @Autowired

@@ -1,7 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.repository;
 
 
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

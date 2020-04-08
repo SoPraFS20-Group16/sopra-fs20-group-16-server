@@ -1,6 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
-import ch.uzh.ifi.seal.soprafs20.entity.gameEntities.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
