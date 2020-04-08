@@ -32,6 +32,7 @@ public class UserServiceTest {
         testUser.setId(1L);
         testUser.setPassword("password");
         testUser.setUsername("testUsername");
+        testUser.setStatus(UserStatus.OFFLINE);
 
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
@@ -74,6 +75,5 @@ public class UserServiceTest {
         // then -> attempt to create second user with same user -> check that an error is thrown
         assertThrows(RestException.class, () -> userService.createUser(testUser));
     }
-
 
 }

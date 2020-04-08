@@ -177,6 +177,25 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.error", not("")));
     }
 
+    @Test
+    public void createUser_emptyInput() throws Exception {
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("user_1");
+        userPostDTO.setPassword("pw_1");
+
+        given(userService.createUser(Mockito.any())).willThrow(new RestException(HttpStatus.CONFLICT, "empty words are not allowed"));
+
+        MockHttpServletRequestBuilder postRequest = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(postRequest)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorMessage", is("empty words are not allowed")))
+                .andExpect(jsonPath("$.error", not("")));
+    }
+
     /**
      * Tests PUT /login given that the credentials are correct
      *
@@ -239,6 +258,19 @@ public class UserControllerTest {
 
     }
 
+    @Test
+    public void logoutUser_success() throws Exception {
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("testUser");
+
+        MockHttpServletRequestBuilder putRequest = put("/logout")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(putRequest)
+                .andExpect(status().isOk());
+    }
 
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input can be processed
