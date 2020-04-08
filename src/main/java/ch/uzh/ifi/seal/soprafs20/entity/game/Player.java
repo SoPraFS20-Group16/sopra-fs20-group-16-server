@@ -27,13 +27,13 @@ public class Player implements Serializable {
     @Column(nullable = false)
     private String username;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Card> cards;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Road> roads;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<City> cities;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Settlement> settlements;
     @Column
     private int victoryPoints;
