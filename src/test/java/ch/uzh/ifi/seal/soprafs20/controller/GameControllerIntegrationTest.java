@@ -10,6 +10,7 @@ import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +56,6 @@ public class GameControllerIntegrationTest {
     @Qualifier("userRepository")
     @Autowired
     private UserRepository userRepository;
-
     @Qualifier("playerRepository")
     @Autowired
     PlayerRepository playerRepository;
@@ -65,8 +65,6 @@ public class GameControllerIntegrationTest {
     @BeforeEach
     public void setup() {
 
-        //Empty the repositories
-        entityManager.clear();
 
         //A test game
         testGame = new Game();
@@ -93,6 +91,17 @@ public class GameControllerIntegrationTest {
 
         userRepository.saveAndFlush(testUser);
 
+    }
+
+    @AfterEach
+    public void teardown() {
+        gameRepository.deleteAll();
+        userRepository.deleteAll();
+        playerRepository.deleteAll();
+
+        gameRepository.flush();
+        userRepository.flush();
+        playerRepository.flush();
     }
 
     @Test
@@ -142,8 +151,13 @@ public class GameControllerIntegrationTest {
         Game foundGame = gameRepository.findByName("TestName");
         Player foundPlayer = playerRepository.findByUsername(testUsername);
 
+        assertEquals(1, foundGame.getPlayers().size(), "There should be a player in the game!");
+
+        Player gamePlayer = foundGame.getPlayers().get(0);
+
         assertNotNull(foundGame, "There should exist a game!");
-        assertNotNull(foundPlayer, "There should be a player with that username!");
+        assertEquals(testUsername, foundPlayer.getUsername(), "There should be a player with that username!");
+        assertEquals(foundPlayer.getUsername(), gamePlayer.getUsername(), "The player should be part of the game!");
     }
 
 

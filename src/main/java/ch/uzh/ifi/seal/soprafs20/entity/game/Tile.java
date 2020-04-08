@@ -18,7 +18,7 @@ public class Tile implements Serializable {
     @Column(nullable = false, updatable = false)
     private TileType type;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Coordinate> coordinates;
 
     public Tile() {

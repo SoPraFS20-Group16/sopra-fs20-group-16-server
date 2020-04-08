@@ -15,7 +15,7 @@ public class Board implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Tile> tiles;
 
     public Board() {

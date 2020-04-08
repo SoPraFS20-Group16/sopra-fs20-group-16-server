@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
+import ch.uzh.ifi.seal.soprafs20.rest.dto.BoardDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 
 import java.util.List;
@@ -10,6 +11,7 @@ public class GameDTO {
     private String name;
     private List<UserGetDTO> players;
     private boolean withBots;
+    private BoardDTO board;
 
     public Long getGameId() {
         return gameId;
