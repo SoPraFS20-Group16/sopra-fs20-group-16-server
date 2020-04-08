@@ -76,4 +76,25 @@ public class UserServiceTest {
         assertThrows(RestException.class, () -> userService.createUser(testUser));
     }
 
+    @Test
+    public void logoutUser_success() {
+
+        userService.createUser(testUser);
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+
+        userService.logoutUser(testUser);
+        assertEquals(UserStatus.OFFLINE, testUser.getStatus());
+    }
+
+    @Test
+    public void loginUser_success() {
+
+        userService.createUser(testUser);
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+
+        userService.loginUser(testUser);
+
+        assertEquals(UserStatus.ONLINE, testUser.getStatus());
+    }
+
 }
