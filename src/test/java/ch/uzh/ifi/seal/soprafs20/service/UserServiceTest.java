@@ -32,6 +32,7 @@ public class UserServiceTest {
         testUser.setId(1L);
         testUser.setPassword("password");
         testUser.setUsername("testUsername");
+        testUser.setStatus(UserStatus.OFFLINE);
 
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
@@ -75,5 +76,25 @@ public class UserServiceTest {
         assertThrows(RestException.class, () -> userService.createUser(testUser));
     }
 
+    @Test
+    public void logoutUser_success() {
+
+        userService.createUser(testUser);
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+
+        userService.logoutUser(testUser);
+        assertEquals(UserStatus.OFFLINE, testUser.getStatus());
+    }
+
+    @Test
+    public void loginUser_success() {
+
+        userService.createUser(testUser);
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+
+        userService.loginUser(testUser);
+
+        assertEquals(UserStatus.ONLINE, testUser.getStatus());
+    }
 
 }
