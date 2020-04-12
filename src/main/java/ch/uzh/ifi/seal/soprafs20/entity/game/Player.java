@@ -4,6 +4,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.Card;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
+import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,6 +40,8 @@ public class Player implements Serializable {
     @Column
     private int victoryPoints;
 
+    private final PlayerService playerService;
+
     public Player() {
 
         //Set up empty arrays
@@ -45,8 +49,8 @@ public class Player implements Serializable {
         roads = new ArrayList<>();
         cities = new ArrayList<>();
         settlements = new ArrayList<>();
-    }
 
+    }
 
     //Getter and setters
 
@@ -131,7 +135,92 @@ public class Player implements Serializable {
     }
 
     // Worker Methods
-    //TODO: Implement the Player functionality
+
+    public void buyRoad() {
+
+        // if player can afford a new road, it will be created
+        Road newRoad = playerService.RoadRequest(this.cards);
+
+        // add new Road to inventory and place it on the board
+        addRoad(newRoad);
+        placeRoad();
+
+        // increase victoryPoints
+        this.victoryPoints += newRoad.getVictoryPoints();
+    }
+
+    public void buySettlement() {
+
+        // if player can afford a new Settlement, it will be created
+        Settlement newSettlement = playerService.SettlementRequest(this.cards);
+
+        // add new Settlement to inventory and place it on the board
+        addSettlement(newSettlement);
+        placeSettlement();
+
+        // increase victoryPoints
+        this.victoryPoints += newSettlement.getVictoryPoints();
+    }
+
+    public void buyCity() {
+
+        // if player can afford a new City, it will be created
+        City newCity = playerService.CityRequest(this.cards);
+
+        // add City to inventory and place it on the board
+        addCity(newCity);
+        placeCity();
+
+        // increase victoryPoints
+        this.victoryPoints += newCity.getVictoryPoints();
+
+        //TODO: remove or replace settlement in inventory
+        //TODO: adjust victoryPoints accordingly
+    }
+
+    public void invokeDevelopmentCard(DevelopmentCard developmentCard) {
+
+        switch (developmentCard.getDevelopmentType()) {
+            case VICTORYPOINT:
+                this.victoryPoints += 1;
+                break;
+            case PLENTYPROGRESS:
+                //TODO: add logic
+                break;
+            case ROADPROGRESS:
+                //TODO: add logic
+                break;
+            case KNIGHT:
+                //TODO: add logic
+                break;
+            case MONOPOLYPROGRESS:
+                //TODO: add logic
+                break;
+        }
+
+        this.cards.remove(developmentCard);
+
+    }
+
+    public void passOnMove() {
+
+    }
+
+    public void tradeWithBank() {
+
+    }
+
+    public void placeRoad(Road road) {
+
+    }
+
+    public void placeSettlement(Settlement settlement) {
+
+    }
+
+    public void placeCity(City city) {
+
+    }
 
 
 }
