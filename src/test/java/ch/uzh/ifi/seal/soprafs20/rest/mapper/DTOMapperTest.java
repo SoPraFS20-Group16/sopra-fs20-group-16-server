@@ -2,8 +2,8 @@ package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;

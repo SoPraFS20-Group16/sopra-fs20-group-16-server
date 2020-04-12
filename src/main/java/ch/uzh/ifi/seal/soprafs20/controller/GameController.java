@@ -2,8 +2,8 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
@@ -11,8 +11,8 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
-import ch.uzh.ifi.seal.soprafs20.service.MoveService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -232,7 +232,7 @@ public class GameController {
         }
 
         //If the users Id does not match the moves PlayerId return 403
-        if (!requestingUser.getId().equals(foundMove.getPlayerId())) {
+        if (!requestingUser.getId().equals(foundMove.getUserId())) {
 
             throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_MATCH_PLAYER_ID,
                     ErrorMsg.NOT_ALLOWED_TO_MAKE_MOVE);
@@ -240,6 +240,9 @@ public class GameController {
 
         //If everything is correct perform the move
         moveService.performMove(foundMove);
+
+        //Make recalculations
+        moveService.makeRecalculations();
     }
 
     /**

@@ -1,10 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
-import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -21,20 +22,13 @@ public abstract class Building implements Serializable {
     @Column(nullable = false, updatable = false)
     private BuildingType type;
 
-    @OneToOne(optional = false)
-    private Coordinate coordinate;
 
     //Abstract methods
-    abstract int getVictoryPoints();
+    public abstract int getVictoryPoints();
+
+    public abstract List<ResourceCard> getPrice();
 
     //Shared Methods
-    public Coordinate getCoordinate() {
-        return this.coordinate;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
 
     public BuildingType getType() {
         return this.type;

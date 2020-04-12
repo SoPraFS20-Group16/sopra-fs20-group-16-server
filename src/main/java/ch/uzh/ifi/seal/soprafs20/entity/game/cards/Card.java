@@ -20,10 +20,6 @@ public abstract class Card implements Serializable {
     @Column(nullable = false, updatable = false)
     private CardType type;
 
-    abstract boolean isResourceCard();
-
-    abstract boolean isDevelopmentCard();
-
     //SharedMethods
     public void setCardType(CardType type) {
         this.type = type;

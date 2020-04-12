@@ -3,9 +3,8 @@ package ch.uzh.ifi.seal.soprafs20.entity.game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.Card;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
-import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,22 +29,29 @@ public class Player implements Serializable {
     private String username;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Card> cards;
+    private List<ResourceCard> resourceCards;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<DevelopmentCard> developmentCards;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Road> roads;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<City> cities;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Settlement> settlements;
+
     @Column
     private int victoryPoints;
 
-    private final PlayerService playerService;
 
     public Player() {
 
         //Set up empty arrays
-        cards = new ArrayList<>();
+        resourceCards = new ArrayList<>();
+        developmentCards = new ArrayList<>();
         roads = new ArrayList<>();
         cities = new ArrayList<>();
         settlements = new ArrayList<>();
@@ -62,16 +68,28 @@ public class Player implements Serializable {
         this.victoryPoints = victoryPoints;
     }
 
-    public List<Card> getCards() {
-        return cards;
+    public List<ResourceCard> getResourceCards() {
+        return resourceCards;
     }
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
+    public void setResourceCards(List<ResourceCard> cards) {
+        this.resourceCards = cards;
     }
 
-    public void addCard(Card card) {
-        cards.add(card);
+    public void addResourceCard(ResourceCard resourceCard) {
+        resourceCards.add(resourceCard);
+    }
+
+    public List<DevelopmentCard> getDevelopmentCards() {
+        return developmentCards;
+    }
+
+    public void setDevelopmentCards(List<DevelopmentCard> developmentCards) {
+        this.developmentCards = developmentCards;
+    }
+
+    public void addDevelopmentCard(DevelopmentCard developmentCard) {
+        developmentCards.add(developmentCard);
     }
 
     public List<Road> getRoads() {
@@ -133,94 +151,4 @@ public class Player implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-    // Worker Methods
-
-    public void buyRoad() {
-
-        // if player can afford a new road, it will be created
-        Road newRoad = playerService.RoadRequest(this.cards);
-
-        // add new Road to inventory and place it on the board
-        addRoad(newRoad);
-        placeRoad();
-
-        // increase victoryPoints
-        this.victoryPoints += newRoad.getVictoryPoints();
-    }
-
-    public void buySettlement() {
-
-        // if player can afford a new Settlement, it will be created
-        Settlement newSettlement = playerService.SettlementRequest(this.cards);
-
-        // add new Settlement to inventory and place it on the board
-        addSettlement(newSettlement);
-        placeSettlement();
-
-        // increase victoryPoints
-        this.victoryPoints += newSettlement.getVictoryPoints();
-    }
-
-    public void buyCity() {
-
-        // if player can afford a new City, it will be created
-        City newCity = playerService.CityRequest(this.cards);
-
-        // add City to inventory and place it on the board
-        addCity(newCity);
-        placeCity();
-
-        // increase victoryPoints
-        this.victoryPoints += newCity.getVictoryPoints();
-
-        //TODO: remove or replace settlement in inventory
-        //TODO: adjust victoryPoints accordingly
-    }
-
-    public void invokeDevelopmentCard(DevelopmentCard developmentCard) {
-
-        switch (developmentCard.getDevelopmentType()) {
-            case VICTORYPOINT:
-                this.victoryPoints += 1;
-                break;
-            case PLENTYPROGRESS:
-                //TODO: add logic
-                break;
-            case ROADPROGRESS:
-                //TODO: add logic
-                break;
-            case KNIGHT:
-                //TODO: add logic
-                break;
-            case MONOPOLYPROGRESS:
-                //TODO: add logic
-                break;
-        }
-
-        this.cards.remove(developmentCard);
-
-    }
-
-    public void passOnMove() {
-
-    }
-
-    public void tradeWithBank() {
-
-    }
-
-    public void placeRoad(Road road) {
-
-    }
-
-    public void placeSettlement(Settlement settlement) {
-
-    }
-
-    public void placeCity(City city) {
-
-    }
-
-
 }

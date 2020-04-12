@@ -33,15 +33,5 @@ public class DevelopmentCard extends Card {
         this.developmentType = developmentType;
     }
 
-    //Interface Methods
-    @Override
-    public boolean isResourceCard() {
-        return false;
-    }
-
-    @Override
-    public boolean isDevelopmentCard() {
-        return true;
-    }
 
 }

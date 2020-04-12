@@ -15,6 +15,8 @@ public class ErrorMsg {
     public static final String NOT_ALLOWED_TO_MAKE_MOVE = "You are not allowed to make this move!";
     public static final String GAME_CREATION_CONFLICT = "The game creation ran into a conflict";
     public static final String ALREADY_GAME_WITH_NAME = "There is already a game with this Name!";
+    public static final String NO_PLAYER_FOUND_WITH_USER_ID = "There was no player with this user id!";
+    public static final String UNDEFINED_BUILDING_TYPE = "The building type should be defined!";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

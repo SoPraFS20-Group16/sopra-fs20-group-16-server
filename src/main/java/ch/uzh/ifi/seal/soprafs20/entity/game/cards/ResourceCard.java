@@ -29,15 +29,4 @@ public class ResourceCard extends Card {
     public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
     }
-
-    //Card Interface Methods
-    @Override
-    public boolean isResourceCard() {
-        return true;
-    }
-
-    @Override
-    public boolean isDevelopmentCard() {
-        return false;
-    }
 }
