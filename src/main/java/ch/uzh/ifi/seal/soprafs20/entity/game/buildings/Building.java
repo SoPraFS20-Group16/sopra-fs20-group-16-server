@@ -13,7 +13,6 @@ public abstract class Building implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
     @Id
     @GeneratedValue
     @Column(updatable = false, nullable = false)
@@ -29,7 +28,6 @@ public abstract class Building implements Serializable {
     public abstract List<ResourceCard> getPrice();
 
     //Shared Methods
-
     public BuildingType getType() {
         return this.type;
     }

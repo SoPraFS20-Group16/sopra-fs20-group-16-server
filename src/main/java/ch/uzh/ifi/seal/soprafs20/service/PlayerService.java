@@ -33,7 +33,6 @@ public class PlayerService {
         this.userRepository = userRepository;
     }
 
-
     /**
      * Create player from user player.
      * <p>
