@@ -1,8 +1,10 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
+import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +17,39 @@ public class Tile implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, updatable = false)
+    @Column
     private TileType type;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @Size(max = 6)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Coordinate> coordinates;
 
     public Tile() {
         this.coordinates = new ArrayList<>();
+    }
+
+    public TileType getType() {
+        return type;
+    }
+
+    public void setType(TileType type) {
+        this.type = type;
+    }
+
+    public List<Coordinate> getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(List<Coordinate> coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public boolean hasCoordinate(Coordinate other) {
+        for (Coordinate coordinate : this.coordinates) {
+            if (coordinate.equals(other)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

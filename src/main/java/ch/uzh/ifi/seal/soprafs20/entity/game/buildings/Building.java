@@ -1,7 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 
 import javax.persistence.*;
 import java.io.Serializable;

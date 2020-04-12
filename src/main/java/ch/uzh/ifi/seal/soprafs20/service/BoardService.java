@@ -2,7 +2,6 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
-import ch.uzh.ifi.seal.soprafs20.repository.TileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -14,14 +13,11 @@ import javax.transaction.Transactional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final TileRepository tileRepository;
 
     @Autowired
-    public BoardService(@Qualifier("boardRepository") BoardRepository boardRepository,
-                        @Qualifier("tileRepository") TileRepository tileRepository) {
+    public BoardService(@Qualifier("boardRepository") BoardRepository boardRepository) {
 
         this.boardRepository = boardRepository;
-        this.tileRepository = tileRepository;
     }
 
 
@@ -33,7 +29,7 @@ public class BoardService {
     public Board createBoard() {
 
         Board board = new Board();
-        //TODO: Implement board setup
+
 
         return boardRepository.saveAndFlush(board);
     }

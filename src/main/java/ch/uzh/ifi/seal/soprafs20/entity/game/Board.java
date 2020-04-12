@@ -38,7 +38,4 @@ public class Board implements Serializable {
     public void setTiles(List<Tile> tiles) {
         this.tiles = tiles;
     }
-
-    //functionality
-
 }
