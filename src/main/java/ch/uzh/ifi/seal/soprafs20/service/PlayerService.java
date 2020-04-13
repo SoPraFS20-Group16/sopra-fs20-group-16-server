@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
@@ -147,6 +148,35 @@ public class PlayerService {
 
         // set new victoryPoints
         player.setVictoryPoints(victoryPoints);
+    }
+
+    public void recalculateVictoryPoints(Game game) {
+
+        for (Player player: game.getPlayers()) {
+
+            int victoryPoints = 0;
+
+            // get all victory points earned from settlements
+            for (Building settlement: player.getSettlements()) {
+                int tmp = settlement.getVictoryPoints();
+                victoryPoints += tmp;
+            }
+
+            // get all victory points earned from cities
+            for (Building city: player.getCities()) {
+                int tmp = city.getVictoryPoints();
+                victoryPoints += tmp;
+            }
+
+            //
+
+            // TODO: consider victory point card
+            // TODO: consider longest road (5 or longer) equals 2VP
+
+            player.setVictoryPoints(victoryPoints);
+
+        }
+
     }
 
 

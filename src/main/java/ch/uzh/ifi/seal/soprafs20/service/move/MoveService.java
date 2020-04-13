@@ -26,8 +26,9 @@ public class MoveService {
     private final MoveCalculationHelper moveCalculationHelper;
 
     @Autowired
-    public MoveService(PlayerService playerService) {
+    public MoveService(PlayerService playerService, MoveCalculationHelper moveCalculationHelper) {
         this.playerService = playerService;
+        this.moveCalculationHelper = moveCalculationHelper;
     }
 
 
@@ -58,8 +59,8 @@ public class MoveService {
     //Is performed after performMove terminates
     public void makeRecalculations(Game game) {
 
-        //TODO: Recalculate Vicotory Points
-
+        //TODO: Recalculate Victory Points
+        playerService.recalculateVictoryPoints(game);
 
         //TODO: Recalculate Possible moves
         moveCalculationHelper.getAllMovesFor(game);

@@ -119,4 +119,9 @@ public class Game implements Serializable {
         }
         return false;
     }
+
+    public Player findCurrentPlayer() {
+        // TODO: implement functionality
+        return null;
+    }
 }

@@ -49,7 +49,7 @@ public class BoardService {
         //AddTiles
 
         //The new tile
-        Tile newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 0);
+        Tile newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 0));
         newTile.setTileNumber(6);
 
 
