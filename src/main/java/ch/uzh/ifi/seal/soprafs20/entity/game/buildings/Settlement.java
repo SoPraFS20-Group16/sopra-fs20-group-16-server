@@ -30,6 +30,14 @@ public class Settlement extends Building {
         return 1;
     }
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
+
     @Override
     public List<ResourceCard> getPrice() {
 

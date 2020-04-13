@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
+import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
@@ -22,9 +23,29 @@ public class Road extends Building {
     @GeneratedValue
     private Long id;
 
+    public Road() {
+        super.setType(BuildingType.ROAD);
+    }
+
     @Override
     public int getVictoryPoints() {
         return 0;
+    }
+
+    public Coordinate getCoordinate1() {
+        return coordinate1;
+    }
+
+    public void setCoordinate1(Coordinate coordinate1) {
+        this.coordinate1 = coordinate1;
+    }
+
+    public Coordinate getCoordinate2() {
+        return coordinate2;
+    }
+
+    public void setCoordinate2(Coordinate coordinate2) {
+        this.coordinate2 = coordinate2;
     }
 
     @Override

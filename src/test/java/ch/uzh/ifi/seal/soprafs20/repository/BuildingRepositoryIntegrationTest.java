@@ -30,10 +30,12 @@ public class BuildingRepositoryIntegrationTest {
     public void testFindAllByType_success() {
 
         //given
-        Coordinate coord = new Coordinate();
+        Coordinate coord = new Coordinate(1, 1);
+        Coordinate coord2 = new Coordinate(1, 2);
 
         Road road = new Road();
-        road.setCoordinate(coord);
+        road.setCoordinate1(coord);
+        road.setCoordinate2(coord2);
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coord);
         City city = new City();
@@ -43,6 +45,8 @@ public class BuildingRepositoryIntegrationTest {
         entityManager.persist(road);
         entityManager.persist(settlement);
         entityManager.persist(city);
+        entityManager.persist(coord2);
+        entityManager.flush();
 
         List<Building> rResult = buildingRepository.findAllByType(BuildingType.ROAD);
         List<Building> sResult = buildingRepository.findAllByType(BuildingType.SETTLEMENT);

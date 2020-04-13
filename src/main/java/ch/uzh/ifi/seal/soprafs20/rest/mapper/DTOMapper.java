@@ -2,7 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.PostMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
@@ -59,5 +59,5 @@ public interface DTOMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "moveId", target = "id")
-    PostMove convertMovePostDTOtoEntity(MovePostDTO move);
+    Move convertMovePostDTOtoEntity(MovePostDTO move);
 }

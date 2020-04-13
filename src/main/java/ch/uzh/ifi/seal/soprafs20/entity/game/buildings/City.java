@@ -31,6 +31,14 @@ public class City extends Building {
         return 2;
     }
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
+
     @Override
     public List<ResourceCard> getPrice() {
 

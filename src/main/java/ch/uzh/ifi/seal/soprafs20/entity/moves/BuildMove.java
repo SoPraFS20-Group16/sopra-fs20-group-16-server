@@ -16,7 +16,6 @@ public class BuildMove extends Move {
     private Building building; //Has the coordinates set already
 
 
-    @Override
     public MoveHandler getMoveHandler() {
         return BuildMoveHandler.getInstance();
     }
