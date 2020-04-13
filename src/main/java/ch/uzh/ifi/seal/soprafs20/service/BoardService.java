@@ -156,10 +156,6 @@ public class BoardService {
 
         List<TileType> typeList = new ArrayList<>();
 
-        //Number of deserts
-        for (int i = 0; i < BoardConstants.NUMBER_OF_DESERTS; i++) {
-            typeList.add(TileType.DESERT);
-        }
 
         //Number of fields
         for (int i = 0; i < BoardConstants.NUMBER_OF_FIELDS; i++) {
