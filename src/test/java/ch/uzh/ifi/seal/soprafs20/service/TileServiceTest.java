@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.repository.CoordinateRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.TileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,9 @@ public class TileServiceTest {
     @InjectMocks
     private TileService tileService;
 
+    @Mock
+    private CoordinateRepository coordinateRepository;
+
     //TestObjects
     private Coordinate testCoordinate;
 
@@ -35,6 +39,7 @@ public class TileServiceTest {
     @Test
     public void testCreateTileWithTopCoordinate() {
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
+        when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
         Tile created = tileService.createTileWithTopCoordinate(testCoordinate);
 

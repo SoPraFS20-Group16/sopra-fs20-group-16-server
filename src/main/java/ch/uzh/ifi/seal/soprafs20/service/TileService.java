@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.repository.CoordinateRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.TileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,10 +18,13 @@ public class TileService {
 
 
     private final TileRepository tileRepository;
+    private final CoordinateRepository coordinateRepository;
 
     @Autowired
-    public TileService(@Qualifier("tileRepository") TileRepository tileRepository) {
+    public TileService(@Qualifier("tileRepository") TileRepository tileRepository,
+                       @Qualifier("coordinateRepository") CoordinateRepository coordinateRepository) {
         this.tileRepository = tileRepository;
+        this.coordinateRepository = coordinateRepository;
     }
 
     public Tile createTileWithTopCoordinate(Coordinate top) {
@@ -62,8 +66,19 @@ public class TileService {
         bottom.setY(top.getY() + 3);
         coordinates.add(bottom);
 
+        //Saved coordinates
+        List<Coordinate> savedCoordinates = new ArrayList<>();
+
+        for (Coordinate coordinate : coordinates) {
+
+            Coordinate saved = coordinateRepository.save(coordinate);
+            savedCoordinates.add(saved);
+
+        }
+
         //Add the coordinates to the tile
-        createdTile.setCoordinates(coordinates);
+        createdTile.setCoordinates(savedCoordinates);
+
 
         return tileRepository.saveAndFlush(createdTile);
     }

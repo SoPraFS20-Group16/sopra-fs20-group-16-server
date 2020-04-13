@@ -1,6 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.coordinate;
 
 
+import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -24,8 +26,11 @@ public class Coordinate implements Serializable {
     private int y;
 
     @Size(max = 3)
-    @OneToMany
+    @ManyToMany
     private List<Coordinate> neighbors;
+
+    @ManyToMany
+    private List<Tile> tiles;
 
     public Coordinate() {
         this.neighbors = new ArrayList<>();

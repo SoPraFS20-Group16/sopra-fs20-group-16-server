@@ -13,6 +13,8 @@ import java.util.List;
 @Table(name = "TILE")
 public class Tile implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue
     private Long id;
@@ -24,7 +26,7 @@ public class Tile implements Serializable {
     private TileType type;
 
     @Size(max = 6)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany
     private List<Coordinate> coordinates;
 
     public Tile() {

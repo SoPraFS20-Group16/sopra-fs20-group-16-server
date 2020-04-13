@@ -66,6 +66,7 @@ public class CoordinateRepositoryIntegrationTest {
 
         //Saving the duplicate updates the testCoordinate instead of creating a new one
         coordinateRepository.save(duplicate);
+        coordinateRepository.flush();
 
         List<Coordinate> allCoordinates = coordinateRepository.findAll();
 

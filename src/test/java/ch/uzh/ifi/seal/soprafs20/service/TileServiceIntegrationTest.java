@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.repository.CoordinateRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +25,11 @@ public class TileServiceIntegrationTest {
     @Autowired
     private CoordinateRepository coordinateRepository;
 
+    @BeforeEach
+    public void setup() {
+        coordinateRepository.deleteAll();
+    }
+
     @Test
     public void testCreateTile() {
 
@@ -37,6 +43,14 @@ public class TileServiceIntegrationTest {
         //Test if the coordinates are saved in the coordinateRepository
         List<Coordinate> savedCoordinates = coordinateRepository.findAll();
         assertEquals(6, savedCoordinates.size(), "There should be 6 coordinates in the repository!");
+
+        //Add another tile
+        tileService.createTileWithTopCoordinate(new Coordinate(1, 3));
+
+        savedCoordinates = coordinateRepository.findAll();
+
+        assertEquals(11, savedCoordinates.size(),
+                "The bottom of the first tile and the top of the second tile should be the same coordinate");
     }
 
 }
