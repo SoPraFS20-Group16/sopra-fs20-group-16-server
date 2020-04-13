@@ -48,11 +48,105 @@ public class BoardService {
 
         //AddTiles
 
-        //The new tile
-        Tile newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 0);
+        //The new tiles
+        Tile newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 0));
         newTile.setTileNumber(6);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(5, 0));
+        newTile.setTileNumber(3);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(7, 0));
+        newTile.setTileNumber(8);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(2, 2));
+        newTile.setTileNumber(2);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(4, 2));
+        newTile.setTileNumber(4);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(6, 2));
+        newTile.setTileNumber(5);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(8, 2));
+        newTile.setTileNumber(10);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(1, 4));
+        newTile.setTileNumber(5);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 4));
+        newTile.setTileNumber(9);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        //The desert tile
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(5, 4));
+        newTile.setTileNumber(0);
+        newTile.setType(TileType.DESERT);
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(7, 4));
+        newTile.setTileNumber(11);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(9, 4));
+        newTile.setTileNumber(6);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(2, 6));
+        newTile.setTileNumber(9);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(4, 6));
+        newTile.setTileNumber(10);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(6, 6));
+        newTile.setTileNumber(3);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(8, 6));
+        newTile.setTileNumber(12);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 8));
+        newTile.setTileNumber(8);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(5, 8));
+        newTile.setTileNumber(4);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
+
+        newTile = tileService.createTileWithTopCoordinate(new Coordinate(7, 8));
+        newTile.setTileNumber(11);
+        newTile.setType(necessaryTiles.remove(0));
+        tiles.add(newTile);
 
 
+        board.setTiles(tiles);
         return boardRepository.saveAndFlush(board);
     }
 
@@ -64,11 +158,6 @@ public class BoardService {
     private List<TileType> getTileTypeList() {
 
         List<TileType> typeList = new ArrayList<>();
-
-        //Number of deserts
-        for (int i = 0; i < BoardConstants.NUMBER_OF_DESERTS; i++) {
-            typeList.add(TileType.DESERT);
-        }
 
         //Number of fields
         for (int i = 0; i < BoardConstants.NUMBER_OF_FIELDS; i++) {
