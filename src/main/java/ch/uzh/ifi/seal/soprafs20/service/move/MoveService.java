@@ -1,7 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
@@ -69,15 +71,52 @@ public class MoveService {
      */
     public void performBuildMove(BuildMove buildMove) {
 
-
         //Get the building from the move
         Building building = buildMove.getBuilding();
-
 
         //Find the player that has the move done
         Long playerId = buildMove.getUserId();
 
         //Give the building to the player (save in the correct array)
         playerService.buildAndPay(playerId, building);
+    }
+
+    /**
+     * Performs a CardMove
+     * Is called from the CardMoveHandler
+     *
+     * @param cardMove the Cardmove that is passed from the handler
+     */
+    public void performCardMove(CardMove cardMove) {
+
+        // Get the development card from the move
+        DevelopmentCard developmentCard = cardMove.getDevelopmentCard();
+
+        // Find the player that has done the move
+        Long playerId = cardMove.getUserId();
+
+        // Invoke Card
+        switch (developmentCard.getDevelopmentType()) {
+            case VICTORYPOINT:
+                // TODO: implement functionality
+                playerService.addVictoryPoint(playerId);
+                break;
+            case ROADPROGRESS:
+                // TODO: implement functionality
+                break;
+            case KNIGHT:
+                // TODO: implement functionality
+                break;
+            case PLENTYPROGRESS:
+                // TODO: implement functionality
+                break;
+            case MONOPOLYPROGRESS:
+                // TODO: implement functionality
+                break;
+
+        }
+
+        // Remove development card from player
+        playerService.payDevCard(playerId, developmentCard);
     }
 }

@@ -7,6 +7,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
@@ -114,9 +115,38 @@ public class PlayerService {
         //remove the cards from the players array
         playerOwnedCards.removeAll(cardsToRemove);
 
-
         //set the new player owned resource cards
         player.setResourceCards(playerOwnedCards);
+    }
+
+    public void payDevCard(Long playerId, DevelopmentCard developmentCard) {
+
+        // find player
+        Player player = playerRepository.findByUserId(playerId);
+
+        // get the currently owned development cards from the player
+        List<DevelopmentCard> playerOwnedCards = player.getDevelopmentCards();
+
+        // remove development card
+        playerOwnedCards.remove(developmentCard);
+
+        // set the new player owned development cards
+        player.setDevelopmentCards(playerOwnedCards);
+    }
+
+    public void addVictoryPoint(Long playerId) {
+
+        // find player
+        Player player = playerRepository.findByUserId(playerId);
+
+        // get current victoryPoints
+        int victoryPoints = player.getVictoryPoints();
+
+        // increase victoryPoints
+        victoryPoints += 1;
+
+        // set new victoryPoints
+        player.setVictoryPoints(victoryPoints);
     }
 
 

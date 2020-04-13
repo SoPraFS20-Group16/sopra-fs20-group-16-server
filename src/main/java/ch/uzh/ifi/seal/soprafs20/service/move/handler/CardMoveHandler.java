@@ -1,26 +1,26 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
 /**
- * The Handler for the BuildMove
+ * The handler for the CardMove
  */
-public class BuildMoveHandler implements MoveHandler {
+public class CardMoveHandler implements MoveHandler {
 
     @Override
     public void perform(Move move, MoveService moveService) {
 
-        if (move.getClass() != BuildMove.class) {
+        if (move.getClass() != CardMove.class) {
             throw new IllegalStateException(ErrorMsg.WRONG_HANDLER_SETUP);
         }
 
-        //Cast move
-        BuildMove buildMove = (BuildMove) move;
+        // Cast move
+        CardMove cardMove = (CardMove) move;
 
-        //Pass back to the moveService
-        moveService.performBuildMove(buildMove);
+        // Pass back to the moveService
+        moveService.performCardMove(cardMove);
     }
 }
