@@ -143,7 +143,7 @@ public class BoardService {
         newTile.setType(necessaryTiles.remove(0));
         tiles.add(newTile);
 
-
+        board.setTiles(tiles);
         return boardRepository.saveAndFlush(board);
     }
 
