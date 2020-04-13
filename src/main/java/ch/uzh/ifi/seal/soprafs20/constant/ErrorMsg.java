@@ -17,6 +17,7 @@ public class ErrorMsg {
     public static final String ALREADY_GAME_WITH_NAME = "There is already a game with this Name!";
     public static final String NO_PLAYER_FOUND_WITH_USER_ID = "There was no player with this user id!";
     public static final String UNDEFINED_BUILDING_TYPE = "The building type should be defined!";
+    public static final String WRONG_HANDLER_SETUP = "The Handler seems to be set up wrong!";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

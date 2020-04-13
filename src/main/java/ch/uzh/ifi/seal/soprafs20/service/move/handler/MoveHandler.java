@@ -1,8 +1,17 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
-public abstract class MoveHandler {
+public interface MoveHandler {
 
-    public abstract void perform(Move move);
+    /**
+     * Calls the correct method from the MoveService according to the Move subclass it belongs to.
+     *
+     * @param move    the move
+     * @param service the service
+     */
+    void perform(Move move, MoveService service);
+
 }
+
