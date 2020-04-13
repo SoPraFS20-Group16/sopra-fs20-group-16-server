@@ -5,13 +5,10 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
-import javax.transaction.Transactional;
-
 
 /**
  * The Handler for the BuildMove
  */
-@Transactional
 public class BuildMoveHandler implements MoveHandler {
 
     @Override

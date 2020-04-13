@@ -49,6 +49,7 @@ public class Move implements Serializable {
     }
 
     public MoveHandler getMoveHandler() {
+
         if (this.getClass() != Move.class) {
             throw new IllegalStateException("Implement getMoveHandler for subclass: " + this.getClass().toString());
         }

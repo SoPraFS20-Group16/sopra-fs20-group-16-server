@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.cards;
 
-import ch.uzh.ifi.seal.soprafs20.constant.CardType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 
 import javax.persistence.Column;
@@ -17,9 +16,6 @@ public class ResourceCard extends Card {
     @Column(updatable = false, nullable = false)
     private ResourceType resourceType;
 
-    public ResourceCard() {
-        super.setCardType(CardType.RESOURCE);
-    }
 
     //Getters and setters
     public ResourceType getResourceType() {

@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.cards;
 
-import ch.uzh.ifi.seal.soprafs20.constant.CardType;
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
 
 @Entity
@@ -19,11 +19,6 @@ public class DevelopmentCard extends Card {
     @Column(updatable = false, nullable = false)
     private DevelopmentType developmentType;
 
-
-    public DevelopmentCard() {
-        super.setCardType(CardType.DEVELOPMENT);
-    }
-
     //getters and setters
     public DevelopmentType getDevelopmentType() {
         return developmentType;
@@ -31,6 +26,11 @@ public class DevelopmentCard extends Card {
 
     public void setDevelopmentType(DevelopmentType developmentType) {
         this.developmentType = developmentType;
+    }
+
+    public List<ResourceCard> getPrice() {
+        //TODO: IMPLEMENT getPrice in DEV CARD
+        return null;
     }
 
 
