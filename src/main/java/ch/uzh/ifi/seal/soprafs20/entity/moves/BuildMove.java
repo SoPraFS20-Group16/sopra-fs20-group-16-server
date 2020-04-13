@@ -25,4 +25,8 @@ public class BuildMove extends Move {
     public Building getBuilding() {
         return building;
     }
+
+    public void setBuilding(Building building) {
+        this.building = building;
+    }
 }
