@@ -23,4 +23,8 @@ public class CardMove extends Move {
     public DevelopmentCard getDevelopmentCard() {
         return developmentCard;
     }
+
+    public void setDevelopmentCard(DevelopmentCard developmentCard) {
+        this.developmentCard = developmentCard;
+    }
 }

@@ -59,7 +59,6 @@ public class MoveService {
     //Is performed after performMove terminates
     public void makeRecalculations(Game game) {
 
-        //TODO: Recalculate Victory Points
         playerService.recalculateVictoryPoints(game);
 
         //TODO: Recalculate Possible moves
