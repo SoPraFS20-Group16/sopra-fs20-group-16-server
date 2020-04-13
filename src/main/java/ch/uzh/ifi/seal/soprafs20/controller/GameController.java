@@ -242,7 +242,7 @@ public class GameController {
         moveService.performMove(foundMove);
 
         //Make recalculations
-        moveService.makeRecalculations();
+        moveService.makeRecalculations(foundGame);
     }
 
     /**

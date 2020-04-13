@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
@@ -22,6 +23,7 @@ public class MoveService {
     private final Logger log = LoggerFactory.getLogger(MoveService.class);
 
     private final PlayerService playerService;
+    private final MoveCalculationHelper moveCalculationHelper;
 
     @Autowired
     public MoveService(PlayerService playerService) {
@@ -54,12 +56,13 @@ public class MoveService {
     }
 
     //Is performed after performMove terminates
-    public void makeRecalculations() {
+    public void makeRecalculations(Game game) {
 
         //TODO: Recalculate Vicotory Points
 
 
         //TODO: Recalculate Possible moves
+        moveCalculationHelper.getAllMovesFor(game);
     }
 
 

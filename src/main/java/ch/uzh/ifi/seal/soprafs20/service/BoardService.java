@@ -47,16 +47,10 @@ public class BoardService {
         List<TileType> necessaryTiles = getTileTypeList();
 
         //AddTiles
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
-        tiles.add(tileService.createTileWithTopCoordinate(new Coordinate(3, 0)));
+
+        //The new tile
+        Tile newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 0);
+        newTile.setTileNumber(6);
 
 
         return boardRepository.saveAndFlush(board);

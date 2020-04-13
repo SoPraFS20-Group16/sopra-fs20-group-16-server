@@ -18,6 +18,9 @@ public class Tile implements Serializable {
     private Long id;
 
     @Column
+    private int tileNumber;
+
+    @Column
     private TileType type;
 
     @Size(max = 6)
@@ -51,5 +54,13 @@ public class Tile implements Serializable {
             }
         }
         return false;
+    }
+
+    public int getTileNumber() {
+        return tileNumber;
+    }
+
+    public void setTileNumber(int tileNumber) {
+        this.tileNumber = tileNumber;
     }
 }
