@@ -22,6 +22,9 @@ public class Player implements Serializable {
     @Column(unique = true, nullable = false, updatable = false)
     private Long userId;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private ResourceWallet wallet;
+
     @Column(nullable = false)
     private String username;
 
@@ -98,5 +101,13 @@ public class Player implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public ResourceWallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(ResourceWallet wallet) {
+        this.wallet = wallet;
     }
 }

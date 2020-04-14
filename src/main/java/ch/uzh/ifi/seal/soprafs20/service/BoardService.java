@@ -29,15 +29,18 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final TileService tileService;
     private final GameRepository gameRepository;
+    private final CoordinateService coordinateService;
 
     @Autowired
     public BoardService(@Qualifier("boardRepository") BoardRepository boardRepository,
                         @Qualifier("gameRepository") GameRepository gameRepository,
-                        TileService tileService) {
+                        TileService tileService,
+                        CoordinateService coordinateService) {
 
         this.boardRepository = boardRepository;
         this.tileService = tileService;
         this.gameRepository = gameRepository;
+        this.coordinateService = coordinateService;
     }
 
 
@@ -155,6 +158,7 @@ public class BoardService {
         tiles.add(newTile);
 
         board.setTiles(tiles);
+        coordinateService.calculateNeighbors();
         return boardRepository.saveAndFlush(board);
     }
 
@@ -226,6 +230,5 @@ public class BoardService {
             default:
                 throw new IllegalStateException("Unknown building type not allowed!");
         }
-
     }
 }
