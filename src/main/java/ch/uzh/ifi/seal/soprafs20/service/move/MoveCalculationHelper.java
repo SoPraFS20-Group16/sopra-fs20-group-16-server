@@ -28,7 +28,7 @@ public class MoveCalculationHelper {
         List<Move> possibleMoves = new ArrayList<>();
 
         // find current player
-        Player player = game.findCurrentPlayer();
+        Player player = game.getCurrentPlayer();
 
         // -- calculate all possible build moves --
 

@@ -5,6 +5,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.MoveDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -72,11 +74,15 @@ public interface DTOMapper {
     CoordinateDTO convertCoordinateToCoordinateDTO(Coordinate coordinate);
 
 
+    //Moves and cards are added separately according to requesting user
+    @Mapping(source = "username", target = "username")
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "settlements", target = "settlements")
     @Mapping(source = "cities", target = "cities")
     @Mapping(source = "roads", target = "roads")
-        //TODO: Map the cards in a way only the owner can see the cards!
-        //TODO: Map the moves in a way only the player who is allowed to make the move recieves it!
+    //TODO: Map the cards in a way only the owner can see the cards!
     PlayerDTO convertPlayerToPlayerDTO(Player player);
+
+    @Mapping(source = "userId", target = "userId")
+    MoveDTO convertMoveToMoveDTO(Move move);
 }

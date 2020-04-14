@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
+import ch.uzh.ifi.seal.soprafs20.rest.dto.MoveDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.BoardDTO;
 
 import java.util.List;
@@ -11,6 +12,7 @@ public class GameDTO {
     private List<PlayerDTO> players;
     private boolean withBots;
     private BoardDTO board;
+    private List<MoveDTO> moves;
 
     public Long getGameId() {
         return gameId;
@@ -50,5 +52,13 @@ public class GameDTO {
 
     public void setBoard(BoardDTO board) {
         this.board = board;
+    }
+
+    public List<MoveDTO> getMoves() {
+        return moves;
+    }
+
+    public void setMoves(List<MoveDTO> moves) {
+        this.moves = moves;
     }
 }

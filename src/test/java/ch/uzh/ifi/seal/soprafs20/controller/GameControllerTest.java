@@ -8,6 +8,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,6 +50,9 @@ public class GameControllerTest {
 
     @MockBean
     private MoveService moveService;
+
+    @MockBean
+    private PlayerService playerService;
 
 
     /**

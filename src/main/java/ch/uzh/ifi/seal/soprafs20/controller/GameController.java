@@ -1,16 +1,15 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
-import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import org.springframework.http.HttpHeaders;
@@ -27,11 +26,17 @@ public class GameController {
     private final GameService gameService;
     private final UserService userService;
     private final MoveService moveService;
+    private final PlayerService playerService;
 
-    GameController(GameService gameService, UserService userService, MoveService moveService) {
+    GameController(GameService gameService,
+                   UserService userService,
+                   MoveService moveService,
+                   PlayerService playerService) {
+
         this.gameService = gameService;
         this.userService = userService;
         this.moveService = moveService;
+        this.playerService = playerService;
     }
 
 
@@ -50,11 +55,7 @@ public class GameController {
     public List<GameLinkDTO> getGames(@RequestHeader(name = "Token") String token) {
 
         //Check token for validity
-        if (tokenNotValid(token)) {
-            throw new RestException(HttpStatus.UNAUTHORIZED,
-                    ErrorMsg.TOKEN_INVALID,
-                    ErrorMsg.NOT_LOGGED_IN);
-        }
+        GameControllerHelper.checkToken(userService, token);
 
         //Get list of games from game service
         List<Game> games = gameService.getGames();
@@ -83,11 +84,7 @@ public class GameController {
                                                  @RequestBody GamePostDTO gamePostDTO) {
 
         //Check token for validity
-        if (tokenNotValid(token)) {
-            throw new RestException(HttpStatus.UNAUTHORIZED,
-                    ErrorMsg.TOKEN_INVALID,
-                    ErrorMsg.NOT_LOGGED_IN);
-        }
+        GameControllerHelper.checkToken(userService, token);
 
         // convert API game to internal representation
         Game gameInput = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
@@ -102,13 +99,7 @@ public class GameController {
 
         // create game
         Game createdGame = gameService.createGame(gameInput);
-
-        //if created game is null there was a conflict
-        if (createdGame == null) {
-            throw new RestException(HttpStatus.CONFLICT,
-                    ErrorMsg.GAME_CREATION_CONFLICT,
-                    ErrorMsg.ALREADY_GAME_WITH_NAME);
-        }
+        GameControllerHelper.checkConflict(createdGame);
 
         // add game location to header
         HttpHeaders headers = new HttpHeaders();
@@ -118,6 +109,7 @@ public class GameController {
         //Compose Response
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
+
 
     /**
      * GET /games/:gameId
@@ -137,40 +129,21 @@ public class GameController {
                                  @PathVariable Long gameId) {
 
         //Check token for validity
-        if (tokenNotValid(token)) {
-            throw new RestException(HttpStatus.UNAUTHORIZED,
-                    ErrorMsg.TOKEN_INVALID,
-                    ErrorMsg.NOT_LOGGED_IN);
-        }
+        GameControllerHelper.checkToken(userService, token);
 
-        //find game
-        Game gameInput = new Game();
-        gameInput.setId(gameId);
-
-        Game foundGame = gameService.findGame(gameInput);
-
-        //if game is null then there exists no game with that id
-        if (foundGame == null) {
-            throw new RestException(HttpStatus.NOT_FOUND, ErrorMsg.NO_GAME_WITH_ID,
-                    ErrorMsg.GAME_NOT_EXISTS);
-        }
+        //find game else throw 404
+        Game foundGame = GameControllerHelper.checkIfGameExists(gameService, gameId);
 
         //check if the user is also a player
-        User tempUser = new User();
-        tempUser.setToken(token);
-        User requestingUser = userService.findUser(tempUser);
-
-        //If user is not a player return  403 forbidden
-        if (!gameService.userCanAccessGame(requestingUser, foundGame)) {
-
-            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_PLAYER_IN_GAME,
-                    ErrorMsg.GAME_ACCESS_DENIED);
-        }
+        User requestingUser = GameControllerHelper.checkIfUserIsPlayerElseThrow403(
+                gameService, userService, token, foundGame);
 
         //If user has access return the GameDTO
+        GameDTO gameDTO = DTOMapper.INSTANCE.convertGameToGameDTO(foundGame);
+        GameControllerHelper.addCardsAndMoves(moveService, playerService, requestingUser, gameDTO);
 
-        //TODO: Add the available moves for the player to the game
-        return DTOMapper.INSTANCE.convertGameToGameDTO(foundGame);
+        //Return gameDTO
+        return gameDTO;
     }
 
     @PostMapping("/games/{gameId}")
@@ -181,62 +154,23 @@ public class GameController {
                                  @RequestBody MovePostDTO moveDTO) {
 
         //If user does not possess a valid token return 401
-        if (tokenNotValid(token)) {
-            throw new RestException(HttpStatus.UNAUTHORIZED,
-                    ErrorMsg.TOKEN_INVALID,
-                    ErrorMsg.NOT_LOGGED_IN);
-        }
+        GameControllerHelper.checkToken(userService, token);
 
         //If game does not exists return 404
-        Game gameInput = new Game();
-        gameInput.setId(gameId);
-
-        Game foundGame = gameService.findGame(gameInput);
-
-        //if game is null then there exists no game with that id
-        if (foundGame == null) {
-            throw new RestException(HttpStatus.NOT_FOUND, ErrorMsg.NO_GAME_WITH_ID,
-                    ErrorMsg.GAME_NOT_EXISTS);
-        }
+        Game foundGame = GameControllerHelper.checkIfGameExists(gameService, gameId);
 
 
         //Find move
         Long requestedMoveId = moveDTO.getMoveId();
-        Move foundMove = moveService.findMoveById(requestedMoveId);
-
-        //If move does not exist return 403
-        if (foundMove == null) {
-            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.NO_MOVE_WITH_ID,
-                    ErrorMsg.MOVE_INVALID);
-        }
-
-        //Check if move and game and user build a valid set of instructions
+        Move foundMove = GameControllerHelper.findMoveIfExistsElseThrow403(moveService, requestedMoveId);
 
         //Find the user that made the request
         User userFromToken = new User();
         userFromToken.setToken(token);
         User requestingUser = userService.findUser(userFromToken);
 
-        //If user is not a player of the game return  403 forbidden
-        if (!gameService.userCanAccessGame(requestingUser, foundGame)) {
-
-            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_PLAYER_IN_GAME,
-                    ErrorMsg.GAME_ACCESS_DENIED);
-        }
-
-        //The move is not part of the game that was posted to
-        if (!foundMove.getGameId().equals(foundGame.getId())) {
-
-            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.PATHVARIABLE_NOT_MATCH_ID,
-                    ErrorMsg.MOVE_INVALID);
-        }
-
-        //If the users Id does not match the moves PlayerId return 403
-        if (!requestingUser.getId().equals(foundMove.getUserId())) {
-
-            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_MATCH_PLAYER_ID,
-                    ErrorMsg.NOT_ALLOWED_TO_MAKE_MOVE);
-        }
+        //Check if move and game and user build a valid set of instructions
+        GameControllerHelper.checkIsValidGameMoveUserCombinationElseThrow(gameService, foundGame, foundMove, requestingUser);
 
         //If everything is correct perform the move
         moveService.performMove(foundMove);
@@ -245,21 +179,5 @@ public class GameController {
         moveService.makeRecalculations(foundGame);
     }
 
-    /**
-     * Checks the token for validity
-     * This method helps guard the /games endpoints but does not
-     * differentiate between users!
-     *
-     * @param token the token to be checked
-     * @return returns true if the token is valid, else false
-     */
-    private boolean tokenNotValid(String token) {
-        //Get the logged in user with the token
-        User candidate = new User();
-        candidate.setToken(token);
-        User foundUser = userService.findUser(candidate);
 
-        //If a user is found with that token, then the token is valid
-        return foundUser == null;
-    }
 }

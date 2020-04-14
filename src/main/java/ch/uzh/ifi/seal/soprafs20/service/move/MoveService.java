@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -121,5 +123,10 @@ public class MoveService {
 
         // Remove development card from player
         playerService.payDevCard(playerId, developmentCard);
+    }
+
+    public List<Move> getMovesForPlayerWithUserId(Long userId) {
+        //TODO: Implement functionality
+        return new ArrayList<>();
     }
 }

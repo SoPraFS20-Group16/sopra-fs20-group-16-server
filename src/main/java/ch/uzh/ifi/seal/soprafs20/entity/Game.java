@@ -23,8 +23,11 @@ public class Game implements Serializable {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Player> players;
+
+    @ManyToOne
+    private Player currentPlayer;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Board board;
@@ -120,8 +123,11 @@ public class Game implements Serializable {
         return false;
     }
 
-    public Player findCurrentPlayer() {
-        // TODO: implement functionality
-        return null;
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }

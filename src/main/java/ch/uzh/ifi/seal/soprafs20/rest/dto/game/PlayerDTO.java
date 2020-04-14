@@ -10,6 +10,8 @@ import java.util.List;
 
 public class PlayerDTO {
 
+    private String username;
+
     private Long userId;
 
     private List<Settlement> settlements;
@@ -68,5 +70,13 @@ public class PlayerDTO {
 
     public void setDevelopmentCards(List<DevelopmentCard> developmentCards) {
         this.developmentCards = developmentCards;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

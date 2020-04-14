@@ -182,4 +182,7 @@ public class PlayerService {
 
     }
 
+    public Player findPlayerByUserId(Long id) {
+        return playerRepository.findByUserId(id);
+    }
 }
