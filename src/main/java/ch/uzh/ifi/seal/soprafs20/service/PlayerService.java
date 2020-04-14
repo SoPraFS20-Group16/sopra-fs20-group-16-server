@@ -2,15 +2,12 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,43 +55,24 @@ public class PlayerService {
     }
 
 
-    public Player buildAndPay(Long userId, Building building) {
+    public Player payForBuilding(BuildMove move) {
+
 
         //Find Player
-        Player player = playerRepository.findByUserId(userId);
+        Player player = playerRepository.findByUserId(move.getUserId());
 
         if (player == null) {
             throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
         }
 
         //Pay for the given building
-        payForBuilding(building, player);
-
-        //Add building
-        addBuilding(player, building);
+        payForBuildingWorker(move.getBuilding(), player);
 
         //Save
         return playerRepository.saveAndFlush(player);
     }
 
-    private void addBuilding(Player player, Building building) {
-
-        switch (building.getType()) {
-            case CITY:
-                player.addCity((City) building);
-                break;
-            case ROAD:
-                player.addRoad((Road) building);
-                break;
-            case SETTLEMENT:
-                player.addSettlement((Settlement) building);
-                break;
-            default:
-                throw new IllegalStateException(ErrorMsg.UNDEFINED_BUILDING_TYPE);
-        }
-    }
-
-    private void payForBuilding(Building building, Player player) {
+    private void payForBuildingWorker(Building building, Player player) {
         //Remove resources
         List<ResourceCard> price = building.getPrice();
 
@@ -151,35 +129,17 @@ public class PlayerService {
         player.setVictoryPoints(victoryPoints);
     }
 
-    public void recalculateVictoryPoints(Game game) {
+    public int getPointsFromDevelopmentCards(Player player) {
+        int victoryPoints = 0;
 
-        for (Player player: game.getPlayers()) {
-
-            int victoryPoints = 0;
-
-            // get all victory points earned from settlements
-            for (Building settlement: player.getSettlements()) {
-                int tmp = settlement.getVictoryPoints();
-                victoryPoints += tmp;
+        // get all victory points earned from development cards
+        for (DevelopmentCard card : player.getDevelopmentCards()) {
+            if (card.getDevelopmentType().equals(DevelopmentType.VICTORYPOINT)) {
+                victoryPoints += 1;
             }
-
-            // get all victory points earned from cities
-            for (Building city: player.getCities()) {
-                int tmp = city.getVictoryPoints();
-                victoryPoints += tmp;
-            }
-
-            // get all victory points earned from development cards
-            for (DevelopmentCard card: player.getDevelopmentCards()) {
-                if (card.getDevelopmentType().equals(DevelopmentType.VICTORYPOINT)) {
-                    victoryPoints += 1;
-                }
-            }
-
-            player.setVictoryPoints(victoryPoints);
-
         }
 
+        return victoryPoints;
     }
 
     public Player findPlayerByUserId(Long id) {

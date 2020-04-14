@@ -36,10 +36,15 @@ public class BuildingRepositoryIntegrationTest {
         Road road = new Road();
         road.setCoordinate1(coord);
         road.setCoordinate2(coord2);
+        road.setUserId(1L);
+
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coord);
+        settlement.setUserId(1L);
+
         City city = new City();
         city.setCoordinate(coord);
+        city.setUserId(1L);
 
         entityManager.persist(coord);
         entityManager.persist(road);

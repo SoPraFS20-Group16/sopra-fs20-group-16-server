@@ -77,9 +77,6 @@ public interface DTOMapper {
     //Moves and cards are added separately according to requesting user
     @Mapping(source = "username", target = "username")
     @Mapping(source = "userId", target = "userId")
-    @Mapping(source = "settlements", target = "settlements")
-    @Mapping(source = "cities", target = "cities")
-    @Mapping(source = "roads", target = "roads")
     //TODO: Map the cards in a way only the owner can see the cards!
     PlayerDTO convertPlayerToPlayerDTO(Player player);
 

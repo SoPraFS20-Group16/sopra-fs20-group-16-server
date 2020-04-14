@@ -1,8 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 
@@ -34,15 +31,6 @@ public class Player implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     private List<DevelopmentCard> developmentCards;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Road> roads;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<City> cities;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Settlement> settlements;
-
     @Column
     private int victoryPoints;
 
@@ -52,10 +40,6 @@ public class Player implements Serializable {
         //Set up empty arrays
         resourceCards = new ArrayList<>();
         developmentCards = new ArrayList<>();
-        roads = new ArrayList<>();
-        cities = new ArrayList<>();
-        settlements = new ArrayList<>();
-
     }
 
     //Getter and setters
@@ -90,42 +74,6 @@ public class Player implements Serializable {
 
     public void addDevelopmentCard(DevelopmentCard developmentCard) {
         developmentCards.add(developmentCard);
-    }
-
-    public List<Road> getRoads() {
-        return roads;
-    }
-
-    public void setRoads(List<Road> roads) {
-        this.roads = roads;
-    }
-
-    public void addRoad(Road road) {
-        this.roads.add(road);
-    }
-
-    public List<City> getCities() {
-        return cities;
-    }
-
-    public void setCities(List<City> cities) {
-        this.cities = cities;
-    }
-
-    public void addCity(City city) {
-        cities.add(city);
-    }
-
-    public List<Settlement> getSettlements() {
-        return settlements;
-    }
-
-    public void setSettlements(List<Settlement> settlements) {
-        this.settlements = settlements;
-    }
-
-    public void addSettlement(Settlement settlement) {
-        settlements.add(settlement);
     }
 
     public Long getUserId() {

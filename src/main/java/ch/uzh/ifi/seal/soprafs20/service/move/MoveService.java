@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.service.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 import org.slf4j.Logger;
@@ -26,11 +26,16 @@ public class MoveService {
 
     private final PlayerService playerService;
     private final MoveCalculationHelper moveCalculationHelper;
+    private final BoardService boardService;
 
     @Autowired
-    public MoveService(PlayerService playerService, MoveCalculationHelper moveCalculationHelper) {
+    public MoveService(PlayerService playerService,
+                       MoveCalculationHelper moveCalculationHelper,
+                       BoardService boardService) {
+
         this.playerService = playerService;
         this.moveCalculationHelper = moveCalculationHelper;
+        this.boardService = boardService;
     }
 
 
@@ -61,7 +66,7 @@ public class MoveService {
     //Is performed after performMove terminates
     public void makeRecalculations(Game game) {
 
-        playerService.recalculateVictoryPoints(game);
+        //TODO: Calculate and set Victory Points for all players
 
         //TODO: Recalculate Possible moves
         moveCalculationHelper.getAllMovesFor(game);
@@ -76,14 +81,11 @@ public class MoveService {
      */
     public void performBuildMove(BuildMove buildMove) {
 
-        //Get the building from the move
-        Building building = buildMove.getBuilding();
+        //Player must pay for the building
+        playerService.payForBuilding(buildMove);
 
-        //Find the player that has the move done
-        Long playerId = buildMove.getUserId();
-
-        //Give the building to the player (save in the correct array)
-        playerService.buildAndPay(playerId, building);
+        //Build the building on the board
+        boardService.build(buildMove);
     }
 
     /**

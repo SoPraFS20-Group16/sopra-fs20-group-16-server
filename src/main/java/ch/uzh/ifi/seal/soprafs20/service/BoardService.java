@@ -2,10 +2,17 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BoardConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -13,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,13 +28,16 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final TileService tileService;
+    private final GameRepository gameRepository;
 
     @Autowired
     public BoardService(@Qualifier("boardRepository") BoardRepository boardRepository,
+                        @Qualifier("gameRepository") GameRepository gameRepository,
                         TileService tileService) {
 
         this.boardRepository = boardRepository;
         this.tileService = tileService;
+        this.gameRepository = gameRepository;
     }
 
 
@@ -183,5 +194,38 @@ public class BoardService {
         }
 
         return typeList;
+    }
+
+    public void build(BuildMove move) {
+
+        //Get the building from the move
+        Building building = move.getBuilding();
+
+        //Get the board on which the building is built
+        Optional<Game> gameOptional = gameRepository.findById(move.getGameId());
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException("There should not be a move for a nonexistent game!");
+        }
+
+        Board board = gameOptional.get().getBoard();
+
+        //Add owner information
+        building.setUserId(move.getUserId());
+
+        switch (building.getType()) {
+            case SETTLEMENT:
+                board.addSettlement((Settlement) building);
+                break;
+            case ROAD:
+                board.addRoad((Road) building);
+                break;
+            case CITY:
+                board.addCity((City) building);
+                break;
+            default:
+                throw new IllegalStateException("Unknown building type not allowed!");
+        }
+
     }
 }

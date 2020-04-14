@@ -18,6 +18,9 @@ public abstract class Building implements Serializable {
     @Column(updatable = false, nullable = false)
     private Long id;
 
+    @Column(nullable = false)
+    private Long userId;
+
     @Column(nullable = false, updatable = false)
     private BuildingType type;
 
@@ -34,5 +37,13 @@ public abstract class Building implements Serializable {
 
     public void setType(BuildingType type) {
         this.type = type;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long playerId) {
+        this.userId = playerId;
     }
 }
