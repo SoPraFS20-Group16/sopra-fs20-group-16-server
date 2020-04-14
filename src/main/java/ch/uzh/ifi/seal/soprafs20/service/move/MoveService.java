@@ -25,16 +25,16 @@ public class MoveService {
     private final Logger log = LoggerFactory.getLogger(MoveService.class);
 
     private final PlayerService playerService;
-    private final MoveCalculationHelper moveCalculationHelper;
+    private final MoveCalculator moveCalculator;
     private final BoardService boardService;
 
     @Autowired
     public MoveService(PlayerService playerService,
-                       MoveCalculationHelper moveCalculationHelper,
+                       MoveCalculator moveCalculator,
                        BoardService boardService) {
 
         this.playerService = playerService;
-        this.moveCalculationHelper = moveCalculationHelper;
+        this.moveCalculator = moveCalculator;
         this.boardService = boardService;
     }
 
@@ -69,7 +69,7 @@ public class MoveService {
         //TODO: Calculate and set Victory Points for all players
 
         //TODO: Recalculate Possible moves
-        moveCalculationHelper.getAllMovesFor(game);
+        moveCalculator.getAllMovesFor(game);
     }
 
 

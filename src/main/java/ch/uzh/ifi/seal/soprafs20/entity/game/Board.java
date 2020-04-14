@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.entity.game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -86,5 +87,15 @@ public class Board implements Serializable {
 
     public void addRoad(Road road) {
         this.roads.add(road);
+    }
+
+    public List<Coordinate> getAllCoordinates() {
+        // TODO implement functionality
+        return null;
+    }
+
+    public boolean hasBuildingWithCoordinate(Coordinate coordinate) {
+        // TODO: implement functionality
+        return false;
     }
 }
