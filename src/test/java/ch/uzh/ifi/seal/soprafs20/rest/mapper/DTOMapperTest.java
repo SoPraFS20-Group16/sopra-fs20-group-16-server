@@ -3,20 +3,34 @@ package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
+import ch.uzh.ifi.seal.soprafs20.service.TileService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * DTOMapperTest
  * Tests if the mapping between the internal and the external/API representation works.
  */
+@SpringBootTest
 public class DTOMapperTest {
+
+    @Autowired
+    private TileService tileService;
+
+
     @Test
     public void testCreateUser_fromUserPostDTO_toUser_success() {
         // create UserPostDTO
@@ -109,5 +123,29 @@ public class DTOMapperTest {
                 "The name is not mapped correctly");
         assertEquals(expected.isWithBots(), result.isWithBots(),
                 "the withBot property is not mapped correctly");
+    }
+
+    @Test
+    public void testCoordinateToCoordinateDTO() {
+
+        Coordinate coordinate = new Coordinate(1, 2);
+
+        CoordinateDTO result = DTOMapper.INSTANCE.convertCoordinateToCoordinateDTO(coordinate);
+
+        assertNotNull(result, "The result should not be null");
+        assertEquals(1, result.getX(), "The x coordinate should be 1");
+        assertEquals(2, result.getY(), "The y coordinate should be 2");
+    }
+
+    @Test
+    public void testTileToTileDTO() {
+        Tile tile = tileService.createTileWithTopCoordinate(new Coordinate(1, 2));
+
+        TileDTO result = DTOMapper.INSTANCE.convertTileToTileDTO(tile);
+
+        assertNotNull(result, "Result should not be null!");
+        assertEquals(6, result.getCoordinates().size(), "There should be 6 coordinates!");
+        assertEquals(tile.getTileNumber(), result.getTileNumber(), "The tile number does not match!");
+        assertEquals(tile.getType(), result.getType(), "The TileType should match!");
     }
 }
