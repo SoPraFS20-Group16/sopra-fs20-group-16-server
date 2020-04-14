@@ -98,4 +98,9 @@ public class Board implements Serializable {
         // TODO: implement functionality
         return false;
     }
+
+    public boolean hasRoadWithCoordinates(Coordinate coordinate, Coordinate neighbor) {
+        // TODO: implement functionality
+        return false;
+    }
 }
