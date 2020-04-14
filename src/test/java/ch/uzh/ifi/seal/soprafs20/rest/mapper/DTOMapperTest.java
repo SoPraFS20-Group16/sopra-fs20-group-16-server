@@ -3,8 +3,6 @@ package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -111,22 +109,5 @@ public class DTOMapperTest {
                 "The name is not mapped correctly");
         assertEquals(expected.isWithBots(), result.isWithBots(),
                 "the withBot property is not mapped correctly");
-    }
-
-    @Test
-    public void testMovePostDTOtoEntity() {
-
-        //MovePostDTO instance
-        MovePostDTO movePostDTO = new MovePostDTO();
-        movePostDTO.setMoveId(1L);
-        movePostDTO.setToken("The Users Token");
-
-        //Expected Move object
-        Move expected = new Move();
-        expected.setId(1L);
-
-        //Actual
-        Move result = DTOMapper.INSTANCE.convertMovePostDTOtoEntity(movePostDTO);
-        assertEquals(expected.getId(), result.getId(), "The Id is not mapped correctly");
     }
 }

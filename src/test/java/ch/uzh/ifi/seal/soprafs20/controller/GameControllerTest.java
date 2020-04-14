@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -426,7 +427,7 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
         move.setUserId(12L);
@@ -445,7 +446,7 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -476,7 +477,7 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
         move.setUserId(12L);
@@ -495,7 +496,7 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(null);
@@ -527,7 +528,7 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
         move.setUserId(12L);
@@ -544,7 +545,7 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(null);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
 
         //this mocks the UserService
@@ -577,7 +578,7 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
         move.setUserId(12L);
@@ -596,7 +597,7 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(null);
+        given(moveService.findMoveById(Mockito.any())).willReturn(null);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -628,7 +629,7 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
         move.setUserId(12L);
@@ -647,7 +648,7 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(false);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -679,7 +680,7 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(2L);
         move.setUserId(12L);
@@ -698,7 +699,7 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
@@ -730,7 +731,7 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
         move.setUserId(22L);
@@ -749,7 +750,7 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);

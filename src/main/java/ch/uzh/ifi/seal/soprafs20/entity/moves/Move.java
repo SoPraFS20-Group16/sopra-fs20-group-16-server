@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "MOVE")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Move implements Serializable {
+public abstract class Move implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,11 +48,5 @@ public class Move implements Serializable {
         this.gameId = gameId;
     }
 
-    public MoveHandler getMoveHandler() {
-
-        if (this.getClass() != Move.class) {
-            throw new IllegalStateException("Implement getMoveHandler for subclass: " + this.getClass().toString());
-        }
-        throw new IllegalStateException("Move parent class never has a handler!");
-    }
+    public abstract MoveHandler getMoveHandler();
 }

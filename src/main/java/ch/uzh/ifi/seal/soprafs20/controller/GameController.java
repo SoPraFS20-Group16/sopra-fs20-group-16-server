@@ -178,7 +178,7 @@ public class GameController {
     @ResponseBody
     public void postToGameWithId(@RequestHeader(name = "Token") String token,
                                  @PathVariable Long gameId,
-                                 @RequestBody MovePostDTO move) {
+                                 @RequestBody MovePostDTO moveDTO) {
 
         //If user does not possess a valid token return 401
         if (tokenNotValid(token)) {
@@ -201,8 +201,8 @@ public class GameController {
 
 
         //Find move
-        Move requestedMove = DTOMapper.INSTANCE.convertMovePostDTOtoEntity(move);
-        Move foundMove = moveService.findMove(requestedMove);
+        Long requestedMoveId = moveDTO.getMoveId();
+        Move foundMove = moveService.findMoveById(requestedMoveId);
 
         //If move does not exist return 403
         if (foundMove == null) {

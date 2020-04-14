@@ -35,12 +35,12 @@ public class MoveService {
     /**
      * Gets the passed Move from the moveRepository
      *
-     * @param move the move
+     * @param moveId the moveId
      * @return the move
      */
-    public Move findMove(Move move) {
+    public Move findMoveById(Long moveId) {
         //TODO: Implement findMove method in MoveService
-        //If no move matches a given primary key return null
+        //If no move matches the move id return null
         return null;
     }
 

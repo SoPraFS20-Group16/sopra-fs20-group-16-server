@@ -2,8 +2,6 @@ package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -56,8 +54,4 @@ public interface DTOMapper {
         //Warnings are generated if a property is unmapped
         //If it should not be revealed, ignore it individually!
     GameDTO convertGameToGameDTO(Game game);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "moveId", target = "id")
-    Move convertMovePostDTOtoEntity(MovePostDTO move);
 }

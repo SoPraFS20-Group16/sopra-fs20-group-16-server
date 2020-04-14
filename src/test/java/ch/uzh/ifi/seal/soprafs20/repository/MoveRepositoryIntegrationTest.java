@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.repository;
 
 
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class MoveRepositoryIntegrationTest {
     @Test
     public void findById_success() {
         // given
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setUserId(12L);
 
 
