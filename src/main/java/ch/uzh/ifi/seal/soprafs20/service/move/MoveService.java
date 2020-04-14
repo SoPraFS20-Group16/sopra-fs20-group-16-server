@@ -69,7 +69,6 @@ public class MoveService {
         //TODO: Calculate and set Victory Points for all players
 
         //TODO: Recalculate Possible moves
-        moveCalculator.getAllMovesFor(game);
     }
 
 

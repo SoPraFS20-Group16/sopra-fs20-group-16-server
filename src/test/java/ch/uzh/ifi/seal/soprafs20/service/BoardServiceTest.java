@@ -29,11 +29,15 @@ public class BoardServiceTest {
     private TileRepository tileRepository;
 
     @Mock
+    private CoordinateService coordinateService;
+
+    @Mock
     private CoordinateRepository coordinateRepository;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        ReflectionTestUtils.setField(boardService, "coordinateService", coordinateService);
         ReflectionTestUtils.setField(tileService, "coordinateRepository", coordinateRepository);
         ReflectionTestUtils.setField(tileService, "tileRepository", tileRepository);
         ReflectionTestUtils.setField(boardService, "tileService", tileService);
