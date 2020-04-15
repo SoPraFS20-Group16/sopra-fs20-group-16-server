@@ -44,6 +44,8 @@ public class MoveCalculator {
             return new ArrayList<>();
         }
 
+        // - calculate all possible road building moves connecting to another road -
+
         // get all roads from user
         List<Road> roads = MoveCalculatorHelper.getRoadsOfPlayer(player, board);
 
@@ -70,6 +72,32 @@ public class MoveCalculator {
                     BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
                     possibleMoves.add(move);
                 }
+        }
+
+        // - calculate all possible road building moves connecting to settlement/city -
+
+        for (Settlement settlement: board.getSettlements()) {
+            if (settlement.getUserId().equals(player.getUserId())) {
+                Coordinate settlementCoordinate =  settlement.getCoordinate();
+                for (Coordinate neighbor: settlementCoordinate.getNeighbors()) {
+                    if (!board.hasRoadWithCoordinates(settlementCoordinate, neighbor)) {
+                        BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, settlementCoordinate, neighbor);
+                        possibleMoves.add(move);
+                    }
+                }
+            }
+        }
+
+        for (City city: board.getCities()) {
+            if (city.getUserId().equals(player.getUserId())) {
+                Coordinate cityCoordinate = city.getCoordinate();
+                for (Coordinate neighbor: cityCoordinate.getNeighbors()) {
+                    if (!board.hasRoadWithCoordinates(cityCoordinate, neighbor)) {
+                        BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, cityCoordinate, neighbor);
+                        possibleMoves.add(move);
+                    }
+                }
+            }
         }
 
         return possibleMoves;
