@@ -1,11 +1,10 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -28,7 +27,7 @@ public abstract class Building implements Serializable {
     //Abstract methods
     public abstract int getVictoryPoints();
 
-    public abstract List<ResourceCard> getPrice();
+    public abstract ResourceWallet getPrice();
 
     //Shared Methods
     public BuildingType getType() {

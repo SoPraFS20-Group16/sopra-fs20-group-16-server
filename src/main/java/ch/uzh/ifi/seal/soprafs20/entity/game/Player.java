@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,9 +28,6 @@ public class Player implements Serializable {
     private String username;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<ResourceCard> resourceCards;
-
-    @OneToMany(cascade = CascadeType.ALL)
     private List<DevelopmentCard> developmentCards;
 
     @Column
@@ -41,7 +37,7 @@ public class Player implements Serializable {
     public Player() {
 
         //Set up empty arrays
-        resourceCards = new ArrayList<>();
+        wallet = new ResourceWallet();
         developmentCards = new ArrayList<>();
     }
 
@@ -53,18 +49,6 @@ public class Player implements Serializable {
 
     public void setVictoryPoints(int victoryPoints) {
         this.victoryPoints = victoryPoints;
-    }
-
-    public List<ResourceCard> getResourceCards() {
-        return resourceCards;
-    }
-
-    public void setResourceCards(List<ResourceCard> cards) {
-        this.resourceCards = cards;
-    }
-
-    public void addResourceCard(ResourceCard resourceCard) {
-        resourceCards.add(resourceCard);
     }
 
     public List<DevelopmentCard> getDevelopmentCards() {

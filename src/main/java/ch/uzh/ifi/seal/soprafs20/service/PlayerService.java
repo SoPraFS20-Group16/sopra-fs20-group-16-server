@@ -2,11 +2,12 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -73,30 +73,17 @@ public class PlayerService {
     }
 
     private void payForBuildingWorker(Building building, Player player) {
-        //Remove resources
-        List<ResourceCard> price = building.getPrice();
 
-        //Collect the cards that will be taken from the player
-        List<ResourceCard> cardsToRemove = new ArrayList<>();
+        //Get building price
+        ResourceWallet price = building.getPrice();
 
-        //The cards the player currently owns
-        List<ResourceCard> playerOwnedCards = player.getResourceCards();
+        //Get players funds
+        ResourceWallet funds = player.getWallet();
 
-        //Find the cards to remove from the players array
-        for (ResourceCard card : price) {
-            for (ResourceCard playerOwnedCard : playerOwnedCards) {
-
-                if (card.getResourceType().equals(playerOwnedCard.getResourceType())) {
-                    cardsToRemove.add(playerOwnedCard);
-                }
-            }
+        //Remove all the resources required to complete payment
+        for (ResourceType type : price.getAllTypes()) {
+            funds.removeResource(type, price.getResourceAmount(type));
         }
-
-        //remove the cards from the players array
-        playerOwnedCards.removeAll(cardsToRemove);
-
-        //set the new player owned resource cards
-        player.setResourceCards(playerOwnedCards);
     }
 
     public void payDevCard(Long playerId, DevelopmentCard developmentCard) {

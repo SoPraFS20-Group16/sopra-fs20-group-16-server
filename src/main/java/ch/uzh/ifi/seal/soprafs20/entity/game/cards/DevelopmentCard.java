@@ -2,12 +2,11 @@ package ch.uzh.ifi.seal.soprafs20.entity.game.cards;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
@@ -30,36 +29,19 @@ public class DevelopmentCard extends Card {
         this.developmentType = developmentType;
     }
 
-    public List<ResourceCard> getPrice() {
-
-        // create list for needed resource cards to pay for a development card
-        List<ResourceCard> price = new ArrayList<>();
+    public ResourceWallet getPrice() {
 
         // establish amount of resources
         int oreRequired = 1;
         int grainRequired = 1;
         int woolRequired = 1;
 
-        // create resource card instances and add them to price list
-        for(int i = 0; i <= oreRequired; i++) {
-            ResourceCard ore = new ResourceCard();
-            ore.setResourceType(ResourceType.ORE);
-            price.add(ore);
-        }
+        //Create new Wallet
+        ResourceWallet price = new ResourceWallet();
+        price.addResource(ResourceType.ORE, oreRequired);
+        price.addResource(ResourceType.GRAIN, grainRequired);
+        price.addResource(ResourceType.WOOL, woolRequired);
 
-        for(int i = 0; i <= grainRequired; i++) {
-            ResourceCard grain = new ResourceCard();
-            grain.setResourceType(ResourceType.GRAIN);
-            price.add(grain);
-        }
-
-        for(int i = 0; i <= woolRequired; i++) {
-            ResourceCard wool = new ResourceCard();
-            wool.setResourceType(ResourceType.WOOL);
-            price.add(wool);
-        }
-
-        // return the list
         return price;
     }
 

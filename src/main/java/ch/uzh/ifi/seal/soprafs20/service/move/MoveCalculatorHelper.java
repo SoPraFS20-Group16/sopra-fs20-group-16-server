@@ -1,13 +1,15 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
@@ -17,64 +19,40 @@ import java.util.List;
 
 public class MoveCalculatorHelper {
 
+    private MoveCalculatorHelper() {
+        throw new IllegalStateException("Helper class should not be initializes!");
+    }
+
+    static boolean canAffordBuilding(Player player, Building building) {
+
+        //get the building price
+        ResourceWallet price = building.getPrice();
+
+        //get the players funds
+        ResourceWallet funds = player.getWallet();
+
+        //Check for every resource required if the player has enough
+        for (ResourceType type : price.getAllTypes()) {
+            if (price.getResourceAmount(type) > funds.getResourceAmount(type)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     static boolean canAffordRoad(Player player) {
-
-        boolean canAfford = false;
-
         Road road = new Road();
-        List<ResourceCard> price = road.getPrice();
-        List<ResourceCard> available = player.getResourceCards();
-
-        if (price.size() > available.size()) {
-            return false;
-        }
-
-        // TODO: add working functionality
-        if (available.containsAll(price)) {
-            canAfford = true;
-        }
-
-        return canAfford;
+        return canAffordBuilding(player, road);
     }
 
     static boolean canAffordSettlement(Player player) {
-
-        boolean canAfford = false;
-
         Settlement settlement = new Settlement();
-        List<ResourceCard> price = settlement.getPrice();
-        List<ResourceCard> available = player.getResourceCards();
-
-        if (price.size() > available.size()) {
-            return false;
-        }
-
-        // TODO: add working functionality
-        if (available.containsAll(price)) {
-            canAfford = true;
-        }
-
-        return canAfford;
+        return canAffordBuilding(player, settlement);
     }
 
     static boolean canAffordCity(Player player) {
-
-        boolean canAfford = false;
-
         City city = new City();
-        List<ResourceCard> price = city.getPrice();
-        List<ResourceCard> available = player.getResourceCards();
-
-        if (price.size() > available.size()) {
-            return false;
-        }
-
-        // TODO: add working functionality
-        if (available.containsAll(price)) {
-            canAfford = true;
-        }
-
-        return canAfford;
+        return canAffordBuilding(player, city);
     }
 
     static BuildMove createRoadMove(Game game, Player player, Coordinate coordinate, Coordinate neighbor) {
@@ -194,5 +172,4 @@ public class MoveCalculatorHelper {
         }
         return cities;
     }
-
 }

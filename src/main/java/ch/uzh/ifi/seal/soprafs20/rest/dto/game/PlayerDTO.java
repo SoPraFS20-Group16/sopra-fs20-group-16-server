@@ -1,7 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.ResourceCard;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class PlayerDTO {
 
     private Long userId;
 
-    private List<ResourceCard> resourceCards;
+    private ResourceWallet wallet;
 
     private List<DevelopmentCard> developmentCards;
 
@@ -23,12 +23,12 @@ public class PlayerDTO {
         this.userId = userId;
     }
 
-    public List<ResourceCard> getResourceCards() {
-        return resourceCards;
+    public ResourceWallet getWallet() {
+        return wallet;
     }
 
-    public void setResourceCards(List<ResourceCard> resourceCards) {
-        this.resourceCards = resourceCards;
+    public void setWallet(ResourceWallet wallet) {
+        this.wallet = wallet;
     }
 
     public List<DevelopmentCard> getDevelopmentCards() {

@@ -5,12 +5,15 @@ import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
 @Table(name = "RESOURCE_WALLET")
-public class ResourceWallet {
+public class ResourceWallet implements Serializable {
 
     @Id
     @GeneratedValue
@@ -41,5 +44,9 @@ public class ResourceWallet {
         if (currentAmount < 0) {
             throw new IllegalStateException(ErrorMsg.NO_NEGATIVE_RESOURCES);
         }
+    }
+
+    public List<ResourceType> getAllTypes() {
+        return new ArrayList<>(resources.keySet());
     }
 }
