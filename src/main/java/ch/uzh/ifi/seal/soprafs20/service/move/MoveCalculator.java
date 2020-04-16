@@ -76,26 +76,24 @@ public class MoveCalculator {
 
         // - calculate all possible road building moves connecting to settlement/city -
 
-        for (Settlement settlement: board.getSettlements()) {
-            if (settlement.getUserId().equals(player.getUserId())) {
-                Coordinate settlementCoordinate =  settlement.getCoordinate();
-                for (Coordinate neighbor: settlementCoordinate.getNeighbors()) {
-                    if (!board.hasRoadWithCoordinates(settlementCoordinate, neighbor)) {
-                        BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, settlementCoordinate, neighbor);
-                        possibleMoves.add(move);
-                    }
+        List<Settlement> settlements = MoveCalculatorHelper.getSettlementsOfPlayer(player, board);
+        for (Settlement settlement: settlements) {
+            Coordinate coordinate = settlement.getCoordinate();
+            for (Coordinate neighbor: coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
                 }
             }
         }
 
-        for (City city: board.getCities()) {
-            if (city.getUserId().equals(player.getUserId())) {
-                Coordinate cityCoordinate = city.getCoordinate();
-                for (Coordinate neighbor: cityCoordinate.getNeighbors()) {
-                    if (!board.hasRoadWithCoordinates(cityCoordinate, neighbor)) {
-                        BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, cityCoordinate, neighbor);
-                        possibleMoves.add(move);
-                    }
+        List<City> cities = MoveCalculatorHelper.getCitiesOfPlayer(player, board);
+        for (City city: cities) {
+            Coordinate coordinate = city.getCoordinate();
+            for (Coordinate neighbor: coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
                 }
             }
         }
@@ -210,4 +208,9 @@ public class MoveCalculator {
         }
         return possibleMoves;
     }
+
+    private MoveCalculator() {
+        throw new IllegalStateException("MoveCalculator class should not be initialized!");
+    }
+
 }

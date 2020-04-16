@@ -142,11 +142,18 @@ public class UserService {
     }
 
 
-    public void logoutUser(User userToBeLoggedOut) {
+    public User logoutUser(User userToBeLoggedOut) {
+
         // find user by its username
         User userByUsername = userRepository.findByUsername(userToBeLoggedOut.getUsername());
 
+        if (userByUsername == null) {
+            return null;
+        }
+
         // set status accordingly
         userByUsername.setStatus(UserStatus.OFFLINE);
+
+        return userByUsername;
     }
 }

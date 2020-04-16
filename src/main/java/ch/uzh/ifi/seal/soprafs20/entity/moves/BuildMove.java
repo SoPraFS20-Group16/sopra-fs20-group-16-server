@@ -15,12 +15,10 @@ public class BuildMove extends Move {
     @OneToOne
     private Building building; //Has the coordinates set already
 
-
     @Override
     public MoveHandler getMoveHandler() {
         return new BuildMoveHandler();
     }
-
 
     public Building getBuilding() {
         return building;

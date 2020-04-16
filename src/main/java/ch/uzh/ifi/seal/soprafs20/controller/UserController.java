@@ -34,8 +34,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    //TODO: Update all endpoint behaviors (are only mocked in unit test)
-
     /**
      * GET /users
      *
@@ -122,7 +120,7 @@ public class UserController {
      *
      *
      * @param userPostDTO the user post dto
-     * @return TODO: Make return conform to the API specification and write tests
+     * @return token of the logged in user
      */
     @PutMapping("/login")
     @ResponseStatus(HttpStatus.OK)
@@ -149,7 +147,11 @@ public class UserController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
         // logout user
-        userService.logoutUser(userInput);
+        User loggedOutUser = userService.logoutUser(userInput);
+
+        if (loggedOutUser == null) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
+        }
 
         return new ResponseEntity(HttpStatus.OK);
     }
