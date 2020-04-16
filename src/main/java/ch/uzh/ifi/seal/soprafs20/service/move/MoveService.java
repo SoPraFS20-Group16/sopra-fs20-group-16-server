@@ -2,9 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service.move;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.service.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
@@ -71,10 +69,80 @@ public class MoveService {
         //TODO: Recalculate Possible moves
     }
 
+    /**
+     * Performs a DiceMove
+     * Is called from the DiceMoveHandler
+     *
+     * imitates dice roll and distributes resources to designated players
+     *
+     * @param diceMove the DiceMove that is passed to the handler
+     */
+    public void performDiceMove(DiceMove diceMove) {
+
+        // TODO: implement functionality
+
+        // roll dice
+        int max = 13; // exclusive
+        int min = 2; // inclusive
+
+        int diceRoll = (int) Math.random() * (max - min + 1) + min;
+
+        // get tile(s) with rolled number
+
+        // get resource type form tile(s)
+
+        // get buildings from tile(s)
+
+        // update wallet from every player with building
+    }
+
+    /**
+     * Performs a PassMove
+     * Is called from the PassMoveHandler
+     *
+     * will set the next player to the current player (current player passes to make another move)
+     *
+     * @param passMove the PassMove that is passed from the handler
+     */
+    public void performPassMove(PassMove passMove) {
+
+        // TODO: implement functionality
+    }
+
+    /**
+     * Performs a TradeMove
+     * Is called from the TradeMoveHandler
+     *
+     * the player can trade resources to get a development card or a designated resource
+     *
+     * @param tradeMove the TradeMove that is passed from the handler
+     */
+    public void performTradeMove(TradeMove tradeMove) {
+
+        // get wished development card
+        DevelopmentCard card = tradeMove.getDevelopmentCard();
+
+        if (card != null) {
+            // player must pay for the development card
+            playerService.payForDevelopmentCard(tradeMove);
+
+            // add the development card to the player
+            playerService.addDevelopmentCard(tradeMove);
+
+        } else {
+            // player must pay for needed resourceType
+            playerService.payForResource(tradeMove);
+
+            // new resource gets added to the players wallet
+            playerService.addResource(tradeMove);
+        }
+    }
 
     /**
      * Performs a BuildMove
      * Is called from the BuildMoveHandler
+     *
+     * the player pays for and builds a building (road, settlement or city)
      *
      * @param buildMove the BuildMove that is passed from the handler
      */
@@ -91,6 +159,8 @@ public class MoveService {
      * Performs a CardMove
      * Is called from the CardMoveHandler
      *
+     * the player invokes a development card and the card gets removed from the player
+     *
      * @param cardMove the Cardmove that is passed from the handler
      */
     public void performCardMove(CardMove cardMove) {
@@ -102,22 +172,15 @@ public class MoveService {
         Long playerId = cardMove.getUserId();
 
         // Invoke Card
+        // TODO: implement functionality
         switch (developmentCard.getDevelopmentType()) {
             case VICTORYPOINT:
-                // TODO: implement functionality
-                playerService.addVictoryPoint(playerId);
+                //playerService.addVictoryPoint(playerId);
                 break;
             case ROADPROGRESS:
-                // TODO: implement functionality
-                break;
             case KNIGHT:
-                // TODO: implement functionality
-                break;
             case PLENTYPROGRESS:
-                // TODO: implement functionality
-                break;
             case MONOPOLYPROGRESS:
-                // TODO: implement functionality
                 break;
 
         }

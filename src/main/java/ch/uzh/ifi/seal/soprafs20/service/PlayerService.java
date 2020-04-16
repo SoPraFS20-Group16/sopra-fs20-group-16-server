@@ -9,6 +9,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,94 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
+    public Player payForDevelopmentCard(TradeMove move) {
+
+        // find player
+        Player player = playerRepository.findByUserId(move.getUserId());
+
+        if (player == null) {
+            throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
+        }
+
+        // pay for developmentCard
+        ResourceWallet price = move.getDevelopmentCard().getPrice();
+        ResourceWallet funds = player.getWallet();
+
+        for (ResourceType type: price.getAllTypes()) {
+            funds.removeResource(type, price.getResourceAmount(type));
+        }
+
+        player.setWallet(funds);
+
+        // save player
+        return playerRepository.saveAndFlush(player);
+    }
+
+    public Player addDevelopmentCard(TradeMove move) {
+
+        // find player
+        Player player = playerRepository.findByUserId(move.getUserId());
+
+        if (player == null) {
+            throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
+        }
+
+        // add DevelopmentCard
+        player.addDevelopmentCard(move.getDevelopmentCard());
+
+        return playerRepository.saveAndFlush(player);
+
+    }
+
+    public Player payForResource(TradeMove move) {
+
+        //Find Player
+        Player player = playerRepository.findByUserId(move.getUserId());
+
+        if (player == null) {
+            throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
+        }
+
+        // pay for resource
+        ResourceWallet funds = player.getWallet();
+        ResourceType type = move.getNeededType();
+
+        // TODO: maybe ratio initiate somewhere else (more general)
+        int tradeRatio = 4;
+
+        funds.removeResource(type, tradeRatio);
+
+        player.setWallet(funds);
+
+        return playerRepository.saveAndFlush(player);
+    }
+
+    public Player addResource(TradeMove move) {
+
+        //Find Player
+        Player player = playerRepository.findByUserId(move.getUserId());
+
+        if (player == null) {
+            throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
+        }
+
+        // get traded resourceType
+        ResourceType type = move.getNeededType();
+        ResourceWallet funds = player.getWallet();
+
+        // TODO: maybe initialize somewhere else (more general)
+        int tradeRatio = 1;
+
+        // add resource to players wallet
+
+        funds.addResource(type, tradeRatio);
+
+        player.setWallet(funds);
+
+        return playerRepository.saveAndFlush(player);
+    }
 
     public Player payForBuilding(BuildMove move) {
-
 
         //Find Player
         Player player = playerRepository.findByUserId(move.getUserId());
@@ -84,6 +170,9 @@ public class PlayerService {
         for (ResourceType type : price.getAllTypes()) {
             funds.removeResource(type, price.getResourceAmount(type));
         }
+
+        // TODO: necessary?
+        player.setWallet(funds);
     }
 
     public void payDevCard(Long playerId, DevelopmentCard developmentCard) {

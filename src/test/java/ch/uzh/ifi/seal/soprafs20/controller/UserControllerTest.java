@@ -261,8 +261,13 @@ public class UserControllerTest {
     @Test
     public void logoutUser_success() throws Exception {
 
+        User user = new User();
+        user.setUsername("firstname@lastname");
+
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("testUser");
+
+        given(userService.logoutUser(Mockito.any())).willReturn(user);
 
         MockHttpServletRequestBuilder putRequest = put("/logout")
                 .contentType(MediaType.APPLICATION_JSON)
