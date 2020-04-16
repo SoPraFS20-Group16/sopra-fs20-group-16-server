@@ -8,7 +8,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "BOARD")
@@ -90,17 +92,50 @@ public class Board implements Serializable {
     }
 
     public List<Coordinate> getAllCoordinates() {
-        // TODO implement functionality
-        return null;
+
+        //Coordinate Set (no duplicates) - board has 54 coordinates
+        Set<Coordinate> coordinateSet = new HashSet<>(54);
+
+        //Add all coordinates
+        for (Tile tile : tiles) {
+            coordinateSet.addAll(tile.getCoordinates());
+        }
+
+        //Transform set to array
+        return new ArrayList<>(coordinateSet);
     }
 
     public boolean hasBuildingWithCoordinate(Coordinate coordinate) {
-        // TODO: implement functionality
+        //Check cities
+        for (City city : cities) {
+            if (city.getCoordinate().equals(coordinate)) {
+                return true;
+            }
+        }
+
+        //Check settlements
+        for (Settlement settlement : settlements) {
+            if (settlement.getCoordinate().equals(coordinate)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
     public boolean hasRoadWithCoordinates(Coordinate coordinate, Coordinate neighbor) {
-        // TODO: implement functionality
+
+        for (Road road : roads) {
+
+            //Check if road has first coordinate
+            if (road.getCoordinate1().equals(coordinate) || road.getCoordinate2().equals(coordinate)) {
+
+                //If road has first coordinate, check if it also has second
+                if (road.getCoordinate1().equals(neighbor) || road.getCoordinate2().equals(neighbor)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }
