@@ -222,16 +222,21 @@ public class PlayerService {
         return playerRepository.findByUserId(id);
     }
 
-    public void updateWallet(List<Long> playerIDs, List<ResourceType> resourceTypes) {
+    public void updateWallet(List<Long> playerIDs, ResourceType resourceType, int buildingFactor) {
+
+        if (playerIDs == null) {
+            return;
+        }
 
         for (Long playerID: playerIDs) {
+            // get wallet of player with playerID
             Player player = playerRepository.findByUserId(playerID);
             ResourceWallet funds = player.getWallet();
 
-            for (ResourceType type: resourceTypes) {
-                funds.addResource(type, 1);
-            }
+            // update funds with resources (settlement +1, city +2)
+            funds.addResource(resourceType, buildingFactor);
 
+            // set funds
             player.setWallet(funds);
         }
 

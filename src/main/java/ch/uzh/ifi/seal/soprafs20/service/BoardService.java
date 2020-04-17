@@ -257,7 +257,7 @@ public class BoardService {
         return tiles;
     }
 
-    public List<Building> getBuildingsOnTile(DiceMove diceMove, List<Tile> tiles) {
+    public List<Building> getBuildingsOnTile(DiceMove diceMove, Tile tile) {
 
         //Get the board on which the building is built
         Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
@@ -269,15 +269,9 @@ public class BoardService {
         Board board = gameOptional.get().getBoard();
 
         // get all valid coordinates
-        List<Coordinate> coordinates = new ArrayList<>();
+        List<Coordinate> coordinates = tile.getCoordinates();
 
-        for (Tile tile: tiles) {
-            for (Coordinate coordinate: tile.getCoordinates()) {
-                coordinates.add(coordinate);
-            }
-        }
-
-        // get all buildings on corresponding Tiles
+        // get all buildings on corresponding tile
         List<Building> buildings = new ArrayList<>();
 
         for (Settlement settlement: board.getSettlements()) {
@@ -311,6 +305,58 @@ public class BoardService {
 
         for (Building building: buildings) {
             playerIDs.add(building.getUserId());
+        }
+
+        return playerIDs;
+    }
+
+    public List<Long> getPlayerIDsWithSettlement(DiceMove diceMove, Tile tile) {
+
+        //Get the board on which the building is built
+        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException("There should not be a move for a nonexistent game!");
+        }
+
+        Board board = gameOptional.get().getBoard();
+
+        // get all valid coordinates
+        List<Coordinate> coordinates = tile.getCoordinates();
+
+        // get all IDs of settlement owners
+        List<Long> playerIDs = new ArrayList<>();
+
+        for (Settlement settlement: board.getSettlements()) {
+            if (coordinates.contains(settlement.getCoordinate())) {
+                playerIDs.add(settlement.getUserId());
+            }
+        }
+
+        return playerIDs;
+    }
+
+    public List<Long> getPlayerIDsWithCity(DiceMove diceMove, Tile tile) {
+
+        //Get the board on which the building is built
+        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException("There should not be a move for a nonexistent game!");
+        }
+
+        Board board = gameOptional.get().getBoard();
+
+        // get all valid coordinates
+        List<Coordinate> coordinates = tile.getCoordinates();
+
+        // get all IDs of settlement owners
+        List<Long> playerIDs = new ArrayList<>();
+
+        for (City city: board.getCities()) {
+            if (coordinates.contains(city.getCoordinate())) {
+                playerIDs.add(city.getUserId());
+            }
         }
 
         return playerIDs;

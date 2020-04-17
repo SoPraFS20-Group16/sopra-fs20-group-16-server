@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.repository.CoordinateRepository;
@@ -83,4 +85,31 @@ public class TileService {
         return tileRepository.saveAndFlush(createdTile);
     }
 
+    public ResourceType convertToResource(TileType tileType) {
+
+        ResourceType resourceType;
+
+        switch (tileType) {
+            case HILL:
+                resourceType = ResourceType.BRICK;
+                break;
+            case FIELD:
+                resourceType = ResourceType.GRAIN;
+                break;
+            case FOREST:
+                resourceType = ResourceType.LUMBER;
+                break;
+            case MOUNTAIN:
+                resourceType = ResourceType.ORE;
+                break;
+            case PASTURE:
+                resourceType = ResourceType.WOOL;
+                break;
+            default:
+                throw new IllegalStateException("Unknown tile type not allowed!");
+        }
+
+        return resourceType;
+
+    }
 }
