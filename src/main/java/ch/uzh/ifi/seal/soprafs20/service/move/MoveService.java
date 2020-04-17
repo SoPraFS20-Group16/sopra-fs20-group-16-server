@@ -86,11 +86,17 @@ public class MoveService {
      */
     public void performDiceMove(DiceMove diceMove) {
 
-        // roll dice
-        int max = 13; // exclusive
-        int min = 2; // inclusive
+        // roll dice1 & dice2
+        int min = 1;    // inclusive
+        int max = 7;    // exclusive
 
-        int diceRoll = (int) Math.random() * (max - min + 1) + min;
+        int dice1;
+        int dice2;
+
+        dice1 = (int) Math.random() * (max - min + 1) + min;
+        dice2 = (int) Math.random() * (max - min + 1) + min;
+
+        int diceRoll = dice1 + dice2;
 
         // get tile(s) with rolled number
         List<Tile> tiles = boardService.getTiles(diceMove, diceRoll);
