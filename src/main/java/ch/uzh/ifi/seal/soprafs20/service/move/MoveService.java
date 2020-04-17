@@ -1,6 +1,10 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.service.BoardService;
@@ -79,7 +83,8 @@ public class MoveService {
      */
     public void performDiceMove(DiceMove diceMove) {
 
-        // TODO: implement functionality
+        // TODO: REFACTOR!!
+        // TODO: add logic so that city = 2 resources
 
         // roll dice
         int max = 13; // exclusive
@@ -88,12 +93,46 @@ public class MoveService {
         int diceRoll = (int) Math.random() * (max - min + 1) + min;
 
         // get tile(s) with rolled number
+        List<Tile> tiles = boardService.getTiles(diceMove, diceRoll);
 
-        // get resource type form tile(s)
+        // get tile type(s) from tile(s)
+        List<TileType> tileTypes = new ArrayList<>();
+
+        for (Tile tile: tiles) {
+            tileTypes.add(tile.getType());
+        }
+
+        // convert into resource types
+        List<ResourceType> resourceTypes = new ArrayList<>();
+
+        for (TileType tileType: tileTypes) {
+            switch (tileType) {
+                case HILL:
+                    resourceTypes.add(ResourceType.BRICK);
+                    break;
+                case FIELD:
+                    resourceTypes.add(ResourceType.GRAIN);
+                    break;
+                case FOREST:
+                    resourceTypes.add(ResourceType.LUMBER);
+                    break;
+                case MOUNTAIN:
+                    resourceTypes.add(ResourceType.ORE);
+                    break;
+                case PASTURE:
+                    resourceTypes.add(ResourceType.WOOL);
+                    break;
+            }
+        }
 
         // get buildings from tile(s)
+        List<Building> buildings = boardService.getBuildingsOnTile(diceMove, tiles);
+
+        // get playerIDs with buildings
+        List<Long> playerIDs = boardService.getPlayerIDsWithBuilding(diceMove, buildings);
 
         // update wallet from every player with building
+        playerService.updateWallet(playerIDs, resourceTypes);
     }
 
     /**

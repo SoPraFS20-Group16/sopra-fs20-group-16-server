@@ -221,4 +221,19 @@ public class PlayerService {
     public Player findPlayerByUserId(Long id) {
         return playerRepository.findByUserId(id);
     }
+
+    public void updateWallet(List<Long> playerIDs, List<ResourceType> resourceTypes) {
+
+        for (Long playerID: playerIDs) {
+            Player player = playerRepository.findByUserId(playerID);
+            ResourceWallet funds = player.getWallet();
+
+            for (ResourceType type: resourceTypes) {
+                funds.addResource(type, 1);
+            }
+
+            player.setWallet(funds);
+        }
+
+    }
 }

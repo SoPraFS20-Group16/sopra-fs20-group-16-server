@@ -11,6 +11,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.DiceMove;
 import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -230,5 +231,88 @@ public class BoardService {
             default:
                 throw new IllegalStateException("Unknown building type not allowed!");
         }
+    }
+
+    public List<Tile> getTiles(DiceMove diceMove, int diceRoll) {
+
+        //Get the board on which the building is built
+        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException("There should not be a move for a nonexistent game!");
+        }
+
+        Board board = gameOptional.get().getBoard();
+
+        // get tiles with corresponding number
+        List<Tile> tiles = new ArrayList<>();
+
+        for (Tile tile: board.getTiles()) {
+            if (tile.getTileNumber() == diceRoll) {
+                tiles.add(tile);
+            }
+        }
+
+        // return tiles
+        return tiles;
+    }
+
+    public List<Building> getBuildingsOnTile(DiceMove diceMove, List<Tile> tiles) {
+
+        //Get the board on which the building is built
+        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException("There should not be a move for a nonexistent game!");
+        }
+
+        Board board = gameOptional.get().getBoard();
+
+        // get all valid coordinates
+        List<Coordinate> coordinates = new ArrayList<>();
+
+        for (Tile tile: tiles) {
+            for (Coordinate coordinate: tile.getCoordinates()) {
+                coordinates.add(coordinate);
+            }
+        }
+
+        // get all buildings on corresponding Tiles
+        List<Building> buildings = new ArrayList<>();
+
+        for (Settlement settlement: board.getSettlements()) {
+            if (coordinates.contains(settlement.getCoordinate())) {
+                buildings.add(settlement);
+            }
+        }
+
+        for (City city: board.getCities()) {
+            if (coordinates.contains(city.getCoordinate())) {
+                buildings.add(city);
+            }
+        }
+
+        return buildings;
+    }
+
+    public List<Long> getPlayerIDsWithBuilding(DiceMove diceMove, List<Building> buildings) {
+
+        //Get the board on which the building is built
+        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException("There should not be a move for a nonexistent game!");
+        }
+
+        Board board = gameOptional.get().getBoard();
+
+        // get players with buildings
+        List<Long> playerIDs = new ArrayList<>();
+
+        for (Building building: buildings) {
+            playerIDs.add(building.getUserId());
+        }
+
+        return playerIDs;
     }
 }
