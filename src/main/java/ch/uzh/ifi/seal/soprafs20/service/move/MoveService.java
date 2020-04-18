@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.service.move;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
@@ -71,9 +72,19 @@ public class MoveService {
     //Is performed after performMove terminates
     public void makeRecalculations(Game game) {
 
-        //TODO: Calculate and set Victory Points for all players
+        // update the victory points of the current player
+        Player player = game.getCurrentPlayer();
 
-        //TODO: Recalculate Possible moves
+        int devPoints = playerService.getPointsFromDevelopmentCards(player);
+        int buildingPoints = boardService.getPointsFromBuildings(game, player);
+
+        int victoryPoints = devPoints + buildingPoints;
+
+        player.setVictoryPoints(victoryPoints);
+
+        // TODO: add logic that ends the game if victoryPoints >= 10
+
+        // TODO: Recalculate Possible moves
     }
 
     /**
@@ -116,7 +127,7 @@ public class MoveService {
 
             // get playerIDs with settlements on tile & update their wallets
             List<Long> playersWithCity = boardService.getPlayerIDsWithCity(diceMove, tile);
-            playerService.updateWallet(playersWithSettlement, resourceType, 2);
+            playerService.updateWallet(playersWithCity, resourceType, 2);
         }
     }
 

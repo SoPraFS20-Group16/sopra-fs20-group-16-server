@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
@@ -13,6 +14,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,40 @@ public class MoveCalculatorHelper {
     static boolean canAffordCity(Player player) {
         City city = new City();
         return canAffordBuilding(player, city);
+    }
+
+    static boolean canAffordDevelopmentCard(Player player) {
+
+        // get development Card price
+        DevelopmentCard developmentCard = new DevelopmentCard();
+        ResourceWallet price = developmentCard.getPrice();
+
+        // get funds of player
+        ResourceWallet funds = player.getWallet();
+
+        // check if player can afford card
+        for (ResourceType type: price.getAllTypes()) {
+            if (price.getResourceAmount(type) > funds.getResourceAmount(type)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean canAffordTrade(Player player) {
+
+        // get funds of player
+        ResourceWallet funds = player.getWallet();
+
+        // check if player has at least 4 resources of the same type
+        for (ResourceType type: funds.getAllTypes()) {
+            if (funds.getResourceAmount(type) >= 4) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     static BuildMove createRoadMove(Game game, Player player, Coordinate coordinate, Coordinate neighbor) {
@@ -102,6 +138,31 @@ public class MoveCalculatorHelper {
 
         CardMove move = new CardMove();
         move.setDevelopmentCard(card);
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
+    }
+
+    static TradeMove createTradeMoveDevCard(Game game, Player player) {
+
+        DevelopmentCard developmentCard = new DevelopmentCard();
+        // TODO add logic for random DevCard
+        developmentCard.setDevelopmentType(DevelopmentType.VICTORYPOINT);
+
+        TradeMove move = new TradeMove();
+        move.setDevelopmentCard(developmentCard);
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
+    }
+
+    static TradeMove createTradeMoveResource(Game game, Player player) {
+
+        TradeMove move = new TradeMove();
+        // TODO: add other resource type options
+        move.setNeededType(ResourceType.BRICK);
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
 
@@ -172,4 +233,5 @@ public class MoveCalculatorHelper {
         }
         return cities;
     }
+
 }

@@ -12,6 +12,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,29 @@ import java.util.List;
 @Service
 @Transactional
 public class MoveCalculator {
+
+    public static List<TradeMove> getAllTradeMoves(Game game) {
+
+        // create list for all possible moves
+        List<TradeMove> possibleMoves = new ArrayList<>();
+
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // check if player can afford development card & add move
+        if (MoveCalculatorHelper.canAffordDevelopmentCard(player)) {
+            TradeMove move = MoveCalculatorHelper.createTradeMoveDevCard(game, player);
+            possibleMoves.add(move);
+        }
+
+        // check if player can afford resource trade & add move
+        if (MoveCalculatorHelper.canAffordTrade(player)) {
+            TradeMove move = MoveCalculatorHelper.createTradeMoveResource(game, player);
+            possibleMoves.add(move);
+        }
+
+        return possibleMoves;
+    }
 
     public static List<BuildMove> getAllRoadMoves(Game game) {
 
