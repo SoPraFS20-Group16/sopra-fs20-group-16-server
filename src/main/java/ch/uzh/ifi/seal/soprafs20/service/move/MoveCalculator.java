@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
-import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
@@ -12,6 +11,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 import org.springframework.stereotype.Service;
 
@@ -25,21 +25,28 @@ public class MoveCalculator {
 
     public static List<TradeMove> getAllTradeMoves(Game game) {
 
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // check if player can afford resource trade & add move
+        if (MoveCalculatorHelper.canAffordTrade(player)) {
+            return MoveCalculatorHelper.createTradeMove(game, player);
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<PurchaseMove> getAllPurchaseMoves(Game game) {
+
         // create list for all possible moves
-        List<TradeMove> possibleMoves = new ArrayList<>();
+        List<PurchaseMove> possibleMoves = new ArrayList<>();
 
         // get current player
         Player player = game.getCurrentPlayer();
 
         // check if player can afford development card & add move
         if (MoveCalculatorHelper.canAffordDevelopmentCard(player)) {
-            TradeMove move = MoveCalculatorHelper.createTradeMoveDevCard(game, player);
-            possibleMoves.add(move);
-        }
-
-        // check if player can afford resource trade & add move
-        if (MoveCalculatorHelper.canAffordTrade(player)) {
-            TradeMove move = MoveCalculatorHelper.createTradeMoveResource(game, player);
+            PurchaseMove move = MoveCalculatorHelper.createPurchaseMove(game, player);
             possibleMoves.add(move);
         }
 
@@ -222,14 +229,12 @@ public class MoveCalculator {
         // get all development cards from player
         List<DevelopmentCard> developmentCards = player.getDevelopmentCards();
 
-        // create and add a new CardMove, if the development card is not victoryPointCard
+        // create and add a new CardMove for every development card
         for (DevelopmentCard card : developmentCards) {
-
-            if (!card.getDevelopmentType().equals(DevelopmentType.VICTORYPOINT)) {
-                CardMove move = MoveCalculatorHelper.createCardMove(game, player, card);
-                possibleMoves.add(move);
-            }
+            CardMove move = MoveCalculatorHelper.createCardMove(game, player, card);
+            possibleMoves.add(move);
         }
+
         return possibleMoves;
     }
 

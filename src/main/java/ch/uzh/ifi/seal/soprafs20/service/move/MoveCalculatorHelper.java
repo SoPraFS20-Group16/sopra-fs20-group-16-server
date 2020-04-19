@@ -14,10 +14,12 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MoveCalculatorHelper {
 
@@ -144,29 +146,54 @@ public class MoveCalculatorHelper {
         return move;
     }
 
-    static TradeMove createTradeMoveDevCard(Game game, Player player) {
+    static List<TradeMove> createTradeMove(Game game, Player player) {
 
+        List<TradeMove> tradeMoves = new ArrayList<>();
+
+        // create a move for every possible needed Type
+        for (ResourceType type: ResourceType.values()) {
+            TradeMove move = new TradeMove();
+            move.setNeededType(type);
+            move.setGameId(game.getId());
+            move.setUserId(player.getUserId());
+
+            tradeMoves.add(move);
+        }
+
+        // return list of tradeMoves
+        return tradeMoves;
+    }
+
+    static PurchaseMove createPurchaseMove(Game game, Player player) {
+
+        // generate and set random development Card
         DevelopmentCard developmentCard = new DevelopmentCard();
-        // TODO add logic for random DevCard
-        developmentCard.setDevelopmentType(DevelopmentType.VICTORYPOINT);
 
-        TradeMove move = new TradeMove();
+        DevelopmentType devType;
+        int randomCard = ThreadLocalRandom.current().nextInt(1, 100 + 1);
+
+        if (randomCard == 1 || randomCard == 25) {
+            devType = DevelopmentType.MONOPOLYPROGRESS;
+        } else if (randomCard == 2 || randomCard == 24) {
+            devType = DevelopmentType.PLENTYPROGRESS;
+        } else if (randomCard == 3 || randomCard == 23) {
+            devType = DevelopmentType.ROADPROGRESS;
+        } else if (4 <= randomCard && randomCard <= 8) {
+            devType = DevelopmentType.VICTORYPOINT;
+        } else {
+            devType = DevelopmentType.KNIGHT;
+        }
+
+        developmentCard.setDevelopmentType(devType);
+
+        // create new Move
+        PurchaseMove move = new PurchaseMove();
         move.setDevelopmentCard(developmentCard);
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
 
         return move;
-    }
 
-    static TradeMove createTradeMoveResource(Game game, Player player) {
-
-        TradeMove move = new TradeMove();
-        // TODO: add other resource type options
-        move.setNeededType(ResourceType.BRICK);
-        move.setGameId(game.getId());
-        move.setUserId(player.getUserId());
-
-        return move;
     }
 
     static boolean isValidBuildingCoordinate(Board board, Coordinate coordinate) {

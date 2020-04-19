@@ -22,5 +22,15 @@ public class CardMoveHandler implements MoveHandler {
 
         // Pass back to the moveService
         moveService.performCardMove(cardMove);
+
+        // TODO: add logic for subsequent moves (either here or in performCardMove method)
+        // 1)   invoke knight card
+        // 2)   calculate possible moves (placements of knight on board)
+        // 3)   return options to player
+        // 4)   receive new instructions & perform according move
+        // 5)   recalculate possible moves (from which player deduct cards)
+        // 6)   return options to player
+        // 7)   receive new instructions & perform according move
+        // 8)   terminate move and call getAllPossibleMoves
     }
 }

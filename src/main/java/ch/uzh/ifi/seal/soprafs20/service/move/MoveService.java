@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.service.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
@@ -148,29 +148,60 @@ public class MoveService {
      * Performs a TradeMove
      * Is called from the TradeMoveHandler
      *
-     * the player can trade resources to get a development card or a designated resource
+     * the player can trade resources to get a designated resource
      *
      * @param tradeMove the TradeMove that is passed from the handler
      */
     public void performTradeMove(TradeMove tradeMove) {
 
-        // get wished development card
-        DevelopmentCard card = tradeMove.getDevelopmentCard();
+        // player must pay for needed resourceType
+        playerService.payForResource(tradeMove);
 
-        if (card != null) {
-            // player must pay for the development card
-            playerService.payForDevelopmentCard(tradeMove);
+        // new resource gets added to the players wallet
+        playerService.addResource(tradeMove);
 
-            // add the development card to the player
-            playerService.addDevelopmentCard(tradeMove);
+    }
 
+    /**
+     * Performs a purchaseMove
+     * Is called from the PurchaseMoveHandler
+     *
+     * the player can purchase a (random) development card with resources
+     *
+     * @param purchaseMove the PurchaseMove that is passed from the handler
+     */
+    public void performPurchaseMove(PurchaseMove purchaseMove) {
+
+        // player must pay for the development card
+        playerService.payForDevelopmentCard(purchaseMove);
+
+        // add the development card to the player
+        playerService.addDevelopmentCard(purchaseMove);
+
+    }
+
+    /**
+     * Performs a CardMove
+     * Is called from the CardMoveHandler
+     *
+     * the player invokes a development card and the card gets removed from the player
+     *
+     * @param cardMove the CardMove that is passed from the handler
+     */
+    public void performCardMove(CardMove cardMove) {
+
+        // Get the development card type from the move
+        DevelopmentType type = cardMove.getDevelopmentCard().getDevelopmentType();
+
+        // invoke the card
+        if (type == DevelopmentType.VICTORYPOINT) {
+            playerService.addVictoryPoint(cardMove);
         } else {
-            // player must pay for needed resourceType
-            playerService.payForResource(tradeMove);
-
-            // new resource gets added to the players wallet
-            playerService.addResource(tradeMove);
+            // TODO: implement individual functionality of devCards
         }
+
+        // Remove development card from player
+        playerService.removeDevelopmentCard(cardMove);
     }
 
     /**
@@ -188,40 +219,6 @@ public class MoveService {
 
         //Build the building on the board
         boardService.build(buildMove);
-    }
-
-    /**
-     * Performs a CardMove
-     * Is called from the CardMoveHandler
-     *
-     * the player invokes a development card and the card gets removed from the player
-     *
-     * @param cardMove the Cardmove that is passed from the handler
-     */
-    public void performCardMove(CardMove cardMove) {
-
-        // Get the development card from the move
-        DevelopmentCard developmentCard = cardMove.getDevelopmentCard();
-
-        // Find the player that has done the move
-        Long playerId = cardMove.getUserId();
-
-        // Invoke Card
-        // TODO: implement functionality
-        switch (developmentCard.getDevelopmentType()) {
-            case VICTORYPOINT:
-                //playerService.addVictoryPoint(playerId);
-                break;
-            case ROADPROGRESS:
-            case KNIGHT:
-            case PLENTYPROGRESS:
-            case MONOPOLYPROGRESS:
-                break;
-
-        }
-
-        // Remove development card from player
-        playerService.payDevCard(playerId, developmentCard);
     }
 
     public List<Move> getMovesForPlayerWithUserId(Long userId) {

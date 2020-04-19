@@ -9,6 +9,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
@@ -55,7 +57,7 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
-    public Player payForDevelopmentCard(TradeMove move) {
+    public Player payForDevelopmentCard(PurchaseMove move) {
 
         // find player
         Player player = playerRepository.findByUserId(move.getUserId());
@@ -78,7 +80,7 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
-    public Player addDevelopmentCard(TradeMove move) {
+    public Player addDevelopmentCard(PurchaseMove move) {
 
         // find player
         Player player = playerRepository.findByUserId(move.getUserId());
@@ -91,7 +93,6 @@ public class PlayerService {
         player.addDevelopmentCard(move.getDevelopmentCard());
 
         return playerRepository.saveAndFlush(player);
-
     }
 
     public Player payForResource(TradeMove move) {
@@ -107,7 +108,6 @@ public class PlayerService {
         ResourceWallet funds = player.getWallet();
         ResourceType type = move.getNeededType();
 
-        // TODO: maybe ratio initiate somewhere else (more general)
         int tradeRatio = 4;
 
         funds.removeResource(type, tradeRatio);
@@ -126,15 +126,13 @@ public class PlayerService {
             throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
         }
 
-        // get traded resourceType
+        // get traded resourceType and funds from player
         ResourceType type = move.getNeededType();
         ResourceWallet funds = player.getWallet();
 
-        // TODO: maybe initialize somewhere else (more general)
         int tradeRatio = 1;
 
-        // add resource to players wallet
-
+        // add resource to players' wallet
         funds.addResource(type, tradeRatio);
 
         player.setWallet(funds);
@@ -175,31 +173,36 @@ public class PlayerService {
         player.setWallet(funds);
     }
 
-    public void payDevCard(Long playerId, DevelopmentCard developmentCard) {
+    public void removeDevelopmentCard(CardMove move) {
 
         // find player
-        Player player = playerRepository.findByUserId(playerId);
+        Player player = playerRepository.findByUserId(move.getUserId());
 
-        // get the currently owned development cards from the player
-        List<DevelopmentCard> playerOwnedCards = player.getDevelopmentCards();
+        // get owed development cardType
+        DevelopmentType type = move.getDevelopmentCard().getDevelopmentType();
 
-        // remove development card
-        playerOwnedCards.remove(developmentCard);
+        // get currently owned development cards from player
+        List<DevelopmentCard> ownedCards = player.getDevelopmentCards();
 
-        // set the new player owned development cards
-        player.setDevelopmentCards(playerOwnedCards);
+        // remove development card from player
+        for (DevelopmentCard card: ownedCards) {
+            if (card.getDevelopmentType() == type) {
+                ownedCards.remove(card);
+                break;
+            }
+        }
+
+        // set the new owned cards
+        player.setDevelopmentCards(ownedCards);
     }
 
-    public void addVictoryPoint(Long playerId) {
+    public void addVictoryPoint(CardMove move) {
 
         // find player
-        Player player = playerRepository.findByUserId(playerId);
+        Player player = playerRepository.findByUserId(move.getUserId());
 
-        // get current victoryPoints
-        int victoryPoints = player.getVictoryPoints();
-
-        // increase victoryPoints
-        victoryPoints += 1;
+        // get and increase victoryPoints
+        int victoryPoints = player.getVictoryPoints() + 1;
 
         // set new victoryPoints
         player.setVictoryPoints(victoryPoints);
