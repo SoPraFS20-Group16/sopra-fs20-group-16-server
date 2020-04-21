@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,6 +35,12 @@ public class GameServiceTest {
 
     @Mock
     BoardService boardService;
+
+    @Mock
+    QueueService queueService;
+
+    @Mock
+    MoveService moveService;
 
     @InjectMocks
     private GameService gameService;

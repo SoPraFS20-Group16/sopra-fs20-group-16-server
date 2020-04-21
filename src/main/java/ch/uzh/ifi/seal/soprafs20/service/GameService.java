@@ -26,27 +26,39 @@ public class GameService {
 
     private final Logger log = LoggerFactory.getLogger(GameService.class);
 
-    private final GameRepository gameRepository;
-    private final PlayerRepository playerRepository;
-    private final BoardService boardService;
-    private final PlayerService playerService;
-    private final QueueService queueService;
-    private final MoveService moveService;
+    private GameRepository gameRepository;
+    private PlayerRepository playerRepository;
+    private BoardService boardService;
+    private PlayerService playerService;
+    private QueueService queueService;
+    private MoveService moveService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
-                       @Qualifier("playerRepository") PlayerRepository playerRepository,
-                       BoardService boardService,
-                       PlayerService playerService,
-                       QueueService queueService,
-                       MoveService moveService) {
+                       @Qualifier("playerRepository") PlayerRepository playerRepository) {
 
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
-        this.boardService = boardService;
-        this.playerService = playerService;
-        this.queueService = queueService;
+    }
+
+    @Autowired
+    public void setMoveService(MoveService moveService) {
         this.moveService = moveService;
+    }
+
+    @Autowired
+    public void setBoardService(BoardService boardService) {
+        this.boardService = boardService;
+    }
+
+    @Autowired
+    public void setQueueService(QueueService queueService) {
+        this.queueService = queueService;
+    }
+
+    @Autowired
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     /**
