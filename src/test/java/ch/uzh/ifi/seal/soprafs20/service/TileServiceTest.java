@@ -39,7 +39,7 @@ public class TileServiceTest {
     @Test
     public void testCreateTileWithTopCoordinate() {
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
-        when(coordinateRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
+        when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
         Tile created = tileService.createTileWithTopCoordinate(testCoordinate);
 

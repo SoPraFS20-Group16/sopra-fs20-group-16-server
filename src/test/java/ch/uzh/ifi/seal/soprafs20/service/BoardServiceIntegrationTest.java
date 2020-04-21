@@ -2,11 +2,11 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
-import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
-import ch.uzh.ifi.seal.soprafs20.repository.CoordinateRepository;
-import ch.uzh.ifi.seal.soprafs20.repository.TileRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.BeanMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +34,14 @@ public class BoardServiceIntegrationTest {
     @Autowired
     BoardRepository boardRepository;
 
+    @Qualifier("moveRepository")
+    @Autowired
+    MoveRepository moveRepository;
+
+    @Qualifier("gameRepository")
+    @Autowired
+    GameRepository gameRepository;
+
     @Autowired
     BoardService boardService;
 
@@ -45,9 +53,16 @@ public class BoardServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
+        gameRepository.deleteAll();
+        boardRepository.deleteAll();
+        tileRepository.deleteAll();
 
+        moveRepository.deleteAll();
+    }
+
+    @AfterEach
+    public void teardown() {
         entityManager.clear();
-
     }
 
     @Test

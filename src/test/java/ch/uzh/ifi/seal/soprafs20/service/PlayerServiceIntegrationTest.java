@@ -3,8 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
-import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
-import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +30,28 @@ public class PlayerServiceIntegrationTest {
     @Autowired
     private PlayerRepository playerRepository;
 
+    @Qualifier("coordinateRepository")
+    @Autowired
+    CoordinateRepository coordinateRepository;
+
+    @Qualifier("tileRepository")
+    @Autowired
+    TileRepository tileRepository;
+
+    @Qualifier("boardRepository")
+    @Autowired
+    BoardRepository boardRepository;
+
+    @Qualifier("moveRepository")
+    @Autowired
+    MoveRepository moveRepository;
+
+    @Qualifier("gameRepository")
+    @Autowired
+    GameRepository gameRepository;
+
+
+
     @Autowired
     private PlayerService playerService;
 
@@ -45,11 +66,29 @@ public class PlayerServiceIntegrationTest {
     @BeforeEach
     public void setup() {
 
+        gameRepository.deleteAll();
+
+        moveRepository.deleteAll();
+
+        userRepository.deleteAll();
+        playerRepository.deleteAll();
+
+        boardRepository.deleteAll();
+        tileRepository.deleteAll();
+
+        coordinateRepository.deleteAll();
+
+
+
+
+
         testUser = new User();
         testUser.setToken("Token");
         testUser.setUsername("Username");
         testUser.setPassword("Password");
         testUser.setStatus(UserStatus.ONLINE);
+
+        userRepository.deleteAll();
         testUser = userRepository.saveAndFlush(testUser);
 
         assertNotNull(testUser, "The testUser should not be null!");
@@ -65,6 +104,7 @@ public class PlayerServiceIntegrationTest {
     @Test
     public void testCreatePlayerFromUserId() {
 
+        playerRepository.deleteAll();
         Player createdPlayer = playerService.createPlayerFromUserId(testUserId);
 
         assertNotNull(createdPlayer, "The created player should not be null!");

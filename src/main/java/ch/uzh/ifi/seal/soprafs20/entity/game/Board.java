@@ -22,7 +22,7 @@ public class Board implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Tile> tiles;
 
     @OneToMany(cascade = CascadeType.ALL)

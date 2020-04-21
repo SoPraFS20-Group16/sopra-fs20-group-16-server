@@ -26,7 +26,7 @@ public class Game implements Serializable {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Player> players;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Player currentPlayer;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

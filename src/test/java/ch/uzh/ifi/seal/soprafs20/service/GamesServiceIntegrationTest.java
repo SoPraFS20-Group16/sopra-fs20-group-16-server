@@ -4,9 +4,7 @@ import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
-import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
-import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
-import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +41,13 @@ public class GamesServiceIntegrationTest {
     @Autowired
     PlayerRepository playerRepository;
 
+    @Qualifier("tileRepository")
+    @Autowired
+    TileRepository tileRepository;
+
+    @Qualifier("boardRepository")
+    @Autowired
+    BoardRepository boardRepository;
 
     //Test Objects
     private Game testGame;
@@ -51,8 +56,14 @@ public class GamesServiceIntegrationTest {
     @BeforeEach
     public void setup() {
 
+        //delete from all repositories
+        userRepository.deleteAll();
+        gameRepository.deleteAll();
+        boardRepository.deleteAll();
+        tileRepository.deleteAll();
+
         testUser = new User();
-        testUser.setToken("TheToken");
+        testUser.setToken("Token");
         testUser.setUsername("TheUsername");
         testUser.setStatus(UserStatus.ONLINE);
         testUser.setPassword("ThePassword");
@@ -65,15 +76,18 @@ public class GamesServiceIntegrationTest {
         testGame.setName("TestGameName");
         testGame.setWithBots(true);
         testGame.setCreatorId(testUser.getId());
+
     }
 
     @AfterEach
     public void teardown() {
-      entityManager.clear();
+        entityManager.clear();
     }
 
     @Test
     public void testCreateGame() {
+
+        gameRepository.deleteAll();
 
         Game createdGame = gameService.createGame(testGame);
 
@@ -89,6 +103,8 @@ public class GamesServiceIntegrationTest {
 
     @Test
     public void testFindGame() {
+
+        gameRepository.deleteAll();
 
         testGame = gameService.createGame(testGame);
 
@@ -112,6 +128,8 @@ public class GamesServiceIntegrationTest {
 
     @Test
     public void testGetGames() {
+
+        gameRepository.deleteAll();
 
         Game createdGame = gameService.createGame(testGame);
 

@@ -169,6 +169,8 @@ public class BoardService {
         tiles.add(newTile);
 
         board.setTiles(tiles);
+
+        //Calculate coordinate neighbors
         coordinateService.calculateNeighbors();
         return boardRepository.saveAndFlush(board);
     }
