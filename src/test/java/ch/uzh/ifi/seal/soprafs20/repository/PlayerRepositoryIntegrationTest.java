@@ -23,8 +23,7 @@ public class PlayerRepositoryIntegrationTest {
 
     @AfterEach
     public void teardown() {
-
-        entityManager.clear();
+        playerRepository.deleteAll();
     }
 
     @Test

@@ -99,8 +99,6 @@ public class GameControllerIntegrationTest {
         gameRepository.deleteAll();
         playerRepository.deleteAll();
         userRepository.deleteAll();
-
-        entityManager.clear();
     }
 
     @Test

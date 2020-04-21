@@ -29,8 +29,7 @@ public class BuildingRepositoryIntegrationTest {
 
     @AfterEach
     public void teardown() {
-
-        entityManager.clear();
+        buildingRepository.deleteAll();
     }
 
     @Test

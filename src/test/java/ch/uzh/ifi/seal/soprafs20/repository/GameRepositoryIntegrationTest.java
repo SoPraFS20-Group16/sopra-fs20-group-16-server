@@ -30,8 +30,8 @@ public class GameRepositoryIntegrationTest {
 
     @AfterEach
     public void teardown() {
-
-        entityManager.clear();
+        gameRepository.deleteAll();
+        playerRepository.deleteAll();
     }
 
     @Test

@@ -26,8 +26,7 @@ public class MoveRepositoryIntegrationTest {
 
     @AfterEach
     public void teardown() {
-
-        entityManager.clear();
+        moveRepository.deleteAll();
     }
 
     @Test
