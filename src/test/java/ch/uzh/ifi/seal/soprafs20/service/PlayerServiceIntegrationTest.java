@@ -76,11 +76,6 @@ public class PlayerServiceIntegrationTest {
         boardRepository.deleteAll();
         tileRepository.deleteAll();
 
-        coordinateRepository.deleteAll();
-
-
-
-
 
         testUser = new User();
         testUser.setToken("Token");

@@ -36,7 +36,7 @@ public class CoordinateRepositoryIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        entityManager.clear();
+        coordinateRepository.deleteAll();
     }
 
     /**
