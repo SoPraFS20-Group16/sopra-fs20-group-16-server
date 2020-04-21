@@ -12,10 +12,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +133,35 @@ public class MoveCalculatorHelper {
         return move;
     }
 
+    static FirstSettlementMove createFirstSettlementMove(Game game, Player player, Coordinate coordinate) {
+
+        Settlement newSettlement = new Settlement();
+        newSettlement.setCoordinate(coordinate);
+        newSettlement.setUserId(player.getUserId());
+
+        FirstSettlementMove move = new FirstSettlementMove();
+        move.setSettlement(newSettlement);
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
+    }
+
+    static FirstRoadMove createFirstRoadMove(Game game, Player player, Coordinate coordinate1, Coordinate coordinate2) {
+
+        Road newRoad = new Road();
+        newRoad.setCoordinate1(coordinate1);
+        newRoad.setCoordinate2(coordinate2);
+        newRoad.setUserId(player.getUserId());
+
+        FirstRoadMove move = new FirstRoadMove();
+        move.setRoad(newRoad);
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
+    }
+
     static CardMove createCardMove(Game game, Player player, DevelopmentCard card) {
 
         CardMove move = new CardMove();
@@ -194,6 +220,15 @@ public class MoveCalculatorHelper {
 
         return move;
 
+    }
+
+    static PassMove createPassMove(Game game, Player player) {
+
+        PassMove move = new PassMove();
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
     }
 
     static boolean isValidBuildingCoordinate(Board board, Coordinate coordinate) {
@@ -261,4 +296,28 @@ public class MoveCalculatorHelper {
         return cities;
     }
 
+    static void calculateRoadBuildingMovesConnectingToBuilding(Game game, List<BuildMove> possibleMoves, Player player, Board board) {
+
+        List<Settlement> settlements = MoveCalculatorHelper.getSettlementsOfPlayer(player, board);
+        for (Settlement settlement: settlements) {
+            Coordinate coordinate = settlement.getCoordinate();
+            for (Coordinate neighbor: coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+            }
+        }
+
+        List<City> cities = MoveCalculatorHelper.getCitiesOfPlayer(player, board);
+        for (City city: cities) {
+            Coordinate coordinate = city.getCoordinate();
+            for (Coordinate neighbor: coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+            }
+        }
+    }
 }

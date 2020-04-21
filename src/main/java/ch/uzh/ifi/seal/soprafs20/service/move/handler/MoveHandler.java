@@ -18,7 +18,7 @@ public interface MoveHandler {
     void perform(Move move, MoveService moveService);
 
 
-    default List<Move> calculateNextMoves(Game game) {
+    default List<Move> calculateNextMoves(Game game, Move move) {
         return MoveCalculator.calculateAllStandardMoves(game);
     }
 

@@ -180,7 +180,6 @@ public class GameController {
     }
 
 
-    //TODO POST /games/gameId/players endpoint
     @PostMapping("/games/{gameId}/players")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody

@@ -105,27 +105,7 @@ public class MoveCalculator {
 
         // - calculate all possible road building moves connecting to settlement/city -
 
-        List<Settlement> settlements = MoveCalculatorHelper.getSettlementsOfPlayer(player, board);
-        for (Settlement settlement: settlements) {
-            Coordinate coordinate = settlement.getCoordinate();
-            for (Coordinate neighbor: coordinate.getNeighbors()) {
-                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
-                    possibleMoves.add(move);
-                }
-            }
-        }
-
-        List<City> cities = MoveCalculatorHelper.getCitiesOfPlayer(player, board);
-        for (City city: cities) {
-            Coordinate coordinate = city.getCoordinate();
-            for (Coordinate neighbor: coordinate.getNeighbors()) {
-                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
-                    possibleMoves.add(move);
-                }
-            }
-        }
+        MoveCalculatorHelper.calculateRoadBuildingMovesConnectingToBuilding(game, possibleMoves, player, board);
 
         return possibleMoves;
     }
@@ -241,25 +221,92 @@ public class MoveCalculator {
         List<Move> moves = new ArrayList<>();
 
         //Add all the build moves
-        moves.addAll(MoveCalculator.getAllCityMoves(game));
-        moves.addAll(MoveCalculator.getAllSettlementMoves(game));
-        moves.addAll(MoveCalculator.getAllRoadMoves(game));
+        moves.addAll(getAllCityMoves(game));
+        moves.addAll(getAllSettlementMoves(game));
+        moves.addAll(getAllRoadMoves(game));
 
         //Add purchase of devcard moves
-        moves.addAll(MoveCalculator.getAllPurchaseMoves(game));
+        moves.addAll(getAllPurchaseMoves(game));
 
         //Add trade with bank moves
-        moves.addAll(MoveCalculator.getAllTradeMoves(game));
+        moves.addAll(getAllTradeMoves(game));
 
         //Add devcard moves
-        moves.addAll(MoveCalculator.getAllCardMoves(game));
+        moves.addAll(getAllCardMoves(game));
+
+        // add pass move(s)
+        moves.addAll(getPassMove(game));
 
         //return all the moves
         return moves;
     }
 
-    public static List<Move> getAllFirstMoves() {
-        //TODO: Calculate the FirstMoves
-        return new ArrayList<>();
+    private static List<FirstSettlementMove> getAllFirstSettlementMoves(Game game) {
+
+        // create list for all possible moves
+        List <FirstSettlementMove> possibleMoves = new ArrayList<>();
+
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // get current board
+        Board board = game.getBoard();
+
+        // calculate all valid settlement building coordinates
+        for (Coordinate coordinate: board.getAllCoordinates()) {
+            if (MoveCalculatorHelper.isValidBuildingCoordinate(board, coordinate)) {
+                FirstSettlementMove settlementMove = MoveCalculatorHelper.createFirstSettlementMove(game, player, coordinate);
+                possibleMoves.add(settlementMove);
+
+            }
+        }
+
+        return possibleMoves;
+    }
+
+    private static List<FirstRoadMove> getAllFirstRoadMoves(Game game, Settlement settlement) {
+
+        // create list for all possible moves
+        List<FirstRoadMove> possibleMoves = new ArrayList<>();
+
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // calculate all valid building coordinates
+        for (Coordinate neighbour: settlement.getCoordinate().getNeighbors()) {
+            FirstRoadMove roadMove = MoveCalculatorHelper.createFirstRoadMove(game, player, settlement.getCoordinate(), neighbour);
+            possibleMoves.add(roadMove);
+        }
+
+        return possibleMoves;
+    }
+
+    private static List<PassMove> getPassMove(Game game) {
+
+        // create list for possible move
+        List<PassMove> possibleMove = new ArrayList<>();
+
+        // get player current player
+        Player player = game.getCurrentPlayer();
+
+        // create passMove
+        PassMove move = MoveCalculatorHelper.createPassMove(game, player);
+        possibleMove.add(move);
+
+        // return move
+        return possibleMove;
+    }
+
+    public static List<Move> calculateAllFirstSettlementMoves(Game game) {
+        return new ArrayList<>(getAllFirstSettlementMoves(game));
+
+    }
+
+    public static List<Move> calculateAllFirstRoadMoves(Game game, FirstSettlementMove move) {
+        return new ArrayList<>(getAllFirstRoadMoves(game, move.getSettlement()));
+    }
+
+    public static List<Move> calculatePassMove(Game game) {
+        return new ArrayList<>(getPassMove(game));
     }
 }

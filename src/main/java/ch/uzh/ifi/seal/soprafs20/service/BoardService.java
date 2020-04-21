@@ -13,7 +13,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.FirstMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,12 +208,15 @@ public class BoardService {
         buildWorker(move.getBuilding(), move.getGameId(), move.getUserId());
     }
 
-    public void build(FirstMove move) {
-        buildWorker(move.getBuilding, move.getGameId(), move.getUserId());
+    public void build(FirstSettlementMove move) {
+        buildWorker(move.getSettlement(), move.getGameId(), move.getUserId());
+    }
+
+    public void build(FirstRoadMove move) {
+        buildWorker(move.getRoad(), move.getGameId(), move.getUserId());
     }
 
     private void buildWorker(Building building, Long gameId, Long userId) {
-
 
         //Get the board on which the building is built
         Board board = getBoardByGameId(gameId);

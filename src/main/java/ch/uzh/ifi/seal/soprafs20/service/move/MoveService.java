@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -83,11 +82,11 @@ public class MoveService {
         Game game = gameService.getGameById(move.getGameId());
 
         //Make the recalculations
-        makeRecalculations(game, handler);
+        makeRecalculations(game, handler, move);
     }
 
     //Is performed after performMove terminates
-    public void makeRecalculations(Game game, MoveHandler handler) {
+    public void makeRecalculations(Game game, MoveHandler handler, Move move) {
 
         // update the victory points of the current player
         Player player = game.getCurrentPlayer();
@@ -110,8 +109,16 @@ public class MoveService {
         }
 
         //Calculate all new possible moves and saves them to the move repository
-        List<Move> nextMoves = handler.calculateNextMoves(game);
+        List<Move> nextMoves = handler.calculateNextMoves(game, move);
         moveRepository.saveAll(nextMoves);
+        moveRepository.flush();
+    }
+
+    public void makeSetupRecalculations(Game game) {
+
+        // calculate all initial moves
+        List<Move> initialMoves = MoveCalculator.calculateAllFirstSettlementMoves(game);
+        moveRepository.saveAll(initialMoves);
         moveRepository.flush();
     }
 
@@ -255,12 +262,15 @@ public class MoveService {
         boardService.build(buildMove);
     }
 
-    public List<Move> getMovesForPlayerWithUserId(Long userId) {
-        //TODO: Implement functionality
-        return new ArrayList<>();
+    public List<Move> getMovesForPlayerWithUserId(Long gameId, Long userId) {
+        return moveRepository.findAllByGameIdAndUserId(gameId, userId);
     }
 
-    public void performFirstMove(FirstMove firstMove) {
-        boardService.build(firstMove);
+    public void performFirstSettlementMove(FirstSettlementMove firstSettlementMove) {
+        boardService.build(firstSettlementMove);
+    }
+
+    public void performFirstRoadMove(FirstRoadMove firstRoadMove) {
+        boardService.build(firstRoadMove);
     }
 }

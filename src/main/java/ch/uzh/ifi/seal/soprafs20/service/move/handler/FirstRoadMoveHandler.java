@@ -2,31 +2,32 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
 import java.util.List;
 
-public class PassMoveHandler implements MoveHandler {
+public class FirstRoadMoveHandler implements MoveHandler {
 
     @Override
     public void perform(Move move, MoveService moveService) {
 
-        if (move.getClass() != PassMove.class) {
+        if (move.getClass() != FirstRoadMove.class) {
             throw new IllegalStateException(ErrorMsg.WRONG_HANDLER_SETUP);
         }
 
         // cast move
-        PassMove passMove = (PassMove) move;
+        FirstRoadMove firstRoadMove = (FirstRoadMove) move;
 
-        // pass back to the moveService
-        moveService.performPassMove(passMove);
+        // pass back to moveService
+        moveService.performFirstRoadMove(firstRoadMove);
+
     }
 
     @Override
     public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculateAllFirstSettlementMoves(game);
+        return MoveCalculator.calculatePassMove(game);
     }
 }

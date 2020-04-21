@@ -8,6 +8,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +31,22 @@ public class GameService {
     private final BoardService boardService;
     private final PlayerService playerService;
     private final QueueService queueService;
+    private final MoveService moveService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
                        @Qualifier("playerRepository") PlayerRepository playerRepository,
                        BoardService boardService,
                        PlayerService playerService,
-                       QueueService queueService) {
+                       QueueService queueService,
+                       MoveService moveService) {
 
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.boardService = boardService;
         this.playerService = playerService;
         this.queueService = queueService;
+        this.moveService = moveService;
     }
 
     /**
@@ -77,15 +81,15 @@ public class GameService {
             return null;
         }
 
-        //Add creator as first player
+        //Add creator as first player and set as current player
         Player creatorPlayer = playerService.createPlayerFromUserId(gameInput.getCreatorId());
 
         gameInput.addPlayer(creatorPlayer);
+        gameInput.setCurrentPlayer(creatorPlayer);
 
         //Add a Board
         Board newBoard = boardService.createBoard();
         gameInput.setBoard(newBoard);
-
 
         //Create Player queue and add the player to it
         PlayerQueue queue = new PlayerQueue();
@@ -93,7 +97,11 @@ public class GameService {
 
         queueService.save(queue);
 
-        return gameRepository.saveAndFlush(gameInput);
+        // calculate the firstMoves (initial settlement placement)
+        Game savedGame = gameRepository.saveAndFlush(gameInput);
+        moveService.makeSetupRecalculations(savedGame);
+
+        return savedGame;
     }
 
     public Game findGame(Game gameInput) {
