@@ -78,5 +78,6 @@ public interface DTOMapper {
     PlayerDTO convertPlayerToPlayerDTO(Player player);
 
     @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "id", target = "moveId")
     MoveDTO convertMoveToMoveDTO(Move move);
 }

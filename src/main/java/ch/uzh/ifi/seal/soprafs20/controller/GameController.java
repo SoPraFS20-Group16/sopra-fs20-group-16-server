@@ -154,7 +154,7 @@ public class GameController {
     @ResponseBody
     public void postToGameWithId(@RequestHeader(name = "Token") String token,
                                  @PathVariable Long gameId,
-                                 @RequestBody MovePostDTO moveDTO) {
+                                 @RequestBody MovePostDTO movePostDTO) {
 
         //If user does not possess a valid token return 401
         GameControllerHelper.checkToken(userService, token);
@@ -164,7 +164,7 @@ public class GameController {
 
 
         //Find move
-        Long requestedMoveId = moveDTO.getMoveId();
+        Long requestedMoveId = movePostDTO.getMoveId();
         Move foundMove = GameControllerHelper.findMoveIfExistsElseThrow403(moveService, requestedMoveId);
 
         //Find the user that made the request
