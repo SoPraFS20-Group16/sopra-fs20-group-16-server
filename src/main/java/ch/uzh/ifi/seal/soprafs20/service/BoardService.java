@@ -31,19 +31,26 @@ import java.util.Optional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final TileService tileService;
     private final GameRepository gameRepository;
-    private final CoordinateService coordinateService;
+
+    private CoordinateService coordinateService;
+    private TileService tileService;
 
     @Autowired
     public BoardService(@Qualifier("boardRepository") BoardRepository boardRepository,
-                        @Qualifier("gameRepository") GameRepository gameRepository,
-                        TileService tileService,
-                        CoordinateService coordinateService) {
+                        @Qualifier("gameRepository") GameRepository gameRepository) {
 
         this.boardRepository = boardRepository;
-        this.tileService = tileService;
         this.gameRepository = gameRepository;
+    }
+
+    @Autowired
+    public void setTileService(TileService tileService) {
+        this.tileService = tileService;
+    }
+
+    @Autowired
+    public void setCoordinateService(CoordinateService coordinateService) {
         this.coordinateService = coordinateService;
     }
 

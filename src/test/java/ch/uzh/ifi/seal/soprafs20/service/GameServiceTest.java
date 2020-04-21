@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,6 +61,12 @@ public class GameServiceTest {
 
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
+
+        //Inject mocks into gameService
+        ReflectionTestUtils.setField(gameService, "playerService", playerService);
+        ReflectionTestUtils.setField(gameService, "boardService", boardService);
+        ReflectionTestUtils.setField(gameService, "queueService", queueService);
+        ReflectionTestUtils.setField(gameService, "moveService", moveService);
     }
 
     @Test

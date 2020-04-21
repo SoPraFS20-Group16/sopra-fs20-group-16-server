@@ -55,14 +55,12 @@ public interface DTOMapper {
     @Mapping(source = "withBots", target = "withBots")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
+    @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "gameId")
     @Mapping(source = "withBots", target = "withBots")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "board", target = "board")
     @Mapping(source = "players", target = "players")
-        //Map and test all new fields as the game evolves!
-        //Warnings are generated if a property is unmapped
-        //If it should not be revealed, ignore it individually!
     GameDTO convertGameToGameDTO(Game game);
 
     @Mapping(source = "coordinates", target = "coordinates")

@@ -26,8 +26,9 @@ public class GameService {
 
     private final Logger log = LoggerFactory.getLogger(GameService.class);
 
-    private GameRepository gameRepository;
-    private PlayerRepository playerRepository;
+    private final GameRepository gameRepository;
+    private final PlayerRepository playerRepository;
+
     private BoardService boardService;
     private PlayerService playerService;
     private QueueService queueService;

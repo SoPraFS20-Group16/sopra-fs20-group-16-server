@@ -41,7 +41,6 @@ public class BoardServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        coordinateRepository.deleteAll();
         boardRepository.deleteAll();
         tileRepository.deleteAll();
     }

@@ -36,6 +36,9 @@ public class Board implements Serializable {
 
     public Board() {
         tiles = new ArrayList<>();
+        cities = new ArrayList<>();
+        settlements = new ArrayList<>();
+        roads = new ArrayList<>();
     }
 
     public Long getId() {
