@@ -35,22 +35,40 @@ public class MoveService {
     private final PlayerService playerService;
     private final BoardService boardService;
     private final TileService tileService;
-    private final GameService gameService;
-    private final QueueService queueService;
+
+    private PlayerService playerService;
+    private TileService tileService;
+    private GameService gameService;
+    private BoardService boardService;
+    private QueueService queueService;
 
     @Autowired
-    public MoveService(PlayerService playerService,
-                       GameService gameService,
-                       BoardService boardService,
-                       TileService tileService,
-                       QueueService queueService,
-                       @Qualifier("moveRepository") MoveRepository moveRepository) {
-
-        this.playerService = playerService;
-        this.boardService = boardService;
-        this.tileService = tileService;
+    public MoveService(@Qualifier("moveRepository") MoveRepository moveRepository) {
         this.moveRepository = moveRepository;
+    }
+
+    @Autowired
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
+    }
+
+    @Autowired
+    public void setTileService(TileService tileService) {
+        this.tileService = tileService;
+    }
+
+    @Autowired
+    public void setGameService(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    @Autowired
+    public void setBoardService(BoardService boardService) {
+        this.boardService = boardService;
+    }
+
+    @Autowired
+    public void setQueueService(QueueService queueService) {
         this.queueService = queueService;
     }
 
