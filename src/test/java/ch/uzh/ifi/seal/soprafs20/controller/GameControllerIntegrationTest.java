@@ -96,6 +96,10 @@ public class GameControllerIntegrationTest {
     @AfterEach
     public void teardown() {
 
+        gameRepository.deleteAll();
+        playerRepository.deleteAll();
+        userRepository.deleteAll();
+
         entityManager.clear();
     }
 
