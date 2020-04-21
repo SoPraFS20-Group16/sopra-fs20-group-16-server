@@ -96,6 +96,10 @@ public class GameControllerIntegrationTest {
     @AfterEach
     public void teardown() {
 
+        gameRepository.deleteAll();
+        playerRepository.deleteAll();
+        userRepository.deleteAll();
+
         entityManager.clear();
     }
 
@@ -108,6 +112,7 @@ public class GameControllerIntegrationTest {
         assertEquals(testUser.getUsername(), found.getUsername(), "The username does not match");
     }
 
+    // -- integration upload -- //
 
     @Test
     public void callGetGames() throws Exception {

@@ -45,6 +45,7 @@ public class UserServiceIntegrationTest {
     @AfterEach
     public void teardown() {
 
+        userRepository.deleteAll();
         entityManager.clear();
     }
 

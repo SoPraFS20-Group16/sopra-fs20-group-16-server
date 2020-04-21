@@ -78,6 +78,7 @@ public class PlayerServiceIntegrationTest {
         boardRepository.deleteAll();
         tileRepository.deleteAll();
 
+        coordinateRepository.deleteAll();
 
         testUser = new User();
         testUser.setToken("Token");
@@ -95,7 +96,17 @@ public class PlayerServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        entityManager.clear();
+        gameRepository.deleteAll();
+
+        moveRepository.deleteAll();
+
+        userRepository.deleteAll();
+        playerRepository.deleteAll();
+
+        boardRepository.deleteAll();
+        tileRepository.deleteAll();
+
+        coordinateRepository.deleteAll();
     }
 
     @Test

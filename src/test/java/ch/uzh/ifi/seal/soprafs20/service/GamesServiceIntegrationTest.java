@@ -83,7 +83,12 @@ public class GamesServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        entityManager.clear();
+        userRepository.deleteAll();
+        gameRepository.deleteAll();
+        boardRepository.deleteAll();
+        tileRepository.deleteAll();
+
+        playerRepository.deleteAll();
     }
 
     @Test
