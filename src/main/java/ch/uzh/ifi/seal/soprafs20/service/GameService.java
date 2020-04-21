@@ -5,6 +5,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import org.slf4j.Logger;
@@ -28,17 +29,20 @@ public class GameService {
     private final PlayerRepository playerRepository;
     private final BoardService boardService;
     private final PlayerService playerService;
+    private final QueueService queueService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
                        @Qualifier("playerRepository") PlayerRepository playerRepository,
                        BoardService boardService,
-                       PlayerService playerService) {
+                       PlayerService playerService,
+                       QueueService queueService) {
 
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.boardService = boardService;
         this.playerService = playerService;
+        this.queueService = queueService;
     }
 
     /**
@@ -83,8 +87,11 @@ public class GameService {
         gameInput.setBoard(newBoard);
 
 
-        //Add more options here!
-        //...
+        //Create Player queue and add the player to it
+        PlayerQueue queue = new PlayerQueue();
+        queue.addUserId(creatorPlayer.getUserId());
+
+        queueService.save(queue);
 
         return gameRepository.saveAndFlush(gameInput);
     }
@@ -131,5 +138,19 @@ public class GameService {
 
     public Game getGameById(Long gameId) {
         return gameRepository.findById(gameId).orElse(null);
+    }
+
+    public void addPlayerToGame(Player createdPlayer, Game game) {
+
+        //Get the queue
+        PlayerQueue queue = queueService.queueForGameWithId(game.getId());
+
+        //Add the player to queue and save
+        queue.addUserId(createdPlayer.getUserId());
+        queueService.save(queue);
+
+        //Add player to game and save
+        game.addPlayer(createdPlayer);
+        gameRepository.saveAndFlush(game);
     }
 }

@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
@@ -138,8 +139,10 @@ public class GameController {
         User requestingUser = GameControllerHelper.checkIfUserIsPlayerElseThrow403(
                 gameService, userService, token, foundGame);
 
-        //If user has access return the GameDTO
+        //If user has access create the GameDTO
         GameDTO gameDTO = DTOMapper.INSTANCE.convertGameToGameDTO(foundGame);
+
+        //Add cards and moves to player
         GameControllerHelper.addCardsAndMoves(moveService, playerService, requestingUser, gameDTO);
 
         //Return gameDTO
@@ -176,5 +179,28 @@ public class GameController {
         moveService.performMove(foundMove);
     }
 
+
+    //TODO POST /games/gameId/players endpoint
+    @PostMapping("/games/{gameId}/players")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public void postNewPlayerToGameWithGameId(@PathVariable Long gameId,
+                                              @RequestHeader(name = "Token") String token) {
+
+
+        //If user does not possess a valid token return 401
+        GameControllerHelper.checkToken(userService, token);
+
+        Game game = GameControllerHelper.checkIfGameExists(gameService, gameId);
+
+        //Find User
+        User requestingUser = userService.findUserWithToken(token);
+
+        //Create a new player form requesting user
+        Player createdPlayer = playerService.createPlayerFromUserId(requestingUser.getId());
+
+
+        gameService.addPlayerToGame(createdPlayer, game);
+    }
 
 }

@@ -5,15 +5,13 @@ import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
-import ch.uzh.ifi.seal.soprafs20.service.BoardService;
-import ch.uzh.ifi.seal.soprafs20.service.GameService;
-import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
-import ch.uzh.ifi.seal.soprafs20.service.TileService;
+import ch.uzh.ifi.seal.soprafs20.service.*;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +37,14 @@ public class MoveService {
     private final TileService tileService;
     private final MoveRepository moveRepository;
     private final GameService gameService;
+    private final QueueService queueService;
 
     @Autowired
     public MoveService(PlayerService playerService,
                        GameService gameService,
                        BoardService boardService,
                        TileService tileService,
+                       QueueService queueService,
                        @Qualifier("moveRepository") MoveRepository moveRepository) {
 
         this.playerService = playerService;
@@ -52,6 +52,7 @@ public class MoveService {
         this.tileService = tileService;
         this.moveRepository = moveRepository;
         this.gameService = gameService;
+        this.queueService = queueService;
     }
 
 
@@ -168,7 +169,13 @@ public class MoveService {
      */
     public void performPassMove(PassMove passMove) {
 
-        // TODO: implement functionality
+        Game game = gameService.getGameById(passMove.getGameId());
+
+        PlayerQueue queue = queueService.queueForGameWithId(game.getId());
+
+        Player nextPlayer = playerService.findPlayerByUserId(queue.getNextUserId());
+
+        game.setCurrentPlayer(nextPlayer);
     }
 
     /**
@@ -251,5 +258,9 @@ public class MoveService {
     public List<Move> getMovesForPlayerWithUserId(Long userId) {
         //TODO: Implement functionality
         return new ArrayList<>();
+    }
+
+    public void performFirstMove(FirstMove firstMove) {
+        boardService.build(firstMove);
     }
 }

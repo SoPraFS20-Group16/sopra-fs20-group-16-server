@@ -12,10 +12,10 @@ public interface MoveHandler {
     /**
      * Calls the correct method from the MoveService according to the Move subclass it belongs to.
      *
-     * @param move    the move
-     * @param service the service
+     * @param move        the move
+     * @param moveService the service
      */
-    void perform(Move move, MoveService service);
+    void perform(Move move, MoveService moveService);
 
 
     default List<Move> calculateNextMoves(Game game) {

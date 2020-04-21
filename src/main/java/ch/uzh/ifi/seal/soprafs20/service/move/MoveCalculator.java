@@ -257,4 +257,9 @@ public class MoveCalculator {
         //return all the moves
         return moves;
     }
+
+    public static List<Move> getAllFirstMoves() {
+        //TODO: Calculate the FirstMoves
+        return new ArrayList<>();
+    }
 }

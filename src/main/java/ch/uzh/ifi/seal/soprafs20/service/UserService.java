@@ -156,4 +156,8 @@ public class UserService {
 
         return userByUsername;
     }
+
+    public User findUserWithToken(String token) {
+        return userRepository.findByToken(token);
+    }
 }
