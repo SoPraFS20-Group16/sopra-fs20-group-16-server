@@ -32,9 +32,6 @@ public class MoveService {
     private final Logger log = LoggerFactory.getLogger(MoveService.class);
 
     private final MoveRepository moveRepository;
-    private final PlayerService playerService;
-    private final BoardService boardService;
-    private final TileService tileService;
 
     private PlayerService playerService;
     private TileService tileService;
