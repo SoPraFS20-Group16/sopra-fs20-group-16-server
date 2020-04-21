@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.persistence.EntityManager;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -31,6 +33,9 @@ public class PlayerServiceIntegrationTest {
 
     @Autowired
     private PlayerService playerService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     //Test Objects
     private User testUser;
@@ -54,11 +59,7 @@ public class PlayerServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        playerRepository.deleteAll();
-        userRepository.deleteAll();
-
-        playerRepository.flush();
-        userRepository.flush();
+        entityManager.clear();
     }
 
     @Test

@@ -39,7 +39,7 @@ public class TileServiceTest {
     @Test
     public void testCreateTileWithTopCoordinate() {
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
-        when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
+        when(coordinateRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
         Tile created = tileService.createTileWithTopCoordinate(testCoordinate);
 
@@ -51,7 +51,7 @@ public class TileServiceTest {
 
         //Assert the top coordinate exists
         assertEquals(6, coordinates.size(), "There should be 6 coordinates!");
-        assertTrue(coordinates.remove(testCoordinate), "The TestCoordinate should be in the list!");
+        assertTrue(created.hasCoordinate(testCoordinate), "The TestCoordinate should be in the list!");
 
         //Assert the upper left coordinate exists
         Coordinate upperLeft = new Coordinate();

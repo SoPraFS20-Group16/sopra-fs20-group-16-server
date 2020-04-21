@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,12 @@ public class TileServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
+        entityManager.clear();
+    }
+
+    @AfterEach
+    public void teardown() {
+
         entityManager.clear();
     }
 

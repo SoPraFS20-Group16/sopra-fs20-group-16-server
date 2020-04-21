@@ -78,6 +78,8 @@ public class TileService {
 
         }
 
+        coordinateRepository.flush();
+
         //Add the coordinates to the tile
         createdTile.setCoordinates(savedCoordinates);
 

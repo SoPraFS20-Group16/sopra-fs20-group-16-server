@@ -65,4 +65,12 @@ public class Tile implements Serializable {
     public void setTileNumber(int tileNumber) {
         this.tileNumber = tileNumber;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

@@ -18,7 +18,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @WebAppConfiguration
 @SpringBootTest
@@ -68,11 +69,7 @@ public class GamesServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
-        gameRepository.deleteAll();
-        userRepository.deleteAll();
-
-        assertTrue(playerRepository.findAll().isEmpty(),
-                "The player should automatically be deleted!");
+      entityManager.clear();
     }
 
     @Test

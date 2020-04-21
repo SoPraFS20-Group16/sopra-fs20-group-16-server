@@ -4,12 +4,15 @@ import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,9 +32,18 @@ public class UserServiceIntegrationTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @BeforeEach
     public void setup() {
         userRepository.deleteAll();
+    }
+
+    @AfterEach
+    public void teardown() {
+
+        entityManager.clear();
     }
 
     @Test

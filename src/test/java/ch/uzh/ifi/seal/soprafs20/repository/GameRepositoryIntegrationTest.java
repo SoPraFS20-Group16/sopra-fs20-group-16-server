@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.repository;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +27,12 @@ public class GameRepositoryIntegrationTest {
     @Qualifier("playerRepository")
     @Autowired
     private PlayerRepository playerRepository;
+
+    @AfterEach
+    public void teardown() {
+
+        entityManager.clear();
+    }
 
     @Test
     public void findById_success() {

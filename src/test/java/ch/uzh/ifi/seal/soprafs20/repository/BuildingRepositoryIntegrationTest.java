@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +26,12 @@ public class BuildingRepositoryIntegrationTest {
     @Qualifier("buildingRepository")
     @Autowired
     private BuildingRepository buildingRepository;
+
+    @AfterEach
+    public void teardown() {
+
+        entityManager.clear();
+    }
 
     @Test
     public void testFindAllByType_success() {
