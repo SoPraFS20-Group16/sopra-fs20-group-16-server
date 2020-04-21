@@ -30,6 +30,11 @@ public class Road extends Building {
         return 0;
     }
 
+    @Override
+    public int getBuildingFactor() {
+        return 0;
+    }
+
     public Coordinate getCoordinate1() {
         return coordinate1;
     }

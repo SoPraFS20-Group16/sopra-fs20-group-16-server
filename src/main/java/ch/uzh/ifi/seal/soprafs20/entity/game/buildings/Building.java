@@ -27,6 +27,8 @@ public abstract class Building implements Serializable {
     //Abstract methods
     public abstract int getVictoryPoints();
 
+    public abstract int getBuildingFactor();
+
     public abstract ResourceWallet getPrice();
 
     //Shared Methods
@@ -45,4 +47,6 @@ public abstract class Building implements Serializable {
     public void setUserId(Long playerId) {
         this.userId = playerId;
     }
+
 }
+

@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BoardConstants;
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
@@ -12,7 +13,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.DiceMove;
 import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,13 +208,7 @@ public class BoardService {
         Building building = move.getBuilding();
 
         //Get the board on which the building is built
-        Optional<Game> gameOptional = gameRepository.findById(move.getGameId());
-
-        if (gameOptional.isEmpty()) {
-            throw new NullPointerException("There should not be a move for a nonexistent game!");
-        }
-
-        Board board = gameOptional.get().getBoard();
+        Board board = getBoardByGameId(move.getGameId());
 
         //Add owner information
         building.setUserId(move.getUserId());
@@ -234,40 +228,28 @@ public class BoardService {
         }
     }
 
-    public List<Tile> getTiles(DiceMove diceMove, int diceRoll) {
+    public List<Tile> getTilesWithNumber(Long gameId, int number) {
 
         //Get the board on which the building is built
-        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
+        Board board = getBoardByGameId(gameId);
 
-        if (gameOptional.isEmpty()) {
-            throw new NullPointerException("There should not be a move for a nonexistent game!");
-        }
-
-        Board board = gameOptional.get().getBoard();
-
-        // get tiles with corresponding number
+        // get tile(s) with corresponding number
         List<Tile> tiles = new ArrayList<>();
 
-        for (Tile tile: board.getTiles()) {
-            if (tile.getTileNumber() == diceRoll) {
+        for (Tile tile : board.getTiles()) {
+            if (tile.getTileNumber() == number) {
                 tiles.add(tile);
             }
         }
 
-        // return tiles
+        // return tile(s)
         return tiles;
     }
 
-    public List<Long> getPlayerIDsWithSettlement(DiceMove diceMove, Tile tile) {
+    public List<Long> getPlayerIDsWithSettlement(Long gameId, Tile tile) {
 
         //Get the board on which the building is built
-        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
-
-        if (gameOptional.isEmpty()) {
-            throw new NullPointerException("There should not be a move for a nonexistent game!");
-        }
-
-        Board board = gameOptional.get().getBoard();
+        Board board = getBoardByGameId(gameId);
 
         // get all valid coordinates
         List<Coordinate> coordinates = tile.getCoordinates();
@@ -284,16 +266,10 @@ public class BoardService {
         return playerIDs;
     }
 
-    public List<Long> getPlayerIDsWithCity(DiceMove diceMove, Tile tile) {
+    public List<Long> getPlayerIDsWithCity(Long gameId, Tile tile) {
 
         //Get the board on which the building is built
-        Optional<Game> gameOptional = gameRepository.findById(diceMove.getGameId());
-
-        if (gameOptional.isEmpty()) {
-            throw new NullPointerException("There should not be a move for a nonexistent game!");
-        }
-
-        Board board = gameOptional.get().getBoard();
+        Board board = getBoardByGameId(gameId);
 
         // get all valid coordinates
         List<Coordinate> coordinates = tile.getCoordinates();
@@ -301,13 +277,23 @@ public class BoardService {
         // get all IDs of settlement owners
         List<Long> playerIDs = new ArrayList<>();
 
-        for (City city: board.getCities()) {
+        for (City city : board.getCities()) {
             if (coordinates.contains(city.getCoordinate())) {
                 playerIDs.add(city.getUserId());
             }
         }
 
         return playerIDs;
+    }
+
+    private Board getBoardByGameId(Long gameId) {
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException(ErrorMsg.NO_MOVE_FOR_NONEXISTING_GAME);
+        }
+
+        return gameOptional.get().getBoard();
     }
 
     public int getPointsFromBuildings(Game game, Player player) {
@@ -318,19 +304,19 @@ public class BoardService {
         Optional<Game> gameOptional = gameRepository.findById(game.getId());
 
         if (gameOptional.isEmpty()) {
-            throw new NullPointerException("There should not be a move for a nonexistent game!");
+            throw new NullPointerException(ErrorMsg.NO_MOVE_FOR_NONEXISTING_GAME);
         }
 
         Board board = gameOptional.get().getBoard();
 
         for (City city: board.getCities()) {
-            if (city.getUserId() == player.getUserId()) {
+            if (city.getUserId().equals(player.getUserId())) {
                 buildingPoins += city.getVictoryPoints();
             }
         }
 
         for (Settlement settlement: board.getSettlements()) {
-            if (settlement.getUserId() == player.getUserId()) {
+            if (settlement.getUserId().equals(player.getUserId())) {
                 buildingPoins += settlement.getVictoryPoints();
             }
         }

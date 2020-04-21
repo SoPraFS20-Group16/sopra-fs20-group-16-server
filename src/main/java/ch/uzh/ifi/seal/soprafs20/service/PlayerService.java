@@ -169,7 +169,6 @@ public class PlayerService {
             funds.removeResource(type, price.getResourceAmount(type));
         }
 
-        // TODO: necessary?
         player.setWallet(funds);
     }
 
@@ -243,5 +242,9 @@ public class PlayerService {
             player.setWallet(funds);
         }
 
+    }
+
+    public void save(Player player) {
+        playerRepository.saveAndFlush(player);
     }
 }

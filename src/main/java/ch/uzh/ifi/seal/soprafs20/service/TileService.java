@@ -106,7 +106,7 @@ public class TileService {
                 resourceType = ResourceType.WOOL;
                 break;
             default:
-                throw new IllegalStateException("Unknown tile type not allowed!");
+                throw new IllegalStateException("Unknown tile type or desert not allowed!");
         }
 
         return resourceType;

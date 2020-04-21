@@ -20,6 +20,7 @@ public class ErrorMsg {
     public static final String WRONG_HANDLER_SETUP = "The Handler seems to be set up wrong!";
     public static final String BOARD_CONSTANTS_INIT_MSG = "BoardConstants should never be initialized";
     public static final String NO_NEGATIVE_RESOURCES = "The player can not have negative resources!";
+    public static final String NO_MOVE_FOR_NONEXISTING_GAME = "There should not be a move for a nonexistent game!";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

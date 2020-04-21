@@ -146,7 +146,7 @@ public class GameController {
         return gameDTO;
     }
 
-    @PostMapping("/games/{gameId}")
+    @PutMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ResponseBody
     public void postToGameWithId(@RequestHeader(name = "Token") String token,
@@ -174,9 +174,6 @@ public class GameController {
 
         //If everything is correct perform the move
         moveService.performMove(foundMove);
-
-        //Make recalculations
-        moveService.makeRecalculations(foundGame);
     }
 
 

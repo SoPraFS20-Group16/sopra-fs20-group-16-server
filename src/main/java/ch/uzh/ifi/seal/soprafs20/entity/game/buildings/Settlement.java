@@ -28,6 +28,11 @@ public class Settlement extends Building {
         return 1;
     }
 
+    @Override
+    public int getBuildingFactor() {
+        return 1;
+    }
+
     public Coordinate getCoordinate() {
         return coordinate;
     }

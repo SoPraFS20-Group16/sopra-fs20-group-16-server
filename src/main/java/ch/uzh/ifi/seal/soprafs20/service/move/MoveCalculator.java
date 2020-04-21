@@ -9,21 +9,18 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
-import org.springframework.stereotype.Service;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@Transactional
 public class MoveCalculator {
 
-    public static List<TradeMove> getAllTradeMoves(Game game) {
+    private MoveCalculator() {
+        throw new IllegalStateException("Move Calculator should not be initialized!");
+    }
+
+    private static List<TradeMove> getAllTradeMoves(Game game) {
 
         // get current player
         Player player = game.getCurrentPlayer();
@@ -31,12 +28,13 @@ public class MoveCalculator {
         // check if player can afford resource trade & add move
         if (MoveCalculatorHelper.canAffordTrade(player)) {
             return MoveCalculatorHelper.createTradeMove(game, player);
-        } else {
+        }
+        else {
             return new ArrayList<>();
         }
     }
 
-    public static List<PurchaseMove> getAllPurchaseMoves(Game game) {
+    private static List<PurchaseMove> getAllPurchaseMoves(Game game) {
 
         // create list for all possible moves
         List<PurchaseMove> possibleMoves = new ArrayList<>();
@@ -53,7 +51,7 @@ public class MoveCalculator {
         return possibleMoves;
     }
 
-    public static List<BuildMove> getAllRoadMoves(Game game) {
+    private static List<BuildMove> getAllRoadMoves(Game game) {
 
         // create list for all possible moves
         List<BuildMove> possibleMoves = new ArrayList<>();
@@ -132,7 +130,7 @@ public class MoveCalculator {
         return possibleMoves;
     }
 
-    public static List<BuildMove> getAllSettlementMoves(Game game) {
+    private static List<BuildMove> getAllSettlementMoves(Game game) {
 
         // create list for all possible moves
         List<BuildMove> possibleMoves = new ArrayList<>();
@@ -184,7 +182,7 @@ public class MoveCalculator {
         return possibleMoves;
     }
 
-    public static List<BuildMove> getAllCityMoves(Game game) {
+    private static List<BuildMove> getAllCityMoves(Game game) {
 
         // create list for all possible moves
         List<BuildMove> possibleMoves = new ArrayList<>();
@@ -218,7 +216,7 @@ public class MoveCalculator {
         return possibleMoves;
     }
 
-    public static List<CardMove> getAllCardMoves(Game game) {
+    private static List<CardMove> getAllCardMoves(Game game) {
 
         // create list for all possible moves
         List<CardMove> possibleMoves = new ArrayList<>();
@@ -238,8 +236,25 @@ public class MoveCalculator {
         return possibleMoves;
     }
 
-    private MoveCalculator() {
-        throw new IllegalStateException("MoveCalculator class should not be initialized!");
-    }
+    public static List<Move> calculateAllStandardMoves(Game game) {
 
+        List<Move> moves = new ArrayList<>();
+
+        //Add all the build moves
+        moves.addAll(MoveCalculator.getAllCityMoves(game));
+        moves.addAll(MoveCalculator.getAllSettlementMoves(game));
+        moves.addAll(MoveCalculator.getAllRoadMoves(game));
+
+        //Add purchase of devcard moves
+        moves.addAll(MoveCalculator.getAllPurchaseMoves(game));
+
+        //Add trade with bank moves
+        moves.addAll(MoveCalculator.getAllTradeMoves(game));
+
+        //Add devcard moves
+        moves.addAll(MoveCalculator.getAllCardMoves(game));
+
+        //return all the moves
+        return moves;
+    }
 }

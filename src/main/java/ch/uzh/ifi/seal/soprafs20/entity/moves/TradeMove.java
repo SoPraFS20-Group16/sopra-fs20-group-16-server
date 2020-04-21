@@ -5,17 +5,18 @@ import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.TradeMoveHandler;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "TRADE_MOVE")
 public class TradeMove extends Move {
 
-    @OneToOne
+    @Enumerated(EnumType.ORDINAL)
     private ResourceType neededType;
 
-    @OneToOne
+    @Enumerated(EnumType.ORDINAL)
     private ResourceType tradedType;
 
     @Override

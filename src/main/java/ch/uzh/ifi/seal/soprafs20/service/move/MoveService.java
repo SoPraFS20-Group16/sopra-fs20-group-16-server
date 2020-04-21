@@ -6,19 +6,26 @@ import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
 import ch.uzh.ifi.seal.soprafs20.service.BoardService;
+import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.TileService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 @Service
@@ -28,20 +35,23 @@ public class MoveService {
     private final Logger log = LoggerFactory.getLogger(MoveService.class);
 
     private final PlayerService playerService;
-    private final MoveCalculator moveCalculator;
     private final BoardService boardService;
     private final TileService tileService;
+    private final MoveRepository moveRepository;
+    private final GameService gameService;
 
     @Autowired
     public MoveService(PlayerService playerService,
-                       MoveCalculator moveCalculator,
+                       GameService gameService,
                        BoardService boardService,
-                       TileService tileService) {
+                       TileService tileService,
+                       @Qualifier("moveRepository") MoveRepository moveRepository) {
 
         this.playerService = playerService;
-        this.moveCalculator = moveCalculator;
         this.boardService = boardService;
         this.tileService = tileService;
+        this.moveRepository = moveRepository;
+        this.gameService = gameService;
     }
 
 
@@ -52,9 +62,9 @@ public class MoveService {
      * @return the move
      */
     public Move findMoveById(Long moveId) {
-        //TODO: Implement findMove method in MoveService
-        //If no move matches the move id return null
-        return null;
+        Optional<Move> optionalMove = moveRepository.findById(moveId);
+
+        return optionalMove.orElse(null);
     }
 
     /**
@@ -67,10 +77,16 @@ public class MoveService {
 
         MoveHandler handler = move.getMoveHandler();
         handler.perform(move, this);
+
+        //Get the game
+        Game game = gameService.getGameById(move.getGameId());
+
+        //Make the recalculations
+        makeRecalculations(game, handler);
     }
 
     //Is performed after performMove terminates
-    public void makeRecalculations(Game game) {
+    public void makeRecalculations(Game game, MoveHandler handler) {
 
         // update the victory points of the current player
         Player player = game.getCurrentPlayer();
@@ -82,9 +98,20 @@ public class MoveService {
 
         player.setVictoryPoints(victoryPoints);
 
-        // TODO: add logic that ends the game if victoryPoints >= 10
+        //save player
+        playerService.save(player);
 
-        // TODO: Recalculate Possible moves
+        //If the player has more 10 or more points, then the game is over
+        if (player.getVictoryPoints() >= 10) {
+            moveRepository.deleteAll();
+            moveRepository.flush();
+            return;
+        }
+
+        //Calculate all new possible moves and saves them to the move repository
+        List<Move> nextMoves = handler.calculateNextMoves(game);
+        moveRepository.saveAll(nextMoves);
+        moveRepository.flush();
     }
 
     /**
@@ -104,16 +131,16 @@ public class MoveService {
         int dice1;
         int dice2;
 
-        dice1 = (int) Math.random() * (max - min + 1) + min;
-        dice2 = (int) Math.random() * (max - min + 1) + min;
+        dice1 = ThreadLocalRandom.current().nextInt(min, max);
+        dice2 = ThreadLocalRandom.current().nextInt(min, max);
 
         int diceRoll = dice1 + dice2;
 
         // get tile(s) with rolled number
-        List<Tile> tiles = boardService.getTiles(diceMove, diceRoll);
+        List<Tile> tiles = boardService.getTilesWithNumber(diceMove.getGameId(), diceRoll);
 
         // update wallet of every player with building on tile
-        for (Tile tile: tiles) {
+        for (Tile tile : tiles) {
 
             // get tile type
             TileType tileType = tile.getType();
@@ -122,12 +149,12 @@ public class MoveService {
             ResourceType resourceType = tileService.convertToResource(tileType);
 
             // get playerIDs with settlements on tile & update their wallets
-            List<Long> playersWithSettlement = boardService.getPlayerIDsWithSettlement(diceMove, tile);
-            playerService.updateWallet(playersWithSettlement, resourceType, 1);
+            List<Long> playersWithSettlement = boardService.getPlayerIDsWithSettlement(diceMove.getGameId(), tile);
+            playerService.updateWallet(playersWithSettlement, resourceType, new Settlement().getBuildingFactor());
 
             // get playerIDs with settlements on tile & update their wallets
-            List<Long> playersWithCity = boardService.getPlayerIDsWithCity(diceMove, tile);
-            playerService.updateWallet(playersWithCity, resourceType, 2);
+            List<Long> playersWithCity = boardService.getPlayerIDsWithCity(diceMove.getGameId(), tile);
+            playerService.updateWallet(playersWithCity, resourceType, new City().getBuildingFactor());
         }
     }
 

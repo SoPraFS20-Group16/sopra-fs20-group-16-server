@@ -29,6 +29,11 @@ public class City extends Building {
         return 2;
     }
 
+    @Override
+    public int getBuildingFactor() {
+        return 2;
+    }
+
     public Coordinate getCoordinate() {
         return coordinate;
     }

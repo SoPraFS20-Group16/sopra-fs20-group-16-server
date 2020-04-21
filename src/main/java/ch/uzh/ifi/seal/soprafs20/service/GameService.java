@@ -128,4 +128,8 @@ public class GameService {
         }
         return game.isPlayer(player);
     }
+
+    public Game getGameById(Long gameId) {
+        return gameRepository.findById(gameId).orElse(null);
+    }
 }
