@@ -2,13 +2,15 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
-import ch.uzh.ifi.seal.soprafs20.service.MoveService;
+import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(GameController.class)
@@ -48,6 +49,9 @@ public class GameControllerTest {
 
     @MockBean
     private MoveService moveService;
+
+    @MockBean
+    private PlayerService playerService;
 
 
     /**
@@ -412,13 +416,13 @@ public class GameControllerTest {
     }
 
     /**
-     * Tests the POST /games/gameId endpoint.
+     * Tests the PUT /games/gameId endpoint.
      * Assumes all is correct
      *
      * @throws Exception the exception
      */
     @Test
-    public void testPostGameById_tokenValid_gameExists_moveExists_moveMatchesGame_userPermitted() throws Exception {
+    public void testPutGameById_tokenValid_gameExists_moveExists_moveMatchesGame_userPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -426,10 +430,10 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
-        move.setPlayerId(12L);
+        move.setUserId(12L);
 
         MovePostDTO postDTO = new MovePostDTO();
         postDTO.setToken(testToken);
@@ -445,30 +449,30 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
         // when
-        MockHttpServletRequestBuilder postRequest = post("/games/1")
+        MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(postDTO));
 
         // then
-        mockMvc.perform(postRequest)
+        mockMvc.perform(putRequest)
                 .andExpect(status().isAccepted());
     }
 
     /**
-     * Tests the POST /games/gameId endpoint.
+     * Tests the PUT /games/gameId endpoint.
      * Assumes token is not valid
      *
      * @throws Exception the exception
      */
     @Test
-    public void testPostGameById_tokenNotValid_gameExists_moveExists_moveMatchesGame() throws Exception {
+    public void testPutGameById_tokenNotValid_gameExists_moveExists_moveMatchesGame() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -476,10 +480,10 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
-        move.setPlayerId(12L);
+        move.setUserId(12L);
 
         MovePostDTO postDTO = new MovePostDTO();
         postDTO.setToken(testToken);
@@ -495,31 +499,31 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(null);
 
         // when
-        MockHttpServletRequestBuilder postRequest = post("/games/1")
+        MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(postDTO));
 
         // then
-        mockMvc.perform(postRequest)
+        mockMvc.perform(putRequest)
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorMessage", is("You are not logged in!")));
     }
 
     /**
-     * Tests the POST /games/gameId endpoint.
+     * Tests the PUT /games/gameId endpoint.
      * Assumes the game posted to does not exist
      *
      * @throws Exception the exception
      */
     @Test
-    public void testPostGameById_tokenValid_gameNotExists_moveExists_userPermitted() throws Exception {
+    public void testPutGameById_tokenValid_gameNotExists_moveExists_userPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -527,10 +531,10 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
-        move.setPlayerId(12L);
+        move.setUserId(12L);
 
         MovePostDTO postDTO = new MovePostDTO();
         postDTO.setToken(testToken);
@@ -544,32 +548,32 @@ public class GameControllerTest {
         // this mocks the GameService
         given(gameService.findGame(Mockito.any())).willReturn(null);
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
         // when
-        MockHttpServletRequestBuilder postRequest = post("/games/1")
+        MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(postDTO));
 
         // then
-        mockMvc.perform(postRequest)
+        mockMvc.perform(putRequest)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage", is("This game does not exist!")));
     }
 
     /**
-     * Tests the POST /games/gameId endpoint.
+     * Tests the PUT /games/gameId endpoint.
      * Assumes the move does not exist
      *
      * @throws Exception the exception
      */
     @Test
-    public void testPostGameById_tokenValid_gameExists_moveNotExists_userPermitted() throws Exception {
+    public void testPutGameById_tokenValid_gameExists_moveNotExists_userPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -577,10 +581,10 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
-        move.setPlayerId(12L);
+        move.setUserId(12L);
 
         MovePostDTO postDTO = new MovePostDTO();
         postDTO.setToken(testToken);
@@ -596,31 +600,31 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(null);
+        given(moveService.findMoveById(Mockito.any())).willReturn(null);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
         // when
-        MockHttpServletRequestBuilder postRequest = post("/games/1")
+        MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(postDTO));
 
         // then
-        mockMvc.perform(postRequest)
+        mockMvc.perform(putRequest)
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.errorMessage", is("This is not a valid move!")));
     }
 
     /**
-     * Tests the POST /games/gameId endpoint.
+     * Tests the PUT /games/gameId endpoint.
      * User is not permitted to access the game instance
      *
      * @throws Exception the exception
      */
     @Test
-    public void testPostGameById_tokenValid_gameExists_moveExists_userNotPermitted() throws Exception {
+    public void testPutGameById_tokenValid_gameExists_moveExists_userNotPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -628,10 +632,10 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
-        move.setPlayerId(12L);
+        move.setUserId(12L);
 
         MovePostDTO postDTO = new MovePostDTO();
         postDTO.setToken(testToken);
@@ -647,31 +651,31 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(false);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
         // when
-        MockHttpServletRequestBuilder postRequest = post("/games/1")
+        MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(postDTO));
 
         // then
-        mockMvc.perform(postRequest)
+        mockMvc.perform(putRequest)
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.errorMessage", is("Game access denied!")));
     }
 
     /**
-     * Tests the POST /games/gameId endpoint.
+     * Tests the PUT /games/gameId endpoint.
      * Moves gameId does not match games Id
      *
      * @throws Exception the exception
      */
     @Test
-    public void testPostGameById__gameIdDoesntMatchMoveGameId() throws Exception {
+    public void testPutGameById__gameIdDoesntMatchMoveGameId() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -679,10 +683,10 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(2L);
-        move.setPlayerId(12L);
+        move.setUserId(12L);
 
         MovePostDTO postDTO = new MovePostDTO();
         postDTO.setToken(testToken);
@@ -698,31 +702,31 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
         // when
-        MockHttpServletRequestBuilder postRequest = post("/games/1")
+        MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(postDTO));
 
         // then
-        mockMvc.perform(postRequest)
+        mockMvc.perform(putRequest)
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.errorMessage", is("This is not a valid move!")));
     }
 
     /**
-     * Tests the POST /games/gameId endpoint.
+     * Tests the PUT /games/gameId endpoint.
      * Users id does not match moves UserId
      *
      * @throws Exception the exception
      */
     @Test
-    public void testPostGameById__playerIdDoesntMatchMovesPlayerId() throws Exception {
+    public void testPutGameById__playerIdDoesntMatchMovesPlayerId() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -730,10 +734,10 @@ public class GameControllerTest {
         user.setToken(testToken);
         user.setId(12L);
 
-        Move move = new Move();
+        Move move = new BuildMove();
         move.setId(123L);
         move.setGameId(1L);
-        move.setPlayerId(22L);
+        move.setUserId(22L);
 
         MovePostDTO postDTO = new MovePostDTO();
         postDTO.setToken(testToken);
@@ -749,19 +753,19 @@ public class GameControllerTest {
         given(gameService.userCanAccessGame(user, game)).willReturn(true);
 
         //this mocks the MoveService
-        given(moveService.findMove(Mockito.any())).willReturn(move);
+        given(moveService.findMoveById(Mockito.any())).willReturn(move);
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
         // when
-        MockHttpServletRequestBuilder postRequest = post("/games/1")
+        MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(postDTO));
 
         // then
-        mockMvc.perform(postRequest)
+        mockMvc.perform(putRequest)
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.errorMessage", is("You are not allowed to make this move!")));
     }

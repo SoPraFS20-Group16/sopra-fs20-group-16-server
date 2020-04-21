@@ -1,7 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.cards;
 
-import ch.uzh.ifi.seal.soprafs20.constant.CardType;
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,11 +20,6 @@ public class DevelopmentCard extends Card {
     @Column(updatable = false, nullable = false)
     private DevelopmentType developmentType;
 
-
-    public DevelopmentCard() {
-        super.setCardType(CardType.DEVELOPMENT);
-    }
-
     //getters and setters
     public DevelopmentType getDevelopmentType() {
         return developmentType;
@@ -33,14 +29,21 @@ public class DevelopmentCard extends Card {
         this.developmentType = developmentType;
     }
 
-    //Interface Methods
-    @Override
-    public boolean isResourceCard() {
-        return false;
+    public ResourceWallet getPrice() {
+
+        // establish amount of resources
+        int oreRequired = 1;
+        int grainRequired = 1;
+        int woolRequired = 1;
+
+        //Create new Wallet
+        ResourceWallet price = new ResourceWallet();
+        price.addResource(ResourceType.ORE, oreRequired);
+        price.addResource(ResourceType.GRAIN, grainRequired);
+        price.addResource(ResourceType.WOOL, woolRequired);
+
+        return price;
     }
 
-    @Override
-    public boolean isDevelopmentCard() {
-        return true;
-    }
+
 }

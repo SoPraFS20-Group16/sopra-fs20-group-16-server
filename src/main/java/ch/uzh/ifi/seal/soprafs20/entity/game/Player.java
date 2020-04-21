@@ -1,9 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.Card;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,29 +21,25 @@ public class Player implements Serializable {
     @Column(unique = true, nullable = false, updatable = false)
     private Long userId;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private ResourceWallet wallet;
+
     @Column(nullable = false)
     private String username;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Card> cards;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Road> roads;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<City> cities;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Settlement> settlements;
+    private List<DevelopmentCard> developmentCards;
+
     @Column
     private int victoryPoints;
+
 
     public Player() {
 
         //Set up empty arrays
-        cards = new ArrayList<>();
-        roads = new ArrayList<>();
-        cities = new ArrayList<>();
-        settlements = new ArrayList<>();
+        wallet = new ResourceWallet();
+        developmentCards = new ArrayList<>();
     }
-
 
     //Getter and setters
 
@@ -58,52 +51,16 @@ public class Player implements Serializable {
         this.victoryPoints = victoryPoints;
     }
 
-    public List<Card> getCards() {
-        return cards;
+    public List<DevelopmentCard> getDevelopmentCards() {
+        return developmentCards;
     }
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
+    public void setDevelopmentCards(List<DevelopmentCard> developmentCards) {
+        this.developmentCards = developmentCards;
     }
 
-    public void addCard(Card card) {
-        cards.add(card);
-    }
-
-    public List<Road> getRoads() {
-        return roads;
-    }
-
-    public void setRoads(List<Road> roads) {
-        this.roads = roads;
-    }
-
-    public void addRoad(Road road) {
-        this.roads.add(road);
-    }
-
-    public List<City> getCities() {
-        return cities;
-    }
-
-    public void setCities(List<City> cities) {
-        this.cities = cities;
-    }
-
-    public void addCity(City city) {
-        cities.add(city);
-    }
-
-    public List<Settlement> getSettlements() {
-        return settlements;
-    }
-
-    public void setSettlements(List<Settlement> settlements) {
-        this.settlements = settlements;
-    }
-
-    public void addSettlement(Settlement settlement) {
-        settlements.add(settlement);
+    public void addDevelopmentCard(DevelopmentCard developmentCard) {
+        developmentCards.add(developmentCard);
     }
 
     public Long getUserId() {
@@ -130,8 +87,11 @@ public class Player implements Serializable {
         this.id = id;
     }
 
-    // Worker Methods
-    //TODO: Implement the Player functionality
+    public ResourceWallet getWallet() {
+        return wallet;
+    }
 
-
+    public void setWallet(ResourceWallet wallet) {
+        this.wallet = wallet;
+    }
 }

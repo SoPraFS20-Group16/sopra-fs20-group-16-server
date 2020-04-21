@@ -15,6 +15,13 @@ public class ErrorMsg {
     public static final String NOT_ALLOWED_TO_MAKE_MOVE = "You are not allowed to make this move!";
     public static final String GAME_CREATION_CONFLICT = "The game creation ran into a conflict";
     public static final String ALREADY_GAME_WITH_NAME = "There is already a game with this Name!";
+    public static final String NO_PLAYER_FOUND_WITH_USER_ID = "There was no player with this user id!";
+    public static final String UNDEFINED_BUILDING_TYPE = "The building type should be defined!";
+    public static final String WRONG_HANDLER_SETUP = "The Handler seems to be set up wrong!";
+    public static final String BOARD_CONSTANTS_INIT_MSG = "BoardConstants should never be initialized";
+    public static final String NO_NEGATIVE_RESOURCES = "The player can not have negative resources!";
+    public static final String NO_MOVE_FOR_NONEXISTING_GAME = "There should not be a move for a nonexistent game!";
+    public static final String NO_PLAYER_IN_QUEUE_WHEN_CALLED = "The queue should not be empty when getNextUserId is called!";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

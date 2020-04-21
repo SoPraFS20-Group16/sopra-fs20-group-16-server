@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 /**
  * The GameLinkDTO represents an element in the array when a GET request is sent to /games
  * <p>
- * TODO: GameLinkDTO could be extended with additional information (for Join Game functionality)
  */
 public class GameLinkDTO {
 

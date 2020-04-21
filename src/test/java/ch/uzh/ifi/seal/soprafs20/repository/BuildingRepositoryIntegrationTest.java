@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.repository;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,19 +30,28 @@ public class BuildingRepositoryIntegrationTest {
     public void testFindAllByType_success() {
 
         //given
-        Coordinate coord = new Coordinate();
+        Coordinate coord = new Coordinate(1, 1);
+        Coordinate coord2 = new Coordinate(1, 2);
 
         Road road = new Road();
-        road.setCoordinate(coord);
+        road.setCoordinate1(coord);
+        road.setCoordinate2(coord2);
+        road.setUserId(1L);
+
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coord);
+        settlement.setUserId(1L);
+
         City city = new City();
         city.setCoordinate(coord);
+        city.setUserId(1L);
 
         entityManager.persist(coord);
         entityManager.persist(road);
         entityManager.persist(settlement);
         entityManager.persist(city);
+        entityManager.persist(coord2);
+        entityManager.flush();
 
         List<Building> rResult = buildingRepository.findAllByType(BuildingType.ROAD);
         List<Building> sResult = buildingRepository.findAllByType(BuildingType.SETTLEMENT);

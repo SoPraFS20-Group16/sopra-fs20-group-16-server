@@ -1,4 +1,6 @@
-package ch.uzh.ifi.seal.soprafs20.entity;
+package ch.uzh.ifi.seal.soprafs20.entity.moves;
+
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -6,7 +8,8 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "MOVE")
-public class Move implements Serializable {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Move implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,7 +19,7 @@ public class Move implements Serializable {
     private Long id;
 
     @Column
-    private Long playerId;      //the players userId
+    private Long userId;      //the players userId
 
     @Column
     private Long gameId;        //the games Id
@@ -29,12 +32,12 @@ public class Move implements Serializable {
         this.id = id;
     }
 
-    public Long getPlayerId() {
-        return playerId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setPlayerId(Long playerId) {
-        this.playerId = playerId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getGameId() {
@@ -44,4 +47,6 @@ public class Move implements Serializable {
     public void setGameId(Long gameId) {
         this.gameId = gameId;
     }
+
+    public abstract MoveHandler getMoveHandler();
 }

@@ -1,7 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,30 +12,26 @@ public abstract class Building implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
     @Id
     @GeneratedValue
     @Column(updatable = false, nullable = false)
     private Long id;
 
+    @Column(nullable = false)
+    private Long userId;
+
     @Column(nullable = false, updatable = false)
     private BuildingType type;
 
-    @OneToOne(optional = false)
-    private Coordinate coordinate;
 
     //Abstract methods
-    abstract int getVictoryPoints();
+    public abstract int getVictoryPoints();
+
+    public abstract int getBuildingFactor();
+
+    public abstract ResourceWallet getPrice();
 
     //Shared Methods
-    public Coordinate getCoordinate() {
-        return this.coordinate;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
-
     public BuildingType getType() {
         return this.type;
     }
@@ -43,4 +39,14 @@ public abstract class Building implements Serializable {
     public void setType(BuildingType type) {
         this.type = type;
     }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long playerId) {
+        this.userId = playerId;
+    }
+
 }
+

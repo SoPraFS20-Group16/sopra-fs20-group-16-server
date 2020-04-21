@@ -261,8 +261,13 @@ public class UserControllerTest {
     @Test
     public void logoutUser_success() throws Exception {
 
+        User user = new User();
+        user.setUsername("firstname@lastname");
+
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("testUser");
+
+        given(userService.logoutUser(Mockito.any())).willReturn(user);
 
         MockHttpServletRequestBuilder putRequest = put("/logout")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -270,6 +275,23 @@ public class UserControllerTest {
 
         mockMvc.perform(putRequest)
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void logoutUser_userNotFound() throws Exception {
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername(null);
+
+        given(userService.logoutUser(Mockito.any())).willThrow(new RestException(HttpStatus.UNAUTHORIZED, "The Mocked Exception Reason"));
+
+        MockHttpServletRequestBuilder putRequest = put("/logout")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(putRequest)
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorMessage", is("The Mocked Exception Reason")));
     }
 
     /**

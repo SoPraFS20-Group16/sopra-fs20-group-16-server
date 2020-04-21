@@ -6,12 +6,14 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +37,12 @@ public class GameServiceTest {
     @Mock
     BoardService boardService;
 
+    @Mock
+    QueueService queueService;
+
+    @Mock
+    MoveService moveService;
+
     @InjectMocks
     private GameService gameService;
 
@@ -53,6 +61,12 @@ public class GameServiceTest {
 
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
+
+        //Inject mocks into gameService
+        ReflectionTestUtils.setField(gameService, "playerService", playerService);
+        ReflectionTestUtils.setField(gameService, "boardService", boardService);
+        ReflectionTestUtils.setField(gameService, "queueService", queueService);
+        ReflectionTestUtils.setField(gameService, "moveService", moveService);
     }
 
     @Test

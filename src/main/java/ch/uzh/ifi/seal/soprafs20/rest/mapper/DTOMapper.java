@@ -1,12 +1,18 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.MoveDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.PlayerDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import org.mapstruct.BeanMapping;
@@ -49,15 +55,29 @@ public interface DTOMapper {
     @Mapping(source = "withBots", target = "withBots")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
+    @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "gameId")
     @Mapping(source = "withBots", target = "withBots")
     @Mapping(source = "name", target = "name")
-        //Map and test all new fields as the game evolves!
-        //Warnings are generated if a property is unmapped
-        //If it should not be revealed, ignore it individually!
+    @Mapping(source = "board", target = "board")
+    @Mapping(source = "players", target = "players")
     GameDTO convertGameToGameDTO(Game game);
 
+    @Mapping(source = "coordinates", target = "coordinates")
+    TileDTO convertTileToTileDTO(Tile tile);
+
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "moveId", target = "id")
-    Move convertMovePostDTOtoEntity(MovePostDTO move);
+    @Mapping(source = "x", target = "x")
+    @Mapping(source = "y", target = "y")
+    CoordinateDTO convertCoordinateToCoordinateDTO(Coordinate coordinate);
+
+
+    //Moves and cards are added separately according to requesting user
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "userId", target = "userId")
+    PlayerDTO convertPlayerToPlayerDTO(Player player);
+
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "id", target = "moveId")
+    MoveDTO convertMoveToMoveDTO(Move move);
 }
