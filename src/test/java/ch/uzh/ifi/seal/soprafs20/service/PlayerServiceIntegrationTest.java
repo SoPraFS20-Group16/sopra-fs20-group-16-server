@@ -78,10 +78,6 @@ public class PlayerServiceIntegrationTest {
 
         coordinateRepository.deleteAll();
 
-
-
-
-
         testUser = new User();
         testUser.setToken("Token");
         testUser.setUsername("Username");
@@ -98,6 +94,18 @@ public class PlayerServiceIntegrationTest {
 
     @AfterEach
     public void teardown() {
+
+        gameRepository.deleteAll();
+
+        moveRepository.deleteAll();
+
+        userRepository.deleteAll();
+        playerRepository.deleteAll();
+
+        boardRepository.deleteAll();
+        tileRepository.deleteAll();
+
+        coordinateRepository.deleteAll();
         entityManager.clear();
     }
 

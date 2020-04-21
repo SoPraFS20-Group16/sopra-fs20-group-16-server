@@ -56,13 +56,19 @@ public class BoardServiceIntegrationTest {
         gameRepository.deleteAll();
         boardRepository.deleteAll();
         tileRepository.deleteAll();
+        coordinateRepository.deleteAll();
 
         moveRepository.deleteAll();
     }
 
     @AfterEach
     public void teardown() {
-        entityManager.clear();
+        gameRepository.deleteAll();
+        boardRepository.deleteAll();
+        tileRepository.deleteAll();
+        coordinateRepository.deleteAll();
+
+        moveRepository.deleteAll();
     }
 
     @Test
