@@ -42,7 +42,14 @@ public class BoardServiceIntegrationTest {
     @BeforeEach
     public void setup() {
         boardRepository.deleteAll();
+        boardRepository.flush();
+
+        coordinateRepository.deleteAll();
+        coordinateRepository.flush();
+
         tileRepository.deleteAll();
+        tileRepository.flush();
+
     }
 
     @Test
