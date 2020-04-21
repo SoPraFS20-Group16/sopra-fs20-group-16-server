@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,16 +40,13 @@ public class BoardServiceIntegrationTest {
     @Autowired
     TileService tileService;
 
+    @Autowired
+    EntityManager entityManager;
+
     @BeforeEach
     public void setup() {
-        boardRepository.deleteAll();
-        boardRepository.flush();
 
-        coordinateRepository.deleteAll();
-        coordinateRepository.flush();
-
-        tileRepository.deleteAll();
-        tileRepository.flush();
+        entityManager.clear();
 
     }
 
