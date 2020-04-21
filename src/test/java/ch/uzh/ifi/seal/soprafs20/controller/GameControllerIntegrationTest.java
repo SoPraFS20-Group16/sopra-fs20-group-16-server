@@ -108,6 +108,7 @@ public class GameControllerIntegrationTest {
         assertEquals(testUser.getUsername(), found.getUsername(), "The username does not match");
     }
 
+    // -- integration upload -- //
 
     @Test
     public void callGetGames() throws Exception {
