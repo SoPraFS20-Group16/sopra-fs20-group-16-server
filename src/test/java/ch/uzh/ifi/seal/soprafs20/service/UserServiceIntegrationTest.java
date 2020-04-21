@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @WebAppConfiguration
 @SpringBootTest
+@Transactional
 public class UserServiceIntegrationTest {
 
     @Qualifier("userRepository")
