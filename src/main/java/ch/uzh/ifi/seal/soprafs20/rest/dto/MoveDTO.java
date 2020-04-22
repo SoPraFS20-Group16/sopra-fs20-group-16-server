@@ -6,6 +6,8 @@ public class MoveDTO {
 
     private Long moveId;
 
+    private String moveName;
+
     public Long getUserId() {
         return userId;
     }
@@ -20,5 +22,13 @@ public class MoveDTO {
 
     public void setMoveId(Long moveId) {
         this.moveId = moveId;
+    }
+
+    public String getMoveName() {
+        return moveName;
+    }
+
+    public void setMoveName(String moveName) {
+        this.moveName = moveName;
     }
 }
