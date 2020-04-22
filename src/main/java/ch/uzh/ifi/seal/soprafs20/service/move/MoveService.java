@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
@@ -250,10 +251,56 @@ public class MoveService {
         DevelopmentType type = cardMove.getDevelopmentCard().getDevelopmentType();
 
         // invoke the card
+        // TODO: implement individual functionality of devCards
         if (type == DevelopmentType.VICTORYPOINT) {
+
+            // increase victory points of player
             playerService.addVictoryPoint(cardMove);
+
+        } else if (type == DevelopmentType.KNIGHT) {
+
+            // calculate all possible moves step#1 (robber placement) & set robber on board
+            // makeRobberPlacementRecalculations(cardMove.getGameId());
+            // boardService.setRobber(KnightMove);
+
+            // calculate all possible moves step#2 (choose player to steal resourceCards)
+            // makeKnightChooseVictimRecalculations(cardMove.getGameId());
+
+            // update wallet of players (steal and add)
+            // playerService.stealResources(KnightMove);
+
+        } else if (type == DevelopmentType.MONOPOLYPROGRESS) {
+
+            // calculate all possible moves (provide resource options)
+            // makeMonopolyRecalculations(cardMove.getGameId());
+
+            //  update wallet of all players (deduct all cards of chosen resource from
+            //  opponent players and add them to current player)
+            // playerService.monopolizeResources(MonopolyMove);
+
+        } else if (type == DevelopmentType.PLENTYPROGRESS) {
+
+            // calculate all possible moves (provide resource options)
+            // makePlentyRecalculations(cardMove.getGameId());
+
+            // update wallet of player with the two chosen resource cards
+            // playerService.plentyResources(PlentyMove);
+
+        } else if (type == DevelopmentType.ROADPROGRESS) {
+
+            // calculate all possible moves (provide road #1 building options)
+            // makeProgressRecalculations(cardMove.getGameId());
+
+            // build road #1
+            // boardService.build(ProgressMove);
+
+            // calculate all possible moves (provide road #2 building options)
+            // makeProgressRecalculations(cardMove.getGameId());
+
+            // build road #2
+            // boardService.build(ProgressMove);
         } else {
-            // TODO: implement individual functionality of devCards
+            throw new IllegalStateException(ErrorMsg.UNDEFINED_DEVCARD_TYPE);
         }
 
         // Remove development card from player
