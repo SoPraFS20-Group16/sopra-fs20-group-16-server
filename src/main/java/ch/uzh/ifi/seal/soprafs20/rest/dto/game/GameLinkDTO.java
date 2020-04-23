@@ -1,5 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+
+import java.util.List;
+
 /**
  * The GameLinkDTO represents an element in the array when a GET request is sent to /games
  * <p>
@@ -12,7 +16,7 @@ public class GameLinkDTO {
 
     private String name;
 
-    private int maxPlayers;
+    private int minPlayers;
 
     private int joinedPlayers;
 
@@ -42,20 +46,16 @@ public class GameLinkDTO {
         this.name = name;
     }
 
-    public int getMaxPlayers() {
-        return maxPlayers;
+    public int getMinPlayers() {
+        return minPlayers;
     }
 
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
+    public void setMinPlayers(int minPlayers) {
+        this.minPlayers = minPlayers;
     }
 
     public int getJoinedPlayers() {
         return joinedPlayers;
-    }
-
-    public void setJoinedPlayers(int joinedPlayers) {
-        this.joinedPlayers = joinedPlayers;
     }
 
     public boolean isWithBots() {
@@ -64,5 +64,9 @@ public class GameLinkDTO {
 
     public void setWithBots(boolean withBots) {
         this.withBots = withBots;
+    }
+
+    public void setJoinedPlayers(List<Player> players) {
+        joinedPlayers = players.size();
     }
 }
