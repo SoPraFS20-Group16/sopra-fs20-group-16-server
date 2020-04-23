@@ -69,18 +69,21 @@ public class FirstStack {
 
         int largestToMirror = playerStack.size()-1;
         int index = playerStack.size();
+        Map<Integer, Long> toBeAdded = new HashMap<>();
 
         while (largestToMirror >= 0) {
             for (Integer key: playerStack.keySet()) {
 
                 if (key == largestToMirror) {
 
-                    playerStack.put(index, playerStack.get(largestToMirror));
+                    toBeAdded.put(index, playerStack.get(largestToMirror));
                     largestToMirror--;
                     index++;
                 }
             }
         }
+        //Add the newly created elements to the player stack
+        toBeAdded.keySet().forEach(key -> playerStack.put(key, toBeAdded.get(key)));
     }
 
     public Long getFirstPlayersUserId() {

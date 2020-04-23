@@ -152,12 +152,9 @@ public class MoveService {
 
         //Calculate the first move
         if (game.getPlayers().size() >= game.getPlayerMinimum()) {
-            log.info("If statement succeeded, the minumum player count is reachd");
             List<Move> startMoves = MoveCalculator.calculateStartMoves(game);
-            log.info("The list of calculated startMoves should contain 1 move. Contains: " + startMoves.size());
             moveRepository.saveAll(startMoves);
             moveRepository.flush();
-            log.info("The moves are successfully saved");
         }
     }
 

@@ -13,6 +13,8 @@ import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import java.util.List;
 
 @RestController
 public class GameController {
+
+    private final Logger log = LoggerFactory.getLogger(GameController.class);
 
     private final GameService gameService;
     private final UserService userService;
@@ -165,18 +169,25 @@ public class GameController {
         //If game does not exists return 404
         Game foundGame = GameControllerHelper.checkIfGameExists(gameService, gameId);
 
+        log.info("Found game");
 
         //Find move
         Long requestedMoveId = movePutDTO.getMoveId();
         Move foundMove = GameControllerHelper.findMoveIfExistsElseThrow403(moveService, requestedMoveId);
+
+        log.info("Found move");
 
         //Find the user that made the request
         User userFromToken = new User();
         userFromToken.setToken(token);
         User requestingUser = userService.findUser(userFromToken);
 
+        log.info("Found user");
+
         //Check if move and game and user build a valid set of instructions
         GameControllerHelper.checkIsValidGameMoveUserCombinationElseThrow(gameService, foundGame, foundMove, requestingUser);
+
+        log.info("All form valid combination -> delegated to moveService");
 
         //If everything is correct perform the move
         moveService.performMove(foundMove);
