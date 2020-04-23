@@ -94,6 +94,10 @@ public class MoveService {
         MoveHandler handler = move.getMoveHandler();
         handler.perform(move, this);
 
+        // delete all recent moves
+        moveRepository.deleteAll();
+        moveRepository.flush();
+
         //Get the game
         Game game = gameService.getGameById(move.getGameId());
 
@@ -252,12 +256,7 @@ public class MoveService {
 
         // invoke the card
         // TODO: implement individual functionality of devCards
-        if (type == DevelopmentType.VICTORYPOINT) {
-
-            // increase victory points of player
-            playerService.addVictoryPoint(cardMove);
-
-        } else if (type == DevelopmentType.KNIGHT) {
+        if (type == DevelopmentType.KNIGHT) {
 
             // calculate all possible moves step#1 (robber placement) & set robber on board
             // makeRobberPlacementRecalculations(cardMove.getGameId());
