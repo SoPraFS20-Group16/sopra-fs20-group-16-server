@@ -6,10 +6,9 @@ package ch.uzh.ifi.seal.soprafs20.rest.dto;
  * the permission can be verified via the toke if it matches the Moves playerId
  * the MoveDTO can identify the corresponding Move with the moveId
  */
-public class MovePostDTO {
+public class MovePutDTO {
 
     private Long moveId;
-    private String token;
 
     public Long getMoveId() {
         return moveId;
@@ -17,13 +16,5 @@ public class MovePostDTO {
 
     public void setMoveId(Long moveId) {
         this.moveId = moveId;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }

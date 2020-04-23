@@ -4,7 +4,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePutDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -95,6 +95,9 @@ public class GameController {
         tmp.setToken(token);
         User postUser = userService.findUser(tmp);
 
+        //Check if the user is already a player in the game
+        GameControllerHelper.checkIfUserIsInAnotherGameElseThrow403Forbidden(postUser, playerService);
+
         //Set creator id
         gameInput.setCreatorId(postUser.getId());
 
@@ -154,7 +157,7 @@ public class GameController {
     @ResponseBody
     public void postToGameWithId(@RequestHeader(name = "Token") String token,
                                  @PathVariable Long gameId,
-                                 @RequestBody MovePostDTO movePostDTO) {
+                                 @RequestBody MovePutDTO movePutDTO) {
 
         //If user does not possess a valid token return 401
         GameControllerHelper.checkToken(userService, token);
@@ -164,7 +167,7 @@ public class GameController {
 
 
         //Find move
-        Long requestedMoveId = movePostDTO.getMoveId();
+        Long requestedMoveId = movePutDTO.getMoveId();
         Move foundMove = GameControllerHelper.findMoveIfExistsElseThrow403(moveService, requestedMoveId);
 
         //Find the user that made the request

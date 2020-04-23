@@ -166,4 +166,13 @@ class GameControllerHelper {
         }
     }
 
+    public static void checkIfUserIsInAnotherGameElseThrow403Forbidden(User postUser, PlayerService playerService) {
+
+        Player existingPlayer = playerService.findPlayerByUserId(postUser.getId());
+
+        //If the player is not null then the user is already in another game!
+        if (existingPlayer != null) {
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.ALREADY_PLAYER_IN_ANOTHER_GAME, ErrorMsg.YOU_ARE_IN_ANOTHER_GAME);
+        }
+    }
 }

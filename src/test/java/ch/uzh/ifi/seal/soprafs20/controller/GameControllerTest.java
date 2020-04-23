@@ -5,7 +5,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePutDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
@@ -435,7 +435,7 @@ public class GameControllerTest {
         move.setGameId(1L);
         move.setUserId(12L);
 
-        MovePostDTO postDTO = new MovePostDTO();
+        MovePutDTO postDTO = new MovePutDTO();
         postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
@@ -485,7 +485,7 @@ public class GameControllerTest {
         move.setGameId(1L);
         move.setUserId(12L);
 
-        MovePostDTO postDTO = new MovePostDTO();
+        MovePutDTO postDTO = new MovePutDTO();
         postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
@@ -536,7 +536,7 @@ public class GameControllerTest {
         move.setGameId(1L);
         move.setUserId(12L);
 
-        MovePostDTO postDTO = new MovePostDTO();
+        MovePutDTO postDTO = new MovePutDTO();
         postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
@@ -586,7 +586,7 @@ public class GameControllerTest {
         move.setGameId(1L);
         move.setUserId(12L);
 
-        MovePostDTO postDTO = new MovePostDTO();
+        MovePutDTO postDTO = new MovePutDTO();
         postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
@@ -637,7 +637,7 @@ public class GameControllerTest {
         move.setGameId(1L);
         move.setUserId(12L);
 
-        MovePostDTO postDTO = new MovePostDTO();
+        MovePutDTO postDTO = new MovePutDTO();
         postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
@@ -688,7 +688,7 @@ public class GameControllerTest {
         move.setGameId(2L);
         move.setUserId(12L);
 
-        MovePostDTO postDTO = new MovePostDTO();
+        MovePutDTO postDTO = new MovePutDTO();
         postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
@@ -739,7 +739,7 @@ public class GameControllerTest {
         move.setGameId(1L);
         move.setUserId(22L);
 
-        MovePostDTO postDTO = new MovePostDTO();
+        MovePutDTO postDTO = new MovePutDTO();
         postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
