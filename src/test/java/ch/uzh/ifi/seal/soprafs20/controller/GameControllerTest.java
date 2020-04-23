@@ -435,9 +435,8 @@ public class GameControllerTest {
         move.setGameId(1L);
         move.setUserId(12L);
 
-        MovePutDTO postDTO = new MovePutDTO();
-        postDTO.setToken(testToken);
-        postDTO.setMoveId(123L);
+        MovePutDTO putDTO = new MovePutDTO();
+        putDTO.setMoveId(123L);
 
         Game game = new Game();
         game.setId(1L);
@@ -458,7 +457,7 @@ public class GameControllerTest {
         MockHttpServletRequestBuilder putRequest = put("/games/1")
                 .header("Token", testToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(postDTO));
+                .content(asJsonString(putDTO));
 
         // then
         mockMvc.perform(putRequest)
@@ -486,7 +485,6 @@ public class GameControllerTest {
         move.setUserId(12L);
 
         MovePutDTO postDTO = new MovePutDTO();
-        postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
         Game game = new Game();
@@ -537,7 +535,6 @@ public class GameControllerTest {
         move.setUserId(12L);
 
         MovePutDTO postDTO = new MovePutDTO();
-        postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
         Game game = new Game();
@@ -587,7 +584,6 @@ public class GameControllerTest {
         move.setUserId(12L);
 
         MovePutDTO postDTO = new MovePutDTO();
-        postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
         Game game = new Game();
@@ -689,7 +685,6 @@ public class GameControllerTest {
         move.setUserId(12L);
 
         MovePutDTO postDTO = new MovePutDTO();
-        postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
         Game game = new Game();
@@ -740,7 +735,6 @@ public class GameControllerTest {
         move.setUserId(22L);
 
         MovePutDTO postDTO = new MovePutDTO();
-        postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
         Game game = new Game();
