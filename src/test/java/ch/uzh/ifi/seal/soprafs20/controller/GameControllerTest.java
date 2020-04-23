@@ -634,7 +634,6 @@ public class GameControllerTest {
         move.setUserId(12L);
 
         MovePutDTO postDTO = new MovePutDTO();
-        postDTO.setToken(testToken);
         postDTO.setMoveId(123L);
 
         Game game = new Game();
