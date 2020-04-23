@@ -1,7 +1,8 @@
-package ch.uzh.ifi.seal.soprafs20.entity.moves;
+package ch.uzh.ifi.seal.soprafs20.entity.moves.first;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
-import ch.uzh.ifi.seal.soprafs20.service.move.handler.FirstRoadMoveHandler;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.first.FirstRoadMoveHandler;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
 import javax.persistence.CascadeType;

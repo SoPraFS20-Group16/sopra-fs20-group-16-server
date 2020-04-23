@@ -13,6 +13,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,6 +228,14 @@ public class MoveCalculatorHelper {
     static PassMove createPassMove(Game game, Player player) {
 
         PassMove move = new PassMove();
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
+    }
+
+    static FirstPassMove createFirstPassMove(Game game, Player player) {
+        FirstPassMove move = new FirstPassMove();
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
 

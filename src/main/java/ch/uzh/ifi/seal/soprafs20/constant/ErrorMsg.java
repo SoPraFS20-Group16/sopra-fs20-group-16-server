@@ -25,6 +25,9 @@ public class ErrorMsg {
     public static final String UNDEFINED_DEVCARD_TYPE = "The development card type should be defined!";
     public static final String ALREADY_PLAYER_IN_ANOTHER_GAME = "The player with this userId already exists";
     public static final String YOU_ARE_IN_ANOTHER_GAME = "You are already a player in another game";
+    public static final String NO_PLAYER_IN_STACK_WHEN_CALLED = "The Stack should not be empty when getUserIdForPlayerAfter is called!" ;
+    public static final String GAME_CONSTANTS_INITIALIZATION = "The GameConstantsClass should not be initialized!";
+    public static final String PLAYER_CONSTANTS_INITIALIZATION = "PlayerConstants class should not be initialized";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

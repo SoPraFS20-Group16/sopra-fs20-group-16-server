@@ -7,6 +7,6 @@ public class PlayerConstants {
     public static final int MAX_NUMBER_CITIES = 4;
     
     private PlayerConstants() {
-        throw new IllegalStateException("PlayerConstants class should not be initialized");
+        throw new IllegalStateException(ErrorMsg.PLAYER_CONSTANTS_INITIALIZATION);
     }
 }

@@ -167,7 +167,7 @@ public class GameService {
         return game.isPlayer(player);
     }
 
-    public Game getGameById(Long gameId) {
+    public Game findGameById(Long gameId) {
         return gameRepository.findById(gameId).orElse(null);
     }
 
@@ -185,6 +185,8 @@ public class GameService {
         //Add player to game and save
         game.addPlayer(createdPlayer);
         gameRepository.saveAndFlush(game);
+
+        moveService.makeSetupRecalculations(game);
     }
 
     public Game save(Game game) {

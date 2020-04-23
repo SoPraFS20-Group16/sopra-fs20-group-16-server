@@ -10,6 +10,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -297,6 +300,22 @@ public class MoveCalculator {
         return possibleMove;
     }
 
+    private static List<FirstPassMove> getFirstPassMove(Game game) {
+
+        // create list for possible move
+        List<FirstPassMove> possibleMove = new ArrayList<>();
+
+        // get player current player
+        Player player = game.getCurrentPlayer();
+
+        // create passMove
+        FirstPassMove move = MoveCalculatorHelper.createFirstPassMove(game, player);
+        possibleMove.add(move);
+
+        // return move
+        return possibleMove;
+    }
+
     public static List<Move> calculateAllFirstSettlementMoves(Game game) {
         return new ArrayList<>(getAllFirstSettlementMoves(game));
 
@@ -308,5 +327,24 @@ public class MoveCalculator {
 
     public static List<Move> calculatePassMove(Game game) {
         return new ArrayList<>(getPassMove(game));
+    }
+
+    public static List<Move> calculateFirstPassMove(Game game) {
+        return new ArrayList<>(getFirstPassMove(game));
+    }
+
+    public static List<Move> calculateStartMoves(Game game) {
+        return new ArrayList<>(getStartMoves(game));
+    }
+
+    private static List<StartMove> getStartMoves(Game game) {
+
+        List<StartMove> moves = new ArrayList<>();
+
+        StartMove move = new StartMove();
+        move.setGameId(game.getId());
+        move.setUserId(game.getCreatorId());
+        moves.add(move);
+        return moves;
     }
 }

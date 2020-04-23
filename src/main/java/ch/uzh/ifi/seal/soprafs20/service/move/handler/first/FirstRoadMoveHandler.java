@@ -1,11 +1,12 @@
-package ch.uzh.ifi.seal.soprafs20.service.move.handler;
+package ch.uzh.ifi.seal.soprafs20.service.move.handler.first;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
 import java.util.List;
 
@@ -28,6 +29,6 @@ public class FirstRoadMoveHandler implements MoveHandler {
 
     @Override
     public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculatePassMove(game);
+        return MoveCalculator.calculateFirstPassMove(game);
     }
 }

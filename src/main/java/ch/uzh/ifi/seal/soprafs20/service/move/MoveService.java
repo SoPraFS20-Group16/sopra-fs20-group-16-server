@@ -11,6 +11,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
 import ch.uzh.ifi.seal.soprafs20.service.*;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
@@ -39,10 +42,16 @@ public class MoveService {
     private GameService gameService;
     private BoardService boardService;
     private QueueService queueService;
+    private FirstPartService firstPartService;
 
     @Autowired
     public MoveService(@Qualifier("moveRepository") MoveRepository moveRepository) {
         this.moveRepository = moveRepository;
+    }
+
+    @Autowired
+    public void setFirstPartService(FirstPartService firstPartService) {
+        this.firstPartService = firstPartService;
     }
 
     @Autowired
@@ -99,7 +108,7 @@ public class MoveService {
         moveRepository.flush();
 
         //Get the game
-        Game game = gameService.getGameById(move.getGameId());
+        Game game = gameService.findGameById(move.getGameId());
 
         //Make the recalculations
         makeRecalculations(game, handler, move);
@@ -130,16 +139,23 @@ public class MoveService {
 
         //Calculate all new possible moves and saves them to the move repository
         List<Move> nextMoves = handler.calculateNextMoves(game, move);
+
+        //Save the game (necessary to do here because of first part ->
+        // randomly select first player in FirstPassMoveHandler)
+        gameService.save(game);
+
         moveRepository.saveAll(nextMoves);
         moveRepository.flush();
     }
 
     public void makeSetupRecalculations(Game game) {
 
-        // calculate all initial moves
-        List<Move> initialMoves = MoveCalculator.calculateAllFirstSettlementMoves(game);
-        moveRepository.saveAll(initialMoves);
-        moveRepository.flush();
+        //Calculate the first move
+        if (game.getPlayers().size() >= game.getPlayerMinimum()) {
+            List<Move> startMoves = MoveCalculator.calculateStartMoves(game);
+            moveRepository.saveAll(startMoves);
+            moveRepository.flush();
+        }
     }
 
     /**
@@ -196,13 +212,26 @@ public class MoveService {
      */
     public void performPassMove(PassMove passMove) {
 
-        Game game = gameService.getGameById(passMove.getGameId());
+        Game game = gameService.findGameById(passMove.getGameId());
 
         PlayerQueue queue = queueService.queueForGameWithId(game.getId());
 
         Long queueReturn = queue.getNextUserIdAfter(game.getCurrentPlayer().getUserId());
 
         Player nextPlayer = playerService.findPlayerByUserId(queueReturn);
+
+        game.setCurrentPlayer(nextPlayer);
+
+        gameService.save(game);
+    }
+
+    public void performFirstPassMove(FirstPassMove firstPassMove) {
+        Game game = gameService.findGameById(firstPassMove.getGameId());
+
+        //Find the userId for the next player in the game!
+        Long nextUserId = firstPartService.getNextPlayerAfter(game.getId(), firstPassMove.getUserId());
+
+        Player nextPlayer = playerService.findPlayerByUserId(nextUserId);
 
         game.setCurrentPlayer(nextPlayer);
 
@@ -337,5 +366,14 @@ public class MoveService {
 
     public void performFirstRoadMove(FirstRoadMove firstRoadMove) {
         boardService.build(firstRoadMove);
+    }
+
+    public boolean canExitFirstPart(Long gameId) {
+        return firstPartService.canExitForGame(gameId);
+    }
+
+    public void performStartMove(StartMove startMove) {
+
+        firstPartService.createStackForGameWithId(startMove.getGameId());
     }
 }

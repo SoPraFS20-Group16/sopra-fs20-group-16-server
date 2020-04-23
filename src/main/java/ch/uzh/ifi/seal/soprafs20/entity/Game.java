@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 
@@ -22,6 +23,9 @@ public class Game implements Serializable {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    @Column
+    private int playerMinimum = GameConstants.DEFAULT_PLAYER_MINIMUM;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Player> players;
@@ -80,6 +84,14 @@ public class Game implements Serializable {
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public int getPlayerMinimum() {
+        return playerMinimum;
+    }
+
+    public void setPlayerMinimum(int playerMinimum) {
+        this.playerMinimum = playerMinimum;
     }
 
     /**

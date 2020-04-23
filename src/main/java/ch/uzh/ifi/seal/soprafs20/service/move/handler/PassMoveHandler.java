@@ -27,6 +27,6 @@ public class PassMoveHandler implements MoveHandler {
 
     @Override
     public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculateAllFirstSettlementMoves(game);
+        return MoveCalculator.calculateAllStandardMoves(game);
     }
 }
