@@ -11,6 +11,10 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
@@ -274,70 +278,53 @@ public class MoveService {
 
     }
 
-    /**
-     * Performs a CardMove
-     * Is called from the CardMoveHandler
-     *
-     * the player invokes a development card and the card gets removed from the player
-     *
-     * @param cardMove the CardMove that is passed from the handler
-     */
+    // -- card moves section --
+
+    // removes invoked development card from player
     public void performCardMove(CardMove cardMove) {
 
-        // Get the development card type from the move
+        // get the development card type from the move
         DevelopmentType type = cardMove.getDevelopmentCard().getDevelopmentType();
 
-        // invoke the card
-        // TODO: implement individual functionality of devCards
-        if (type == DevelopmentType.KNIGHT) {
-
-            // calculate all possible moves step#1 (robber placement) & set robber on board
-            // makeRobberPlacementRecalculations(cardMove.getGameId());
-            // boardService.setRobber(KnightMove);
-
-            // calculate all possible moves step#2 (choose player to steal resourceCards)
-            // makeKnightChooseVictimRecalculations(cardMove.getGameId());
-
-            // update wallet of players (steal and add)
-            // playerService.stealResources(KnightMove);
-
-        } else if (type == DevelopmentType.MONOPOLYPROGRESS) {
-
-            // calculate all possible moves (provide resource options)
-            // makeMonopolyRecalculations(cardMove.getGameId());
-
-            //  update wallet of all players (deduct all cards of chosen resource from
-            //  opponent players and add them to current player)
-            // playerService.monopolizeResources(MonopolyMove);
-
-        } else if (type == DevelopmentType.PLENTYPROGRESS) {
-
-            // calculate all possible moves (provide resource options)
-            // makePlentyRecalculations(cardMove.getGameId());
-
-            // update wallet of player with the two chosen resource cards
-            // playerService.plentyResources(PlentyMove);
-
-        } else if (type == DevelopmentType.ROADPROGRESS) {
-
-            // calculate all possible moves (provide road #1 building options)
-            // makeProgressRecalculations(cardMove.getGameId());
-
-            // build road #1
-            // boardService.build(ProgressMove);
-
-            // calculate all possible moves (provide road #2 building options)
-            // makeProgressRecalculations(cardMove.getGameId());
-
-            // build road #2
-            // boardService.build(ProgressMove);
-        } else {
-            throw new IllegalStateException(ErrorMsg.UNDEFINED_DEVCARD_TYPE);
+        // remove development card from player, if it's not a victoryPoint card
+        if (type != DevelopmentType.VICTORYPOINT) {
+            playerService.removeDevelopmentCard(cardMove);
         }
-
-        // Remove development card from player
-        playerService.removeDevelopmentCard(cardMove);
     }
+
+    // performs monopoly move
+    public void performMonopolyMove(MonopolyMove monopolyMove) {
+
+        playerService.monopolizeResources(monopolyMove);
+    }
+
+    // performs plenty move
+    public void performPlentyMove(PlentyMove plentyMove) {
+
+        playerService.plentyResources(plentyMove);
+    }
+
+    // performs roadProgress move
+    public void performRoadProgressMove(RoadProgressMove roadProgressMove) {
+
+        // since the player does not have to pay for road, it gets directly build
+        boardService.build(roadProgressMove);
+    }
+
+    // performs knight move
+    public void performKnightMove(KnightMove knightMove) {
+
+        // get tile where robber will be placed
+        Tile robberTile = knightMove.getTile();
+
+        // set robber on board
+        // TODO: implement functionality (e.g. set tile field boolean hasRobber)
+
+        // deduct random card from opponent
+        playerService.stealResource(knightMove);
+    }
+
+    // -- end card moves section--
 
     /**
      * Performs a BuildMove
@@ -376,4 +363,5 @@ public class MoveService {
 
         firstPartService.createStackForGameWithId(startMove.getGameId());
     }
+
 }

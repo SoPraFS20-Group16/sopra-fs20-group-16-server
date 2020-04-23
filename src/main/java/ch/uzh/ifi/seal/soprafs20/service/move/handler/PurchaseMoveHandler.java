@@ -1,9 +1,13 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+
+import java.util.List;
 
 /**
  * The handler for the PurchaseMove
@@ -22,5 +26,12 @@ public class PurchaseMoveHandler implements MoveHandler {
 
         //Pass back to the moveService
         moveService.performPurchaseMove(purchaseMove);
+    }
+
+    @Override
+    public List<Move> calculateNextMoves(Game game, Move move) {
+
+        // it's not allowed to invoke a development card in the same move it got purchased
+        return MoveCalculator.calculateAllStandardMovesExclusiveDevCard(game);
     }
 }

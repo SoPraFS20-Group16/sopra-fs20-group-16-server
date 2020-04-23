@@ -13,6 +13,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
@@ -222,6 +223,11 @@ public class BoardService {
     }
 
     public void build(FirstRoadMove move) {
+        buildWorker(move.getRoad(), move.getGameId(), move.getUserId());
+    }
+
+
+    public void build(RoadProgressMove move) {
         buildWorker(move.getRoad(), move.getGameId(), move.getUserId());
     }
 

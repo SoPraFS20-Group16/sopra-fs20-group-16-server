@@ -1,9 +1,14 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+
+import java.util.List;
 
 /**
  * The handler for the CardMove
@@ -17,20 +22,31 @@ public class CardMoveHandler implements MoveHandler {
             throw new IllegalStateException(ErrorMsg.WRONG_HANDLER_SETUP);
         }
 
-        // Cast move
+        // cast move
         CardMove cardMove = (CardMove) move;
 
-        // Pass back to the moveService
+        // cass back to the moveService (removes devCard from player)
         moveService.performCardMove(cardMove);
+    }
 
-        // TODO: add logic for subsequent moves (either here or in performCardMove method)
-        // 1)   invoke knight card
-        // 2)   calculate possible moves (placements of knight on board)
-        // 3)   return options to player
-        // 4)   receive new instructions & perform according move
-        // 5)   recalculate possible moves (from which player deduct cards)
-        // 6)   return options to player
-        // 7)   receive new instructions & perform according move
-        // 8)   terminate move and call getAllPossibleMoves
+    @Override
+    public List<Move> calculateNextMoves(Game game, Move move) {
+
+        // get devCard type
+        DevelopmentType type = ((CardMove) move).getDevelopmentCard().getDevelopmentType();
+
+        // calculate next moves considering devCard type
+        switch (type) {
+            case MONOPOLYPROGRESS:
+                return MoveCalculator.calculateAllMonopolyMoves(game);
+            case PLENTYPROGRESS:
+                return MoveCalculator.calculateAllPlentyMoves(game);
+            case ROADPROGRESS:
+                return MoveCalculator.calculateAllRoadProgressMoves(game);
+            case KNIGHT:
+                return MoveCalculator.calculateAllKnightMoves(game);
+            default:
+                return MoveCalculator.calculateAllStandardMoves(game);
+        }
     }
 }

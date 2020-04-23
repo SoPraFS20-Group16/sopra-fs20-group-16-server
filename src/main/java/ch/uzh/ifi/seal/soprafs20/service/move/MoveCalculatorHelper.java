@@ -13,6 +13,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
@@ -78,7 +81,7 @@ public class MoveCalculatorHelper {
         return true;
     }
 
-    public static boolean canAffordTrade(Player player) {
+    static boolean canAffordTrade(Player player) {
 
         // get funds of player
         ResourceWallet funds = player.getWallet();
@@ -102,6 +105,21 @@ public class MoveCalculatorHelper {
 
         BuildMove move = new BuildMove();
         move.setBuilding(newRoad);
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
+    }
+
+    static RoadProgressMove createRoadProgressMove(Game game, Player player, Coordinate coordinate, Coordinate neighbor) {
+
+        Road newRoad = new Road();
+        newRoad.setCoordinate1(coordinate);
+        newRoad.setCoordinate2(neighbor);
+        newRoad.setUserId(player.getUserId());
+
+        RoadProgressMove move = new RoadProgressMove();
+        move.setRoad(newRoad);
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
 
@@ -191,6 +209,47 @@ public class MoveCalculatorHelper {
 
         // return list of tradeMoves
         return tradeMoves;
+    }
+
+    static List<MonopolyMove> createMonopolyMove(Game game, Player player) {
+
+        List<MonopolyMove> monopolyMoves = new ArrayList<>();
+
+        // create a move for every resource type
+        for (ResourceType type: ResourceType.values()) {
+            MonopolyMove move = new MonopolyMove();
+
+            move.setMonopolyType(type);
+            move.setGameId(game.getId());
+            move.setUserId(player.getUserId());
+
+            monopolyMoves.add(move);
+        }
+
+        // return list of monopolyMoves
+        return monopolyMoves;
+    }
+
+    static List<PlentyMove> createPlentyMove(Game game, Player player) {
+
+        List<PlentyMove> plentyMoves = new ArrayList<>();
+
+        // create a move for every resource type combination (of two)
+        for (ResourceType type1: ResourceType.values()) {
+            for (ResourceType type2: ResourceType.values()) {
+                PlentyMove move = new PlentyMove();
+
+                move.setPlentyType1(type1);
+                move.setPlentyType2(type2);
+                move.setGameId(game.getId());
+                move.setUserId(player.getUserId());
+
+                plentyMoves.add(move);
+
+            }
+        }
+        // return list of plentyMoves
+        return plentyMoves;
     }
 
     static PurchaseMove createPurchaseMove(Game game, Player player) {
@@ -326,6 +385,31 @@ public class MoveCalculatorHelper {
             for (Coordinate neighbor: coordinate.getNeighbors()) {
                 if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
                     BuildMove move = MoveCalculatorHelper.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+            }
+        }
+    }
+
+    static void calculateRoadProgressMovesConnectingToBuilding(Game game, List<RoadProgressMove> possibleMoves, Player player, Board board) {
+
+        List<Settlement> settlements = MoveCalculatorHelper.getSettlementsOfPlayer(player, board);
+        for (Settlement settlement: settlements) {
+            Coordinate coordinate = settlement.getCoordinate();
+            for (Coordinate neighbor: coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    RoadProgressMove move = createRoadProgressMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+            }
+        }
+
+        List<City> cities = MoveCalculatorHelper.getCitiesOfPlayer(player, board);
+        for (City city: cities) {
+            Coordinate coordinate = city.getCoordinate();
+            for (Coordinate neighbor: coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    RoadProgressMove move = createRoadProgressMove(game, player, coordinate, neighbor);
                     possibleMoves.add(move);
                 }
             }

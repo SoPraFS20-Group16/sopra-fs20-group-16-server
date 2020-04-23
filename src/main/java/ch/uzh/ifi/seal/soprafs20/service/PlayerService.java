@@ -12,6 +12,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional
@@ -140,6 +144,34 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
+    public void monopolizeResources(MonopolyMove move) {
+        // TODO: implement functionality
+    }
+
+    public void plentyResources(PlentyMove move) {
+
+        // find player
+        Player player = playerRepository.findByUserId(move.getUserId());
+
+        if (player == null) {
+            throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
+        }
+
+        // get requested resource type(s) and funds from player
+        ResourceType type1 = move.getPlentyType1();
+        ResourceType type2 = move.getPlentyType2();
+
+        ResourceWallet funds = player.getWallet();
+
+        // add resources to wallet
+        funds.addResource(type1, 1);
+        funds.addResource(type2, 1);
+
+        // save
+        player.setWallet(funds);
+        playerRepository.saveAndFlush(player);
+    }
+
     public Player payForBuilding(BuildMove move) {
 
         //Find Player
@@ -246,5 +278,25 @@ public class PlayerService {
 
     public void save(Player player) {
         playerRepository.saveAndFlush(player);
+    }
+
+    public void stealResource(KnightMove move) {
+
+        // find player & corresponding funds
+        Player player = playerRepository.findByUserId(move.getUserId());
+        ResourceWallet fundsPlayer = player.getWallet();
+
+        // find opponent & corresponding funds
+        Player opponent = playerRepository.findByUserId(move.getOpponent().getUserId());
+        ResourceWallet fundsOpponent = opponent.getWallet();
+
+        // deduct random card from opponent and add to player
+        // TODO: implement functionality
+
+        // save players
+        player.setWallet(fundsPlayer);
+        opponent.setWallet(fundsOpponent);
+        playerRepository.saveAndFlush(player);
+        playerRepository.saveAndFlush(opponent);
     }
 }

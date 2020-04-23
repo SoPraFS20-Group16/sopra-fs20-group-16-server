@@ -4,17 +4,23 @@ import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MoveCalculator {
@@ -35,6 +41,24 @@ public class MoveCalculator {
         else {
             return new ArrayList<>();
         }
+    }
+
+    private static List<MonopolyMove> getAllMonopolyMoves(Game game) {
+
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // create & return moves for every resourceType
+        return MoveCalculatorHelper.createMonopolyMove(game, player);
+    }
+
+    private static List<PlentyMove> getAllPlentyMoves(Game game) {
+
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // create & return moves for possible requested resourceType(s)
+        return MoveCalculatorHelper.createPlentyMove(game, player);
     }
 
     private static List<PurchaseMove> getAllPurchaseMoves(Game game) {
@@ -70,7 +94,7 @@ public class MoveCalculator {
         // get current board
         Board board = game.getBoard();
 
-        // check if max settlement is reached
+        // check if max road is reached
         List<Road> roadsBuild = MoveCalculatorHelper.getRoadsOfPlayer(player, board);
         if (roadsBuild.size() == PlayerConstants.MAX_NUMBER_ROADS) {
             return new ArrayList<>();
@@ -109,6 +133,60 @@ public class MoveCalculator {
         // - calculate all possible road building moves connecting to settlement/city -
 
         MoveCalculatorHelper.calculateRoadBuildingMovesConnectingToBuilding(game, possibleMoves, player, board);
+
+        return possibleMoves;
+    }
+
+    private static List<RoadProgressMove> getAllRoadProgressMoves(Game game) {
+
+        // create list for all possible moves
+        List<RoadProgressMove> possibleMoves = new ArrayList<>();
+
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // get current board
+        Board board = game.getBoard();
+
+        // check if max road is reached
+        List<Road> roadsBuild = MoveCalculatorHelper.getRoadsOfPlayer(player, board);
+        if (roadsBuild.size() == PlayerConstants.MAX_NUMBER_ROADS) {
+            return new ArrayList<>();
+        }
+
+        // - calculate all possible road building moves connecting to another road -
+
+        // get all roads from user
+        List<Road> roads = MoveCalculatorHelper.getRoadsOfPlayer(player, board);
+
+        // get all coordinates from roads
+        List<Coordinate> roadCoordinates = new ArrayList<>();
+
+        for (Road road : roads) {
+            roadCoordinates.add(road.getCoordinate1());
+            roadCoordinates.add(road.getCoordinate2());
+        }
+
+        // get road end points
+        List<Coordinate> roadEndPoints = MoveCalculatorHelper.getRoadEndPoints(roadCoordinates);
+
+        // if all roads are connected to another road or settlement/city on both ends
+        if (roadEndPoints.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // get all valid building coordinates
+        for (Coordinate coordinate : roadEndPoints) {
+            for (Coordinate neighbor : coordinate.getNeighbors())
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    RoadProgressMove move = MoveCalculatorHelper.createRoadProgressMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+        }
+
+        // - calculate all possible road building moves connecting to settlement/city -
+
+        MoveCalculatorHelper.calculateRoadProgressMovesConnectingToBuilding(game, possibleMoves, player, board);
 
         return possibleMoves;
     }
@@ -219,6 +297,22 @@ public class MoveCalculator {
         return possibleMoves;
     }
 
+    public static List<Move> calculateAllMonopolyMoves(Game game) {
+
+        return new ArrayList<>(getAllMonopolyMoves(game));
+
+    }
+
+    public static List<Move> calculateAllPlentyMoves(Game game) {
+
+        return new ArrayList<>(getAllPlentyMoves(game));
+    }
+
+    public static List<Move> calculateAllRoadProgressMoves(Game game) {
+
+        return new ArrayList<>(getAllRoadProgressMoves(game));
+    }
+
     public static List<Move> calculateAllStandardMoves(Game game) {
 
         List<Move> moves = new ArrayList<>();
@@ -228,14 +322,36 @@ public class MoveCalculator {
         moves.addAll(getAllSettlementMoves(game));
         moves.addAll(getAllRoadMoves(game));
 
-        //Add purchase of devcard moves
+        //Add purchase of devCard moves
         moves.addAll(getAllPurchaseMoves(game));
 
         //Add trade with bank moves
         moves.addAll(getAllTradeMoves(game));
 
-        //Add devcard moves
+        //Add devCard moves
         moves.addAll(getAllCardMoves(game));
+
+        // add pass move(s)
+        moves.addAll(getPassMove(game));
+
+        //return all the moves
+        return moves;
+    }
+
+    public static List<Move> calculateAllStandardMovesExclusiveDevCard(Game game) {
+
+        List<Move> moves = new ArrayList<>();
+
+        //Add all the build moves
+        moves.addAll(getAllCityMoves(game));
+        moves.addAll(getAllSettlementMoves(game));
+        moves.addAll(getAllRoadMoves(game));
+
+        //Add purchase of devCard moves
+        moves.addAll(getAllPurchaseMoves(game));
+
+        //Add trade with bank moves
+        moves.addAll(getAllTradeMoves(game));
 
         // add pass move(s)
         moves.addAll(getPassMove(game));
@@ -346,5 +462,52 @@ public class MoveCalculator {
         move.setUserId(game.getCreatorId());
         moves.add(move);
         return moves;
+    }
+
+    public static List<Move> calculateAllKnightMoves(Game game) {
+
+        List<Move> moves = new ArrayList<>();
+
+        // add all robber placement moves
+        moves.addAll(getAllRobberPlacementMoves(game));
+
+        // add all stealing resource moves
+        moves.addAll(getAllStealingMoves(game));
+
+        // TODO: the two kinds of moves have to be merged into one
+
+        // return all moves
+        return moves;
+
+    }
+
+    private static Collection<KnightMove> getAllStealingMoves(Game game) {
+
+        // TODO: implement functionality (for every opponent player, create move)
+        return new ArrayList<>();
+    }
+
+    private static List<KnightMove> getAllRobberPlacementMoves(Game game) {
+
+        List<KnightMove> knightMoves = new ArrayList<>();
+
+        // get player
+        Player player = game.getCurrentPlayer();
+
+        // get current board
+        Board board = game.getBoard();
+
+        for (Tile tile: board.getTiles()) {
+
+            KnightMove move = new KnightMove();
+            move.setTile(tile);
+            move.setGameId(game.getId());
+            move.setUserId(player.getId());
+
+            knightMoves.add(move);
+        }
+
+        // return all possible robber placement moves
+        return knightMoves;
     }
 }
