@@ -13,8 +13,6 @@ public class PlayerQueue {
 
     @Column
     Long gameId;
-    @Column
-    int next;
     @Id
     @GeneratedValue
     private Long id;
@@ -26,26 +24,24 @@ public class PlayerQueue {
     public PlayerQueue() {
         queue = new HashMap<>();
         queueSize = 0;
-        next = 0;
     }
 
     public boolean hasNext() {
         return queueSize != 0;
     }
 
-    public Long getNextUserId() {
+    public Long getNextUserIdAfter(Long currentUserId) {
         if (!hasNext()) {
             throw new IllegalStateException(ErrorMsg.NO_PLAYER_IN_QUEUE_WHEN_CALLED);
         }
 
-        //The key of the next element to be returned
-        int currentNext = next;
+        for (Integer key : queue.keySet()) {
+            if (queue.get(key).equals(currentUserId)) {
+                return queue.get((key + 1) % queueSize);
+            }
+        }
 
-        //Calculate the new "next key"
-        next = (next + 1) % queueSize;
-
-        //Return the element
-        return queue.get(currentNext);
+        throw new IllegalStateException("The current user could not be found in the queue!");
     }
 
     public void addUserId(Long userId) {

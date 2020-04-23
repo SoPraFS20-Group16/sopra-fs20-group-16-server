@@ -200,9 +200,13 @@ public class MoveService {
 
         PlayerQueue queue = queueService.queueForGameWithId(game.getId());
 
-        Player nextPlayer = playerService.findPlayerByUserId(queue.getNextUserId());
+        Long queueReturn = queue.getNextUserIdAfter(game.getCurrentPlayer().getUserId());
+
+        Player nextPlayer = playerService.findPlayerByUserId(queueReturn);
 
         game.setCurrentPlayer(nextPlayer);
+
+        gameService.save(game);
     }
 
     /**

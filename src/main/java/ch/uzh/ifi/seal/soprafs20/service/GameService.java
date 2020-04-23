@@ -186,4 +186,8 @@ public class GameService {
         game.addPlayer(createdPlayer);
         gameRepository.saveAndFlush(game);
     }
+
+    public Game save(Game game) {
+        return gameRepository.saveAndFlush(game);
+    }
 }
