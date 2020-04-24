@@ -20,11 +20,21 @@ public class QueueService {
         this.queueRepository = queueRepository;
     }
 
-    public PlayerQueue queueForGameWithId(Long id) {
-        return queueRepository.findByGameId(id);
+    public Long getNextForGame(Long id) {
+        PlayerQueue queue =  queueRepository.findByGameId(id);
+        Long next = queue.getNext();
+        save(queue);
+
+        return next;
     }
 
     public void save(PlayerQueue queue) {
         queueRepository.saveAndFlush(queue);
+    }
+
+    public void addPlayerToQueue(Long gameId, Long userId) {
+        PlayerQueue queue = queueRepository.findByGameId(gameId);
+        queue.addUserId(userId);
+        save(queue);
     }
 }
