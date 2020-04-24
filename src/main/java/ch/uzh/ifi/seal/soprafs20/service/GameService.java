@@ -6,7 +6,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
-import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -173,19 +171,14 @@ public class GameService {
 
     public void addPlayerToGame(Player createdPlayer, Game game) {
 
-        //Get the queue
-        PlayerQueue queue = queueService.queueForGameWithId(game.getId());
-
-        if (queue == null) {throw new RestException(HttpStatus.I_AM_A_TEAPOT, "The queue is null"); }
-
-        //Add the player to queue and save
-        queue.addUserId(createdPlayer.getUserId());
-        queueService.save(queue);
+        //Add the player to the queue of the game
+        queueService.addPlayerToQueue(game.getId(), createdPlayer.getUserId());
 
         //Add player to game and save
         game.addPlayer(createdPlayer);
         gameRepository.saveAndFlush(game);
 
+        //Recalculate moves
         moveService.makeSetupRecalculations(game);
     }
 

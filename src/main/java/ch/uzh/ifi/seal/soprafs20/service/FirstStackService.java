@@ -13,14 +13,14 @@ import javax.transaction.Transactional;
 
 @Service
 @Transactional
-public class FirstPartService {
+public class FirstStackService {
 
     private final FirstStackRepository firstStackRepository;
 
     private GameService gameService;
 
     @Autowired
-    public FirstPartService(@Qualifier("firstStackRepository") FirstStackRepository firstStackRepository) {
+    public FirstStackService(@Qualifier("firstStackRepository") FirstStackRepository firstStackRepository) {
         this.firstStackRepository = firstStackRepository;
     }
 
@@ -30,21 +30,16 @@ public class FirstPartService {
     }
 
 
-    public boolean canExitForGame(Long gameId) {
-
-        Game game = gameService.findGameById(gameId);
-
-        int numberOfPlayers = game.getPlayers().size();
-        int numberOfRoads = game.getBoard().getRoads().size();
-
-        return (numberOfRoads / 2) == numberOfPlayers;
-    }
-
-    public Long getNextPlayerAfter(Long gameId, Long userId) {
+    public Long getNextPlayerInGame(Long gameId) {
 
         FirstStack stack = firstStackRepository.findByGameId(gameId);
 
-        return stack.getUserIdForPlayerAfter(userId);
+        Long next = stack.getNext();
+
+        //save the stack to persist the new index
+        firstStackRepository.saveAndFlush(stack);
+
+        return next;
     }
 
     public void createStackForGameWithId(Long gameId) {

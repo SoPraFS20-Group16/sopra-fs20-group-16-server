@@ -28,7 +28,7 @@ public class ErrorMsg {
     public static final String NO_PLAYER_IN_STACK_WHEN_CALLED = "The Stack should not be empty when getUserIdForPlayerAfter is called!" ;
     public static final String GAME_CONSTANTS_INITIALIZATION = "The GameConstantsClass should not be initialized!";
     public static final String PLAYER_CONSTANTS_INITIALIZATION = "PlayerConstants class should not be initialized";
-    public static final String BUILDING_CONSTANTS_INIT_MSG = "BuildingConstants should never be initialized";;
+    public static final String BUILDING_CONSTANTS_INIT_MSG = "BuildingConstants should never be initialized";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

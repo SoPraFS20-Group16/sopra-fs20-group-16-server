@@ -16,6 +16,9 @@ public class FirstStack {
     @Column
     private Long gameId;
 
+    @Column
+    private int lastIndex;
+
     @ElementCollection
     private Map<Integer, Long> playerStack;
 
@@ -54,15 +57,10 @@ public class FirstStack {
     }
 
     //Functionality:
-    public Long getUserIdForPlayerAfter(Long userId) {
-
-
-        for (Integer key : playerStack.keySet()) {
-            if (playerStack.get(key).equals(userId)) {
-                return playerStack.get((key + 1) % playerStack.size());
-            }
-        }
-        throw new IllegalStateException(ErrorMsg.NO_PLAYER_IN_STACK_WHEN_CALLED);
+    public Long getNext() {
+        lastIndex++;
+        lastIndex = lastIndex % playerStack.size();
+        return playerStack.get(lastIndex);
     }
 
     private void computeFinalStack() {
@@ -87,6 +85,7 @@ public class FirstStack {
     }
 
     public Long getFirstPlayersUserId() {
-        return playerStack.get(0);
+        lastIndex = 0;
+        return playerStack.get(lastIndex);
     }
 }

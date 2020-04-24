@@ -5,7 +5,6 @@ import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
-import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -43,7 +41,7 @@ public class MoveService {
     private GameService gameService;
     private BoardService boardService;
     private QueueService queueService;
-    private FirstPartService firstPartService;
+    private FirstStackService firstStackService;
 
     @Autowired
     public MoveService(@Qualifier("moveRepository") MoveRepository moveRepository) {
@@ -51,8 +49,8 @@ public class MoveService {
     }
 
     @Autowired
-    public void setFirstPartService(FirstPartService firstPartService) {
-        this.firstPartService = firstPartService;
+    public void setFirstStackService(FirstStackService firstStackService) {
+        this.firstStackService = firstStackService;
     }
 
     @Autowired
@@ -219,9 +217,7 @@ public class MoveService {
 
         Game game = gameService.findGameById(passMove.getGameId());
 
-        PlayerQueue queue = queueService.queueForGameWithId(game.getId());
-
-        Long queueReturn = queue.getNextUserIdAfter(game.getCurrentPlayer().getUserId());
+        Long queueReturn = queueService.getNextForGame(game.getId());
 
         Player nextPlayer = playerService.findPlayerByUserId(queueReturn);
 
@@ -234,7 +230,7 @@ public class MoveService {
         Game game = gameService.findGameById(firstPassMove.getGameId());
 
         //Find the userId for the next player in the game!
-        Long nextUserId = firstPartService.getNextPlayerAfter(game.getId(), firstPassMove.getUserId());
+        Long nextUserId = firstStackService.getNextPlayerInGame(game.getId());
 
         Player nextPlayer = playerService.findPlayerByUserId(nextUserId);
 
@@ -361,12 +357,18 @@ public class MoveService {
     }
 
     public boolean canExitFirstPart(Long gameId) {
-        return firstPartService.canExitForGame(gameId);
+
+        Game game = gameService.findGameById(gameId);
+
+        int numberOfPlayers = game.getPlayers().size();
+        int numberOfRoads = game.getBoard().getRoads().size();
+
+        return (numberOfRoads / 2) == numberOfPlayers;
     }
 
     public void performStartMove(StartMove startMove) {
 
-        firstPartService.createStackForGameWithId(startMove.getGameId());
+        firstStackService.createStackForGameWithId(startMove.getGameId());
     }
 
 }

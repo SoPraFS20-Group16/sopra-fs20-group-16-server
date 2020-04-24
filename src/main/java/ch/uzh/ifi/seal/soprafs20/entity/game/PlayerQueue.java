@@ -16,6 +16,10 @@ public class PlayerQueue {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Column
+    private int lastIndex;
+
     @Column
     private int queueSize;
     @ElementCollection
@@ -23,32 +27,27 @@ public class PlayerQueue {
 
     public PlayerQueue() {
         queue = new HashMap<>();
-        queueSize = 0;
     }
 
-    public boolean hasNext() {
-        return queueSize != 0;
+    private boolean hasNext() {
+        return queue.size() != 0;
     }
 
-    public Long getNextUserIdAfter(Long currentUserId) {
+    public Long getNext() {
+
         if (!hasNext()) {
             throw new IllegalStateException(ErrorMsg.NO_PLAYER_IN_QUEUE_WHEN_CALLED);
         }
 
-        for (Integer key : queue.keySet()) {
-            if (queue.get(key).equals(currentUserId)) {
-                return queue.get((key + 1) % queueSize);
-            }
-        }
-
-        throw new IllegalStateException("The current user could not be found in the queue!");
+        lastIndex++;
+        lastIndex = lastIndex % queue.size();
+        return queue.get(lastIndex);
     }
 
     public void addUserId(Long userId) {
 
         //add to map with new key
-        queue.put(queueSize, userId);
-        queueSize += 1;
+        queue.put(queue.size(), userId);
     }
 
     public Long getGameId() {
