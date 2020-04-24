@@ -274,7 +274,7 @@ public class UserControllerTest {
                 .content(asJsonString(userPostDTO));
 
         mockMvc.perform(putRequest)
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
