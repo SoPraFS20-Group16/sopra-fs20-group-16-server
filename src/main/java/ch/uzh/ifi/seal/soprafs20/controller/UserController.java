@@ -141,8 +141,9 @@ public class UserController {
     }
 
     @PutMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public ResponseEntity logoutUser(@RequestBody UserPostDTO userPostDTO) {
+    public void logoutUser(@RequestBody UserPostDTO userPostDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
@@ -152,7 +153,5 @@ public class UserController {
         if (loggedOutUser == null) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
         }
-
-        return new ResponseEntity(HttpStatus.OK);
     }
 }
