@@ -196,10 +196,14 @@ public class GameController {
         //If user does not possess a valid token return 401
         GameControllerHelper.checkToken(userService, token);
 
+        //If game does not exist throw 404
         Game game = GameControllerHelper.checkIfGameExists(gameService, gameId);
 
-        //Find User
+        //Find User (succeeds because it already did in check token
         User requestingUser = userService.findUserWithToken(token);
+
+        //Check if the user is already a player in the game
+        GameControllerHelper.checkIfUserIsInAnotherGameElseThrow403Forbidden(requestingUser, playerService);
 
         //Create a new player form requesting user
         Player createdPlayer = playerService.createPlayerFromUserId(requestingUser.getId());

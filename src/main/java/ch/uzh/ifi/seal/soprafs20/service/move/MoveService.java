@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -107,9 +108,8 @@ public class MoveService {
         MoveHandler handler = move.getMoveHandler();
         handler.perform(move, this);
 
-        // delete all recent moves
-        moveRepository.deleteAll();
-        moveRepository.flush();
+        // delete all recent moves of the game
+        deleteAllMovesForGame(move.getGameId());
 
         //Get the game
         Game game = gameService.findGameById(move.getGameId());
@@ -136,8 +136,7 @@ public class MoveService {
 
         //If the player has more 10 or more points, then the game is over
         if (player.getVictoryPoints() >= 10) {
-            moveRepository.deleteAll();
-            moveRepository.flush();
+            deleteAllMovesForGame(game.getId());
             return;
         }
 
@@ -204,6 +203,12 @@ public class MoveService {
             List<Long> playersWithCity = boardService.getPlayerIDsWithCity(diceMove.getGameId(), tile);
             playerService.updateWallet(playersWithCity, resourceType, new City().getBuildingFactor());
         }
+    }
+
+    public void deleteAllMovesForGame(Long gameId) {
+        List<Move> expiredMoves = moveRepository.findAllByGameId(gameId);
+        moveRepository.deleteAll(expiredMoves);
+        moveRepository.flush();
     }
 
     /**

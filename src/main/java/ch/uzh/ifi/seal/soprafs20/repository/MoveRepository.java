@@ -12,4 +12,6 @@ public interface MoveRepository extends JpaRepository<Move, Long> {
 
     //Finds all moves of a specific player of the game
     List<Move> findAllByGameIdAndUserId(Long gameId, Long playerId);
+
+    List<Move> findAllByGameId(Long gameId);
 }

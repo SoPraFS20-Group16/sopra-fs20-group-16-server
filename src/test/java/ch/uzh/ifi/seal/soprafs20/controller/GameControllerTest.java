@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePutDTO;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -187,6 +189,50 @@ public class GameControllerTest {
                 .andExpect(header().string("Location", String.format("/games/%d", game.getId())));
     }
 
+    /**
+     * Tests the POST /games endpoint.
+     * Assumes Token is valid but the user already plays in another game
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testPostGames_tokenValid_userIsPlayerInAnotherGame() throws Exception {
+
+        // given
+        Game game = new Game();
+        game.setId(1L);
+
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setWithBots(false);
+        gamePostDTO.setName("NewGameName");
+
+        Player player = new Player();
+        player.setUsername("TestUsername");
+        player.setUserId(123L);
+
+        // this mocks the GameService
+        given(gameService.createGame(Mockito.any())).willReturn(game);
+
+        //This mocks the playerService
+        given(playerService.findPlayerByUserId(Mockito.any())).willReturn(player);
+
+        //This mocks the UserService for the token
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        given(userService.findUser(Mockito.any())).willReturn(user);
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/games")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(gamePostDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isForbidden());
+    }
+
 
     /**
      * Tests the POST /games endpoint.
@@ -228,7 +274,7 @@ public class GameControllerTest {
 
     /**
      * Tests the POST /games endpoint.
-     * Assumes the token is not valid
+     * Assumes gameCreation fails
      *
      * @throws Exception the exception
      */
@@ -763,6 +809,230 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$.errorMessage", is("You are not allowed to make this move!")));
     }
 
+    /**
+     * Tests the POST /games/gameId/players endpoint
+     *
+     *Assumes input is correct
+     * Should return 202
+     */
+    @Test
+    public void testPostNewPlayerToGame_success() throws Exception {
+
+        //given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        user.setId(12L);
+
+        Player player = new Player();
+        player.setUserId(user.getId());
+        player.setId(1234L);
+        player.setUsername(user.getUsername());
+
+        Move move = new BuildMove();
+        move.setId(123L);
+        move.setGameId(1L);
+        move.setUserId(22L);
+
+        MovePutDTO postDTO = new MovePutDTO();
+        postDTO.setMoveId(123L);
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(user);
+        given(userService.findUserWithToken(Mockito.any())).willReturn(user);
+
+        //this mocks the game Service
+        given(gameService.findGame(Mockito.any())).willReturn(game);
+
+        //this mocks the player service
+        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/games/1/players")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(postDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isCreated());
+    }
+
+    /**
+     * Tests the POST /games/gameId/players endpoint
+     *
+     *Token is wrong
+     * Should return 401
+     */
+    @Test
+    public void testPostNewPlayerToGame_wrongToken() throws Exception {
+
+        //given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        user.setId(12L);
+
+        Player player = new Player();
+        player.setUserId(user.getId());
+        player.setId(1234L);
+        player.setUsername(user.getUsername());
+
+        Move move = new BuildMove();
+        move.setId(123L);
+        move.setGameId(1L);
+        move.setUserId(22L);
+
+        MovePutDTO postDTO = new MovePutDTO();
+        postDTO.setMoveId(123L);
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(null);
+        given(userService.findUserWithToken(Mockito.any())).willReturn(null);
+
+        //this mocks the game Service
+        given(gameService.findGame(Mockito.any())).willReturn(game);
+
+        //this mocks the player service
+        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/games/1/players")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(postDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isUnauthorized());
+    }
+
+    /**
+     * Tests the POST /games/gameId/players endpoint
+     *
+     *Assumes input is correct
+     * Should return 404
+     */
+    @Test
+    public void testPostNewPlayerToGame_gameNotFound() throws Exception {
+
+        //given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        user.setId(12L);
+
+        Player player = new Player();
+        player.setUserId(user.getId());
+        player.setId(1234L);
+        player.setUsername(user.getUsername());
+
+        Move move = new BuildMove();
+        move.setId(123L);
+        move.setGameId(1L);
+        move.setUserId(22L);
+
+        MovePutDTO postDTO = new MovePutDTO();
+        postDTO.setMoveId(123L);
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(user);
+        given(userService.findUserWithToken(Mockito.any())).willReturn(user);
+
+        //this mocks the game Service
+        given(gameService.findGame(Mockito.any())).willReturn(null);
+
+        //this mocks the player service
+        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/games/1/players")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(postDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Tests the POST /games/gameId/players endpoint
+     *
+     *Assumes input is correct
+     * Should return 403
+     */
+    @Test
+    public void testPostNewPlayerToGame_playerAlreadyPartOfAnotherGame() throws Exception {
+
+        //given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        user.setId(12L);
+
+        Player player = new Player();
+        player.setUserId(user.getId());
+        player.setId(1234L);
+        player.setUsername(user.getUsername());
+
+        Move move = new BuildMove();
+        move.setId(123L);
+        move.setGameId(1L);
+        move.setUserId(22L);
+
+        MovePutDTO postDTO = new MovePutDTO();
+        postDTO.setMoveId(123L);
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(user);
+        given(userService.findUserWithToken(Mockito.any())).willReturn(user);
+
+        //this mocks the game Service
+        given(gameService.findGame(Mockito.any())).willReturn(game);
+
+        //this mocks the player service
+        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+        given(playerService.findPlayerByUserId(Mockito.any())).willReturn(player);
+
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/games/1/players")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(postDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isForbidden());
+    }
 
     /**
      * Helper Method to convert DTOs into a JSON string such that the input can be processed
