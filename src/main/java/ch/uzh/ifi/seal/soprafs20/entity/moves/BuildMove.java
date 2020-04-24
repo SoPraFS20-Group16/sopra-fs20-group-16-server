@@ -4,15 +4,14 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.BuildMoveHandler;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "BUILD_MOVE")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class BuildMove extends Move {
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Building building; //Has the coordinates set already
 
     @Override

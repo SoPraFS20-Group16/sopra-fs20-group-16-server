@@ -218,15 +218,6 @@ public class BoardService {
         buildWorker(move.getBuilding(), move.getGameId(), move.getUserId());
     }
 
-    public void build(FirstSettlementMove move) {
-        buildWorker(move.getSettlement(), move.getGameId(), move.getUserId());
-    }
-
-    public void build(FirstRoadMove move) {
-        buildWorker(move.getRoad(), move.getGameId(), move.getUserId());
-    }
-
-
     public void build(RoadProgressMove move) {
         buildWorker(move.getRoad(), move.getGameId(), move.getUserId());
     }

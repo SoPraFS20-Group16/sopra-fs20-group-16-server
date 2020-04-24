@@ -2,9 +2,12 @@ package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
 import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
+import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -30,6 +33,8 @@ public abstract class Building implements Serializable {
     public abstract int getBuildingFactor();
 
     public abstract ResourceWallet getPrice();
+
+    public abstract List<Coordinate> getCoordinates();
 
     //Shared Methods
     public BuildingType getType() {

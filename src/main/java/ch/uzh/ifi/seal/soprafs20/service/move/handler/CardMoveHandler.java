@@ -3,8 +3,11 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
@@ -49,4 +52,16 @@ public class CardMoveHandler implements MoveHandler {
                 return MoveCalculator.calculateAllStandardMoves(game);
         }
     }
+
+
+    @Override
+    public MoveDTO mapToDTO(Move move) {
+
+        // cast move
+        CardMove cardMove = (CardMove) move;
+
+        // map move to DTO
+        return DTOMapper.INSTANCE.convertCardMoveToCardMoveDTO(cardMove);
+    }
+
 }

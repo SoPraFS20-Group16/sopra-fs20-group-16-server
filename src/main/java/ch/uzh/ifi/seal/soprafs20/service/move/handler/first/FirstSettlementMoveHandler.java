@@ -2,8 +2,11 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler.first;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
@@ -35,5 +38,15 @@ public class FirstSettlementMoveHandler implements MoveHandler {
     public List<Move> calculateNextMoves(Game game, Move move) {
 
         return MoveCalculator.calculateAllFirstRoadMoves(game, (FirstSettlementMove) move);
+    }
+
+    @Override
+    public MoveDTO mapToDTO(Move move) {
+
+        // cast move
+        BuildMove buildMove = (BuildMove) move;
+
+        // map move to DTO
+        return DTOMapper.INSTANCE.convertBuildMoveToBuildMoveDTO(buildMove);
     }
 }

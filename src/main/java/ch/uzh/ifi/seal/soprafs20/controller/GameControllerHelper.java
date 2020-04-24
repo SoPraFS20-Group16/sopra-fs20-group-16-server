@@ -101,7 +101,7 @@ class GameControllerHelper {
         //Transform moves to moveDTOs
         List<MoveDTO> moveDTOs = new ArrayList<>();
         for (Move move : moves) {
-            moveDTOs.add(DTOMapper.INSTANCE.convertMoveToMoveDTO(move));
+            moveDTOs.add(move.getMoveHandler().mapToDTO(move));
         }
 
         //Set the moves of the GameDTO

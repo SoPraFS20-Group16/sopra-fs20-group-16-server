@@ -161,9 +161,10 @@ public class MoveCalculatorHelper {
         newSettlement.setUserId(player.getUserId());
 
         FirstSettlementMove move = new FirstSettlementMove();
-        move.setSettlement(newSettlement);
+        move.setBuilding(newSettlement);
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
+
 
         return move;
     }
@@ -176,7 +177,7 @@ public class MoveCalculatorHelper {
         newRoad.setUserId(player.getUserId());
 
         FirstRoadMove move = new FirstRoadMove();
-        move.setRoad(newRoad);
+        move.setBuilding(newRoad);
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
 

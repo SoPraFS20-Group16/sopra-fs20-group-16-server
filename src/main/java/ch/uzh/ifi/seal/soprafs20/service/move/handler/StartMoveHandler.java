@@ -27,6 +27,7 @@ public class StartMoveHandler implements MoveHandler {
         //cast move
         StartMove startMove = (StartMove) move;
 
+        // pass back to moveService
         moveService.performStartMove(startMove);
     }
 

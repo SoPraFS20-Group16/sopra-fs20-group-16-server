@@ -3,6 +3,8 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
 /**
@@ -22,5 +24,15 @@ public class BuildMoveHandler implements MoveHandler {
 
         //Pass back to the moveService
         moveService.performBuildMove(buildMove);
+    }
+
+    @Override
+    public MoveDTO mapToDTO(Move move) {
+
+        // cast move
+        BuildMove buildMove = (BuildMove) move;
+
+        // map move to DTO
+        return DTOMapper.INSTANCE.convertBuildMoveToBuildMoveDTO(buildMove);
     }
 }

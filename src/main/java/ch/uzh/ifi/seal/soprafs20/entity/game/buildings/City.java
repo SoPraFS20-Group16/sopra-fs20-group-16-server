@@ -9,6 +9,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "CITY")
@@ -56,6 +58,13 @@ public class City extends Building {
         price.addResource(ResourceType.GRAIN, grainRequired);
 
         return price;
+    }
+
+    @Override
+    public List<Coordinate> getCoordinates() {
+        List<Coordinate> coordinates = new ArrayList<>();
+        coordinates.add(coordinate);
+        return coordinates;
     }
 
 }

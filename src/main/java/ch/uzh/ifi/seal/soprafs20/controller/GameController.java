@@ -181,6 +181,8 @@ public class GameController {
         //Check if move and game and user build a valid set of instructions
         GameControllerHelper.checkIsValidGameMoveUserCombinationElseThrow(gameService, foundGame, foundMove, requestingUser);
 
+        log.debug("successfully passed through gameController");
+
         //If everything is correct perform the move
         moveService.performMove(foundMove);
     }

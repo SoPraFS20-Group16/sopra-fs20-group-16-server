@@ -7,6 +7,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ROAD")
@@ -65,6 +67,14 @@ public class Road extends Building {
         price.addResource(ResourceType.LUMBER, lumberRequired);
 
         return price;
+    }
+
+    @Override
+    public List<Coordinate> getCoordinates() {
+        List<Coordinate> coordinates = new ArrayList<>();
+        coordinates.add(coordinate1);
+        coordinates.add(coordinate2);
+        return coordinates;
     }
 
 }

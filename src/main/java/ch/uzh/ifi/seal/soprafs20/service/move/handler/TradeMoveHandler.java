@@ -3,6 +3,8 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
 public class TradeMoveHandler implements MoveHandler {
@@ -19,5 +21,15 @@ public class TradeMoveHandler implements MoveHandler {
 
         // pass back to the moveService
         moveService.performTradeMove(tradeMove);
+    }
+
+    @Override
+    public MoveDTO mapToDTO(Move move) {
+
+        // map move
+        TradeMove tradeMove = (TradeMove) move;
+
+        // map move to DTO
+        return DTOMapper.INSTANCE.convertTradeMovetoTradeMoveDTO(tradeMove);
     }
 }

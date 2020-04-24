@@ -2,6 +2,8 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 
@@ -17,10 +19,12 @@ public interface MoveHandler {
      */
     void perform(Move move, MoveService moveService);
 
-
     default List<Move> calculateNextMoves(Game game, Move move) {
         return MoveCalculator.calculateAllStandardMoves(game);
     }
 
+    default MoveDTO mapToDTO(Move move) {
+        return DTOMapper.INSTANCE.convertMoveToMoveDTO(move);
+    }
 }
 

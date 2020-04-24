@@ -102,6 +102,8 @@ public class MoveService {
         MoveHandler handler = move.getMoveHandler();
         handler.perform(move, this);
 
+        log.debug("passed handler");
+
         // delete all recent moves of the game
         deleteAllMovesForGame(move.getGameId());
 

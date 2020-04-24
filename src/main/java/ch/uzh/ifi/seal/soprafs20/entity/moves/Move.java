@@ -49,4 +49,8 @@ public abstract class Move implements Serializable {
     }
 
     public abstract MoveHandler getMoveHandler();
+
+    public String getMoveName() {
+        return this.getClass().getSimpleName();
+    }
 }

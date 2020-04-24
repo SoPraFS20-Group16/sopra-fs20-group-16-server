@@ -29,6 +29,7 @@ public class ErrorMsg {
     public static final String GAME_CONSTANTS_INITIALIZATION = "The GameConstantsClass should not be initialized!";
     public static final String PLAYER_CONSTANTS_INITIALIZATION = "PlayerConstants class should not be initialized";
     public static final String BUILDING_CONSTANTS_INIT_MSG = "BuildingConstants should never be initialized";
+    public static final String WRONG_BUILDING_IN_FIRST_SETTLEMENT_MOVE = "The building in the first settlement move should be a settlement";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

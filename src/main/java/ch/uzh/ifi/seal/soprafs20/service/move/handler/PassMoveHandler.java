@@ -24,9 +24,4 @@ public class PassMoveHandler implements MoveHandler {
         // pass back to the moveService
         moveService.performPassMove(passMove);
     }
-
-    @Override
-    public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculateAllStandardMoves(game);
-    }
 }

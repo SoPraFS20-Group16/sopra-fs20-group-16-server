@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
@@ -373,7 +374,6 @@ public class MoveCalculator {
             if (MoveCalculatorHelper.isValidBuildingCoordinate(board, coordinate)) {
                 FirstSettlementMove settlementMove = MoveCalculatorHelper.createFirstSettlementMove(game, player, coordinate);
                 possibleMoves.add(settlementMove);
-
             }
         }
 
@@ -435,7 +435,15 @@ public class MoveCalculator {
     }
 
     public static List<Move> calculateAllFirstRoadMoves(Game game, FirstSettlementMove move) {
-        return new ArrayList<>(getAllFirstRoadMoves(game, move.getSettlement()));
+
+        if (move.getBuilding().getClass() != Settlement.class) {
+            throw new IllegalStateException(ErrorMsg.WRONG_BUILDING_IN_FIRST_SETTLEMENT_MOVE);
+        }
+
+        // cast building
+        Settlement settlement = (Settlement) move.getBuilding();
+
+        return new ArrayList<>(getAllFirstRoadMoves(game, settlement));
     }
 
     public static List<Move> calculatePassMove(Game game) {
