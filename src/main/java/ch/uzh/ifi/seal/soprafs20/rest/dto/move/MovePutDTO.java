@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.rest.dto;
+package ch.uzh.ifi.seal.soprafs20.rest.dto.move;
 
 /**
  * The type MoveDTO holds the moveId and the userToken

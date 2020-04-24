@@ -1,6 +1,6 @@
-package ch.uzh.ifi.seal.soprafs20.rest.dto;
+package ch.uzh.ifi.seal.soprafs20.rest.dto.move;
 
-public class MoveDTO {
+public abstract class MoveDTO {
 
     private Long userId;
 
