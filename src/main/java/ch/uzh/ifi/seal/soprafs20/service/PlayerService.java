@@ -15,6 +15,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -280,23 +281,23 @@ public class PlayerService {
         playerRepository.saveAndFlush(player);
     }
 
-    public void stealResource(KnightMove move) {
+    public void stealResource(StealMove move) {
 
         // find player & corresponding funds
         Player player = playerRepository.findByUserId(move.getUserId());
         ResourceWallet fundsPlayer = player.getWallet();
 
-        // find opponent & corresponding funds
-        Player opponent = playerRepository.findByUserId(move.getOpponent().getUserId());
-        ResourceWallet fundsOpponent = opponent.getWallet();
+        // find victim & corresponding funds
+        Player victim = playerRepository.findByUserId(move.getVictim().getUserId());
+        ResourceWallet fundsVictim = victim.getWallet();
 
         // deduct random card from opponent and add to player
-        // TODO: implement functionality
+        // TODO: implement fuctionality
 
         // save players
         player.setWallet(fundsPlayer);
-        opponent.setWallet(fundsOpponent);
+        victim.setWallet(fundsVictim);
         playerRepository.saveAndFlush(player);
-        playerRepository.saveAndFlush(opponent);
+        playerRepository.saveAndFlush(victim);
     }
 }

@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
-import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
@@ -11,10 +10,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
@@ -316,7 +312,7 @@ public class MoveService {
         boardService.build(roadProgressMove);
     }
 
-    // performs knight move
+    // performs knight move (relocates the robber on board)
     public void performKnightMove(KnightMove knightMove) {
 
         // get tile where robber will be placed
@@ -324,9 +320,13 @@ public class MoveService {
 
         // set robber on board
         // TODO: implement functionality (e.g. set tile field boolean hasRobber)
+    }
 
-        // deduct random card from opponent
-        playerService.stealResource(knightMove);
+    // performs stealing move (usually invoked after knight move)
+    public void performStealMove(StealMove stealMove) {
+
+        // deduct a random resource from victim and add it to player wallet
+        playerService.stealResource(stealMove);
     }
 
     // -- end card moves section--

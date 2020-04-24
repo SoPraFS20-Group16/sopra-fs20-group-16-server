@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
+import ch.uzh.ifi.seal.soprafs20.constant.BuildingConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
@@ -27,12 +28,12 @@ public class Road extends Building {
 
     @Override
     public int getVictoryPoints() {
-        return 0;
+        return BuildingConstants.VICTORY_POINTS_ROAD;
     }
 
     @Override
     public int getBuildingFactor() {
-        return 0;
+        return BuildingConstants.BUILDING_FACTOR_ROAD;
     }
 
     public Coordinate getCoordinate1() {

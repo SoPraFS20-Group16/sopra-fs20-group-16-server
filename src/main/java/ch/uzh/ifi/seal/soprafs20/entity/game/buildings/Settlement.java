@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 
+import ch.uzh.ifi.seal.soprafs20.constant.BuildingConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
@@ -25,12 +26,12 @@ public class Settlement extends Building {
 
     @Override
     public int getVictoryPoints() {
-        return 1;
+        return BuildingConstants.VICTORY_POINTS_SETTLEMENT;
     }
 
     @Override
     public int getBuildingFactor() {
-        return 1;
+        return BuildingConstants.BUILDING_FACTOR_SETTLEMENT;
     }
 
     public Coordinate getCoordinate() {

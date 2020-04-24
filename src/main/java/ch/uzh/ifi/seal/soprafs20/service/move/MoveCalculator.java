@@ -11,10 +11,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
@@ -466,28 +463,34 @@ public class MoveCalculator {
 
     public static List<Move> calculateAllKnightMoves(Game game) {
 
-        List<Move> moves = new ArrayList<>();
-
-        // add all robber placement moves
-        moves.addAll(getAllRobberPlacementMoves(game));
-
-        // add all stealing resource moves
-        moves.addAll(getAllStealingMoves(game));
-
-        // TODO: the two kinds of moves have to be merged into one
-
-        // return all moves
-        return moves;
-
+        return new ArrayList<>(getAllKnightMoves(game));
     }
 
-    private static Collection<KnightMove> getAllStealingMoves(Game game) {
+    public static List<Move> calculateAllStealMoves(Game game) {
 
-        // TODO: implement functionality (for every opponent player, create move)
-        return new ArrayList<>();
+        return new ArrayList<>(getAllStealMoves(game));
     }
 
-    private static List<KnightMove> getAllRobberPlacementMoves(Game game) {
+    private static List<StealMove> getAllStealMoves(Game game) {
+
+        List<StealMove> possibleMoves = new ArrayList<>();
+
+        // for every opponent player, create a move
+        for (Player victim: game.getPlayers()) {
+            if (victim != game.getCurrentPlayer()) {
+
+                StealMove move = new StealMove();
+                move.setVictim(victim);
+                move.setGameId(game.getId());
+                move.setUserId(game.getCurrentPlayer().getUserId());
+
+                possibleMoves.add(move);
+            }
+        }
+        return possibleMoves;
+    }
+
+    private static List<KnightMove> getAllKnightMoves(Game game) {
 
         List<KnightMove> knightMoves = new ArrayList<>();
 
