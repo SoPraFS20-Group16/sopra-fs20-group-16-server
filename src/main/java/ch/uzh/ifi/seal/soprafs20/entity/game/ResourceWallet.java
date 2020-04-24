@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
-
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 
@@ -20,10 +19,14 @@ public class ResourceWallet implements Serializable {
     private Long id;
 
     @ElementCollection
-    private Map<ResourceType, Integer> resources;
+    private final Map<ResourceType, Integer> resources;
 
     public ResourceWallet() {
         resources = new EnumMap<>(ResourceType.class);
+
+        for (Map.Entry<ResourceType, Integer> type: resources.entrySet()) {
+            type.setValue(0);
+        }
     }
 
     public void addResource(ResourceType type, int amount) {
