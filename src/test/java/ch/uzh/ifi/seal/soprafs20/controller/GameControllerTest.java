@@ -1,11 +1,15 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.MovePutDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
@@ -460,6 +464,153 @@ public class GameControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorMessage", is("You are not logged in!")));
     }
+
+    /**
+     * Tests the GET /games/gameId endpoint.
+     * Assumes no moves available for player
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testGetGameById_tokenValid_gameExists_userPermitted_userHasNoMoves() throws Exception {
+
+        // given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+
+        // this mocks the GameService
+        given(gameService.findGame(Mockito.any())).willReturn(game);
+        given(gameService.userCanAccessGame(user, game)).willReturn(true);
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(user);
+
+        given(moveService.getMovesForPlayerWithUserId(Mockito.any(),Mockito.any())).willReturn(new ArrayList<>());
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/games/1")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(game.getName())))
+                .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
+                .andExpect(jsonPath("$.withBots", is(game.isWithBots())))
+                .andExpect(jsonPath("$.moves", hasSize(0)));
+    }
+
+    /**
+     * Tests the GET /games/gameId endpoint.
+     * Assumes one move available for player
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testGetGameById_tokenValid_gameExists_userPermitted_userOneNoMove() throws Exception {
+
+        // given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        user.setId(12L);
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+
+        Move move = new PassMove();
+        move.setUserId(user.getId());
+        move.setGameId(game.getId());
+
+        List<Move> moves = new ArrayList<>();
+        moves.add(move);
+
+        // this mocks the GameService
+        given(gameService.findGame(Mockito.any())).willReturn(game);
+        given(gameService.userCanAccessGame(user, game)).willReturn(true);
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(user);
+
+        given(moveService.getMovesForPlayerWithUserId(Mockito.any(),Mockito.any())).willReturn(moves);
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/games/1")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(game.getName())))
+                .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
+                .andExpect(jsonPath("$.withBots", is(game.isWithBots())))
+                .andExpect(jsonPath("$.moves", hasSize(1)));
+    }
+
+    /**
+     * Tests the GET /games/gameId endpoint.
+     * Assumes there is a player in the game
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testGetGameById_tokenValid_gameExists_userPermitted_gameHasOnePlayer() throws Exception {
+
+        // given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        user.setId(12L);
+        user.setUsername("TheTestUsername");
+
+        Player player = new Player();
+        player.setUserId(user.getId());
+        player.setUsername(user.getUsername());
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+        game.addPlayer(player);
+
+        // this mocks the GameService
+        given(gameService.findGame(Mockito.any())).willReturn(game);
+        given(gameService.userCanAccessGame(user, game)).willReturn(true);
+
+        //this mocks the player service
+        given(playerService.findPlayerByUserId(Mockito.any())).willReturn(player);
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(user);
+
+        given(moveService.getMovesForPlayerWithUserId(Mockito.any(),Mockito.any())).willReturn(new ArrayList<>());
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/games/1")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(game.getName())))
+                .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
+                .andExpect(jsonPath("$.withBots", is(game.isWithBots())))
+                .andExpect(jsonPath("$.moves", hasSize(0)))
+                .andExpect(jsonPath("$.players", hasSize(1)));
+    }
+
+    //TODO: Add test case that checks the correct mapping of the development cards!! (GameControllerTest)
 
     /**
      * Tests the PUT /games/gameId endpoint.
