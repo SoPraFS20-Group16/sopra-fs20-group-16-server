@@ -243,6 +243,29 @@ public class BoardService {
         }
     }
 
+    public void removeSettlementForCity(BuildMove buildMove) {
+
+        // get corresponding board
+        Board board = getBoardByGameId(buildMove.getGameId());
+
+        // get city coordinate
+        if (buildMove.getBuilding().getClass() != City.class) {
+            throw new IllegalStateException(ErrorMsg.REMOVE_SETTLEMENT_ERROR);
+        }
+        City city = (City) buildMove.getBuilding();
+
+        // get settlement to be removed
+        Settlement settlementRemove = null;
+        for (Settlement settlement : board.getSettlements()) {
+            if (settlement.getCoordinate() == city.getCoordinate()) {
+                settlementRemove = settlement;
+            }
+        }
+
+        // remove settlement
+        board.getSettlements().remove(settlementRemove);
+    }
+
     public List<Tile> getTilesWithNumber(Long gameId, int number) {
 
         //Get the board on which the building is built
@@ -338,4 +361,5 @@ public class BoardService {
 
         return buildingPoins;
     }
+
 }

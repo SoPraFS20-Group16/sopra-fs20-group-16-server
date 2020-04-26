@@ -344,6 +344,10 @@ public class MoveService {
         //Player must pay for the building
         playerService.payForBuilding(buildMove);
 
+        if (buildMove.getBuilding().getClass() == City.class) {
+            boardService.removeSettlementForCity(buildMove);
+        }
+
         //Build the building on the board
         boardService.build(buildMove);
     }
@@ -374,5 +378,4 @@ public class MoveService {
 
         firstStackService.createStackForGameWithId(startMove.getGameId());
     }
-
 }
