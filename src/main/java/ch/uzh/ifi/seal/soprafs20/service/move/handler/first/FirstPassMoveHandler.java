@@ -43,7 +43,7 @@ public class FirstPassMoveHandler implements MoveHandler {
             //Shuffle queue for random next (first) player
             selectRandomFirstPlayer(game);
 
-            return MoveCalculator.calculateAllStandardMoves(game);
+            return MoveCalculator.calculateAllDiceMoves(game);
         }
         return MoveCalculator.calculateAllFirstSettlementMoves(game);
     }

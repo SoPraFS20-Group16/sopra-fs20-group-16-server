@@ -294,6 +294,16 @@ public class MoveCalculatorHelper {
         return move;
     }
 
+
+    static DiceMove createDiceMove(Game game, Player player) {
+
+        DiceMove move = new DiceMove();
+        move.setGameId(game.getId());
+        move.setUserId(player.getUserId());
+
+        return move;
+    }
+
     static FirstPassMove createFirstPassMove(Game game, Player player) {
         FirstPassMove move = new FirstPassMove();
         move.setGameId(game.getId());

@@ -294,6 +294,22 @@ public class MoveCalculator {
         return possibleMoves;
     }
 
+    private static List<DiceMove> getAllDiceMoves(Game game) {
+
+        // create list for all possible moves
+        List<DiceMove> possibleMoves = new ArrayList<>();
+
+        // get current player
+        Player player = game.getCurrentPlayer();
+
+        // create Dice move
+        DiceMove move = MoveCalculatorHelper.createDiceMove(game, player);
+
+        possibleMoves.add(move);
+
+        return possibleMoves;
+    }
+
     public static List<Move> calculateAllMonopolyMoves(Game game) {
 
         return new ArrayList<>(getAllMonopolyMoves(game));
@@ -308,6 +324,11 @@ public class MoveCalculator {
     public static List<Move> calculateAllRoadProgressMoves(Game game) {
 
         return new ArrayList<>(getAllRoadProgressMoves(game));
+    }
+
+    public static List<Move> calculateAllDiceMoves(Game game) {
+
+        return new ArrayList<>(getAllDiceMoves(game));
     }
 
     public static List<Move> calculateAllStandardMoves(Game game) {

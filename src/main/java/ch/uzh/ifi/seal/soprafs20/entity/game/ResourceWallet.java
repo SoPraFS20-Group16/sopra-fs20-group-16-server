@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 
 import javax.persistence.*;
@@ -24,14 +25,16 @@ public class ResourceWallet implements Serializable {
     public ResourceWallet() {
         resources = new EnumMap<>(ResourceType.class);
 
-        for (Map.Entry<ResourceType, Integer> type: resources.entrySet()) {
-            type.setValue(0);
+        int initAmount = PlayerConstants.INIT_RESOURCE_AMOUNT;
+
+        for (ResourceType type : ResourceType.values()) {
+            resources.put(type, initAmount);
         }
     }
 
     public void addResource(ResourceType type, int amount) {
-        int currentAmount = resources.get(type);
-        resources.put(type, (currentAmount + amount));
+        int updatedAmount = resources.get(type) + amount;
+        resources.put(type, updatedAmount);
     }
 
     public int getResourceAmount(ResourceType type) {
@@ -51,5 +54,9 @@ public class ResourceWallet implements Serializable {
 
     public List<ResourceType> getAllTypes() {
         return new ArrayList<>(resources.keySet());
+    }
+
+    public List<Integer> getAllAmounts() {
+        return new ArrayList<>(resources.values());
     }
 }
