@@ -11,7 +11,7 @@ public class PlayerDTO {
 
     private Long userId;
 
-    private ResourceWallet wallet;
+    private ResourceWallet resourceWallet;
 
     private List<DevelopmentCard> developmentCards;
 
@@ -23,12 +23,12 @@ public class PlayerDTO {
         this.userId = userId;
     }
 
-    public ResourceWallet getWallet() {
-        return wallet;
+    public ResourceWallet getResourceWallet() {
+        return resourceWallet;
     }
 
-    public void setWallet(ResourceWallet wallet) {
-        this.wallet = wallet;
+    public void setResourceWallet(ResourceWallet resourceWallet) {
+        this.resourceWallet = resourceWallet;
     }
 
     public List<DevelopmentCard> getDevelopmentCards() {

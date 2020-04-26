@@ -86,7 +86,7 @@ class GameControllerHelper {
                 playerDTO.setDevelopmentCards(player.getDevelopmentCards());
 
                 //set resource wallet
-                playerDTO.setWallet(player.getWallet());
+                playerDTO.setResourceWallet(player.getWallet());
 
                 //No need to further compare playerDTOs
                 break;
