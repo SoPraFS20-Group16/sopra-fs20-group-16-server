@@ -1,11 +1,11 @@
-package ch.uzh.ifi.seal.soprafs20.service.move.handler.first;
+package ch.uzh.ifi.seal.soprafs20.service.move.handler.initial;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
-import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
 import java.util.List;
@@ -43,9 +43,9 @@ public class FirstPassMoveHandler implements MoveHandler {
             //Shuffle queue for random next (first) player
             selectRandomFirstPlayer(game);
 
-            return MoveCalculator.calculateAllDiceMoves(game);
+            return MoveCalculator.calculateDiceMove(game);
         }
-        return MoveCalculator.calculateAllFirstSettlementMoves(game);
+        return MoveCalculator.calculateFirstSettlementMoves(game);
     }
 
     private void selectRandomFirstPlayer(Game game) {

@@ -1,8 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.entity.moves;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
-import ch.uzh.ifi.seal.soprafs20.service.move.handler.BuildMoveHandler;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.standard.BuildMoveHandler;
 
 import javax.persistence.*;
 

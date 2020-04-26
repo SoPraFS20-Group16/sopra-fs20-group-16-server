@@ -4,8 +4,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
-import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 
 import java.util.List;
 

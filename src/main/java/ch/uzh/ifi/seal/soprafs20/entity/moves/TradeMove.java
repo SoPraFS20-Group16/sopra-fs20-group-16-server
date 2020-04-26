@@ -2,7 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.entity.moves;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
-import ch.uzh.ifi.seal.soprafs20.service.move.handler.TradeMoveHandler;
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.standard.TradeMoveHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

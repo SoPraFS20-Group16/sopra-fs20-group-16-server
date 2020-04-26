@@ -4,8 +4,8 @@ import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.StartMove;
-import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 
 import java.util.List;
 
@@ -33,6 +33,6 @@ public class StartMoveHandler implements MoveHandler {
 
     @Override
     public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculateAllFirstSettlementMoves(game);
+        return MoveCalculator.calculateFirstSettlementMoves(game);
     }
 }

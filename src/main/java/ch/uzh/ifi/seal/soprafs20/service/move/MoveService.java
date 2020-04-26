@@ -15,6 +15,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
 import ch.uzh.ifi.seal.soprafs20.service.*;
+import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,7 +152,7 @@ public class MoveService {
 
         //Calculate the first move
         if (game.getPlayers().size() >= game.getPlayerMinimum()) {
-            List<Move> startMoves = MoveCalculator.calculateStartMoves(game);
+            List<Move> startMoves = MoveCalculator.calculateStartMove(game);
             moveRepository.saveAll(startMoves);
             moveRepository.flush();
         }

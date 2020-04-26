@@ -4,8 +4,8 @@ import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
-import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
 import java.util.List;

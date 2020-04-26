@@ -2,7 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.entity.moves.first;
 
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
-import ch.uzh.ifi.seal.soprafs20.service.move.handler.first.FirstSettlementMoveHandler;
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.initial.FirstSettlementMoveHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

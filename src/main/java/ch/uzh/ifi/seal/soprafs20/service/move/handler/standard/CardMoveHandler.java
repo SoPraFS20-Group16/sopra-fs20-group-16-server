@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.service.move.handler;
+package ch.uzh.ifi.seal.soprafs20.service.move.handler.standard;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
@@ -7,8 +7,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
-import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
 import java.util.List;
 

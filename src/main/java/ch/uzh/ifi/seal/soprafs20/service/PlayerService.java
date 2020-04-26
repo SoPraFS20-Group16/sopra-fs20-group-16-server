@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -111,7 +112,7 @@ public class PlayerService {
         ResourceWallet funds = player.getWallet();
         ResourceType type = move.getNeededType();
 
-        int tradeRatio = 4;
+        int tradeRatio = GameConstants.TRADE_WITH_BANK_RATIO;
 
         funds.removeResource(type, tradeRatio);
 
