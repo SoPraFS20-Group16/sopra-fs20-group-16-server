@@ -33,6 +33,7 @@ public class City extends Building {
     }
 
     @Override
+    //TODO: Check if there is a more intuitive name!
     public int getBuildingFactor() {
         return BuildingConstants.BUILDING_FACTOR_CITY;
     }

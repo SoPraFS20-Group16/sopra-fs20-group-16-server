@@ -8,6 +8,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
+import ch.uzh.ifi.seal.soprafs20.service.board.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

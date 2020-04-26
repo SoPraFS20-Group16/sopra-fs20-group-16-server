@@ -55,8 +55,4 @@ public class ResourceWallet implements Serializable {
     public List<ResourceType> getAllTypes() {
         return new ArrayList<>(resources.keySet());
     }
-
-    public List<Integer> getAllAmounts() {
-        return new ArrayList<>(resources.values());
-    }
 }
