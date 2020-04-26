@@ -14,7 +14,12 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
-import ch.uzh.ifi.seal.soprafs20.service.*;
+import ch.uzh.ifi.seal.soprafs20.service.FirstStackService;
+import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
+import ch.uzh.ifi.seal.soprafs20.service.QueueService;
+import ch.uzh.ifi.seal.soprafs20.service.board.BoardService;
+import ch.uzh.ifi.seal.soprafs20.service.board.TileService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +92,6 @@ public class MoveService {
      */
     public Move findMoveById(Long moveId) {
         Optional<Move> optionalMove = moveRepository.findById(moveId);
-
         return optionalMove.orElse(null);
     }
 
@@ -101,8 +105,6 @@ public class MoveService {
 
         MoveHandler handler = move.getMoveHandler();
         handler.perform(move, this);
-
-        log.debug("passed handler");
 
         // delete all recent moves of the game
         deleteAllMovesForGame(move.getGameId());

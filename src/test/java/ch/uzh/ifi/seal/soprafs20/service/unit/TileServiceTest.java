@@ -4,7 +4,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.repository.CoordinateRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.TileRepository;
-import ch.uzh.ifi.seal.soprafs20.service.TileService;
+import ch.uzh.ifi.seal.soprafs20.service.board.TileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;

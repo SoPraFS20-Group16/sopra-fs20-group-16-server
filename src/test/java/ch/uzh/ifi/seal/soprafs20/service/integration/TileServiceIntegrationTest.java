@@ -2,7 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service.integration;
 
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.service.TileService;
+import ch.uzh.ifi.seal.soprafs20.service.board.TileService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
