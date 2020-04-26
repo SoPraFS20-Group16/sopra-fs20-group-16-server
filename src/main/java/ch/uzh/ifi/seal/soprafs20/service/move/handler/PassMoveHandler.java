@@ -1,13 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
-import ch.uzh.ifi.seal.soprafs20.service.move.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
-
-import java.util.List;
 
 public class PassMoveHandler implements MoveHandler {
 

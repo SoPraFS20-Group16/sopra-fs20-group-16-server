@@ -313,11 +313,11 @@ public class MoveService {
     // performs knight move (relocates the robber on board)
     public void performKnightMove(KnightMove knightMove) {
 
+        // TODO: implement functionality
+
         // get tile where robber will be placed
-        Tile robberTile = knightMove.getTile();
 
         // set robber on board
-        // TODO: implement functionality (e.g. set tile field boolean hasRobber)
     }
 
     // performs stealing move (usually invoked after knight move)

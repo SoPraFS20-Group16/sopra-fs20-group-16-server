@@ -1,7 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.move;
 
-import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-
 public class MoveDTO {
 
     private Long userId;

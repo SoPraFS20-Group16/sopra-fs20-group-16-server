@@ -14,8 +14,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.BoardRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -12,7 +12,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional

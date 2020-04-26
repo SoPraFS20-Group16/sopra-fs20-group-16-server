@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;

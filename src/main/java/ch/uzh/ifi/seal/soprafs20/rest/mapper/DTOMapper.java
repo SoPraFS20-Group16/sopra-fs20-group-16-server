@@ -5,7 +5,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;

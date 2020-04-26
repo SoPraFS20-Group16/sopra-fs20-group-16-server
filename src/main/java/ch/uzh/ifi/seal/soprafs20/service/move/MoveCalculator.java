@@ -18,7 +18,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class MoveCalculator {

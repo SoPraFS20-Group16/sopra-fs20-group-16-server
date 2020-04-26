@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.entity.moves.development;
 
-import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;

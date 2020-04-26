@@ -1,9 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.entity.game;
 
-import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "FIRST_STACK")
@@ -20,7 +20,7 @@ public class FirstStack {
     private int lastIndex;
 
     @ElementCollection
-    private Map<Integer, Long> playerStack;
+    private final Map<Integer, Long> playerStack;
 
 
     public FirstStack() {

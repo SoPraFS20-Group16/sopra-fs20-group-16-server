@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs20.entity.game.buildings;
 import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
 import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 
 import javax.persistence.*;
 import java.io.Serializable;
