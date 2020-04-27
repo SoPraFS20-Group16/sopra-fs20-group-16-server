@@ -620,7 +620,7 @@ public class MoveServiceIntegrationTest {
         testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
         assertEquals(0, testPlayer.getWallet().getResourceAmount(ResourceType.BRICK),
                 "There should be no more bricks");
-        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.BRICK),
+        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.WOOL),
                 "there should be one wool");
     }
 

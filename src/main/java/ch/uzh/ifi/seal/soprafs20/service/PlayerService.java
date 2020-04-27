@@ -116,8 +116,6 @@ public class PlayerService {
 
         funds.removeResource(type, tradeRatio);
 
-        player.setWallet(funds);
-
         return playerRepository.saveAndFlush(player);
     }
 
@@ -136,8 +134,6 @@ public class PlayerService {
 
         // add resource to players' wallet
         funds.addResource(type, 1);
-
-        player.setWallet(funds);
 
         return playerRepository.saveAndFlush(player);
     }

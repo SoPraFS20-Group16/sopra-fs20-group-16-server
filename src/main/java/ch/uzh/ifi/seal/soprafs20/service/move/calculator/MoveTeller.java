@@ -72,17 +72,12 @@ public class MoveTeller {
         return true;
     }
 
-    static boolean canAffordTrade(Player player) {
+    static boolean canAffordTrade(Player player, ResourceType type) {
 
         // get funds of player
         ResourceWallet funds = player.getWallet();
 
-        // check if player has at least X resources of the same type
-        for (ResourceType type : funds.getAllTypes()) {
-            if (funds.getResourceAmount(type) >= GameConstants.TRADE_WITH_BANK_RATIO) {
-                return true;
-            }
-        }
-        return false;
+        // check if the player has enough resources of offered type to afford a trade
+        return funds.getResourceAmount(type) >= GameConstants.TRADE_WITH_BANK_RATIO;
     }
 }

@@ -115,18 +115,21 @@ public class MoveCreator {
         return move;
     }
 
-    static List<TradeMove> createTradeMove(Game game, Player player) {
+    static List<TradeMove> createTradeMove(Game game, Player player, ResourceType offeredType) {
 
         List<TradeMove> tradeMoves = new ArrayList<>();
 
         // create a move for every possible needed Type
-        for (ResourceType type: ResourceType.values()) {
-            TradeMove move = new TradeMove();
-            move.setNeededType(type);
-            move.setGameId(game.getId());
-            move.setUserId(player.getUserId());
+        for (ResourceType type : ResourceType.values()) {
+            if (type != offeredType) {
+                TradeMove move = new TradeMove();
+                move.setNeededType(type);
+                move.setOfferedType(offeredType);
+                move.setGameId(game.getId());
+                move.setUserId(player.getUserId());
 
-            tradeMoves.add(move);
+                tradeMoves.add(move);
+            }
         }
 
         // return list of tradeMoves

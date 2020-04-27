@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.service.move.calculator;
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -335,17 +336,22 @@ public class MoveCalculator {
 
     // - other moves -
 
-    public static List<TradeMove> calculateTradeMoves(Game game) {
+    public static List<Move> calculateTradeMoves(Game game) {
+
+        // create list for possible move(s)
+        List<Move> possibleMoves = new ArrayList<>();
 
         // get current player
         Player player = game.getCurrentPlayer();
 
         // check if player can afford resource trade
-        if (!MoveTeller.canAffordTrade(player)) {
-            return new ArrayList<>();
+        for (ResourceType offeredType : ResourceType.values()) {
+            if (MoveTeller.canAffordTrade(player, offeredType)) {
+                possibleMoves.addAll(MoveCreator.createTradeMove(game, player, offeredType));
+            }
         }
 
-        return MoveCreator.createTradeMove(game, player);
+        return possibleMoves;
     }
 
     public static List<PurchaseMove> calculatePurchaseMoves(Game game) {
