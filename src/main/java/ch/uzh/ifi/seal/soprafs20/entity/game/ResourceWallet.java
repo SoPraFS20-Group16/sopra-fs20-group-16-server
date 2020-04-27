@@ -60,4 +60,13 @@ public class ResourceWallet implements Serializable {
     public Map<ResourceType, Integer> getResources() {
         return resources;
     }
+
+    public boolean isEmpty() {
+        for (ResourceType type : ResourceType.values()) {
+            if (resources.get(type) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

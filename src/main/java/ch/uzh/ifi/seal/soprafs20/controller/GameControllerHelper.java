@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.DevelopmentCardsDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.PlayerDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.ResourceDTO;
@@ -87,7 +88,7 @@ class GameControllerHelper {
             if (playerDTO.getUserId().equals(player.getUserId())) {
 
                 //set development cards
-                playerDTO.setDevelopmentCards(player.getDevelopmentCards());
+                playerDTO.setDevelopmentCards(new DevelopmentCardsDTO(player.getDevelopmentCards()));
 
                 //set resource wallet
                 playerDTO.setResources(new ResourceDTO(player.getWallet()));
