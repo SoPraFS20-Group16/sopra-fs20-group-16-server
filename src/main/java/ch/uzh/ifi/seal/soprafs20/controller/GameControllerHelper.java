@@ -98,7 +98,7 @@ class GameControllerHelper {
 
 
         //Add the moves to the GameDTO
-        List<Move> moves = moveService.getMovesForPlayerWithUserId(gameDTO.getGameId(), requestingUser.getId());
+        List<Move> moves = moveService.findMovesForGameAndPlayer(gameDTO.getGameId(), requestingUser.getId());
 
         //Transform moves to moveDTOs
         List<MoveDTO> moveDTOs = new ArrayList<>();

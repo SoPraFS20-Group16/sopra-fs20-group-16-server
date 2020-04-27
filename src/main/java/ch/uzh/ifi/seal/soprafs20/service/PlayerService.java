@@ -275,8 +275,8 @@ public class PlayerService {
         return playerRepository.findByUserId(id);
     }
 
-    public void save(Player player) {
-        playerRepository.saveAndFlush(player);
+    public Player save(Player player) {
+        return playerRepository.saveAndFlush(player);
     }
 
     public void stealResource(StealMove move) {
