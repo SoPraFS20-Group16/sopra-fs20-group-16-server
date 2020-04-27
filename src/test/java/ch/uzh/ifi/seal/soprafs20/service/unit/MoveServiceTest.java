@@ -6,6 +6,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.DiceMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
@@ -145,21 +148,23 @@ public class MoveServiceTest {
         testTiles.add(testTileField);
         testTiles.add(testTileForest);
 
-        List<Long> playerIds = new ArrayList<>();
-        playerIds.add(testPlayer.getUserId());
+        List<Building> testBuildings = new ArrayList<>();
+        Settlement settlement = new Settlement();
+        City city = new City();
+        testBuildings.add(settlement);
+        testBuildings.add(city);
 
         //given
         given(boardService.getTilesWithNumber(Mockito.eq(testGame.getId()), Mockito.anyInt())).willReturn(testTiles);
-        given(boardService.getPlayerIDsWithSettlement(Mockito.eq(testGame.getId()), Mockito.any())).willReturn(playerIds);
-        given(boardService.getPlayerIDsWithCity(Mockito.eq(testGame.getId()), Mockito.any())).willReturn(playerIds);
+        given(boardService.getBuildingsFromTile(Mockito.eq(testGame), Mockito.any(), Mockito.eq(testPlayer)))
+                .willReturn(testBuildings);
 
         //call method
         moveService.performDiceMove(diceMove);
 
         //assert the method changed the players wallet
-        // TODO: debug functionality
-        assertTrue(testPlayer.getWallet().getResourceAmount(ResourceType.LUMBER) == 0, "The player should have received Lumber!");
-        assertTrue(testPlayer.getWallet().getResourceAmount(ResourceType.GRAIN) == 0, "The player should have received Grain");
+        assertTrue(testPlayer.getWallet().getResourceAmount(ResourceType.LUMBER) > 0, "The player should have received Lumber!");
+        assertTrue(testPlayer.getWallet().getResourceAmount(ResourceType.GRAIN) > 0, "The player should have received Grain");
     }
 
 }

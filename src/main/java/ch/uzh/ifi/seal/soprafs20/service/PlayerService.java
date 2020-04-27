@@ -256,26 +256,6 @@ public class PlayerService {
         return playerRepository.findByUserId(id);
     }
 
-    public void updateWallet(List<Long> playerIDs, ResourceType resourceType, int buildingFactor) {
-
-        if (playerIDs == null) {
-            return;
-        }
-
-        for (Long playerID: playerIDs) {
-            // get wallet of player with playerID
-            Player player = playerRepository.findByUserId(playerID);
-            ResourceWallet funds = player.getWallet();
-
-            // update funds with resources (settlement +1, city +2)
-            funds.addResource(resourceType, buildingFactor);
-
-            // set funds
-            player.setWallet(funds);
-        }
-
-    }
-
     public void save(Player player) {
         playerRepository.saveAndFlush(player);
     }
@@ -298,5 +278,15 @@ public class PlayerService {
         victim.setWallet(fundsVictim);
         playerRepository.saveAndFlush(player);
         playerRepository.saveAndFlush(victim);
+    }
+
+    public void updateResources(ResourceType type, List<Building> buildings, Player player) {
+
+        ResourceWallet funds = player.getWallet();
+        for (Building building : buildings) {
+            int amount = building.getBuildingFactor();
+            funds.addResource(type, amount);
+        }
+        save(player);
     }
 }

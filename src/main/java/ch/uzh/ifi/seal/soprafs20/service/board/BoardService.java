@@ -284,46 +284,6 @@ public class BoardService {
         return tiles;
     }
 
-    public List<Long> getPlayerIDsWithSettlement(Long gameId, Tile tile) {
-
-        //Get the board on which the building is built
-        Board board = getBoardByGameId(gameId);
-
-        // get all valid coordinates
-        List<Coordinate> coordinates = tile.getCoordinates();
-
-        // get all IDs of settlement owners
-        List<Long> playerIDs = new ArrayList<>();
-
-        for (Settlement settlement: board.getSettlements()) {
-            if (coordinates.contains(settlement.getCoordinate())) {
-                playerIDs.add(settlement.getUserId());
-            }
-        }
-
-        return playerIDs;
-    }
-
-    public List<Long> getPlayerIDsWithCity(Long gameId, Tile tile) {
-
-        //Get the board on which the building is built
-        Board board = getBoardByGameId(gameId);
-
-        // get all valid coordinates
-        List<Coordinate> coordinates = tile.getCoordinates();
-
-        // get all IDs of settlement owners
-        List<Long> playerIDs = new ArrayList<>();
-
-        for (City city : board.getCities()) {
-            if (coordinates.contains(city.getCoordinate())) {
-                playerIDs.add(city.getUserId());
-            }
-        }
-
-        return playerIDs;
-    }
-
     private Board getBoardByGameId(Long gameId) {
         Optional<Game> gameOptional = gameRepository.findById(gameId);
 
@@ -353,7 +313,7 @@ public class BoardService {
             }
         }
 
-        for (Settlement settlement: board.getSettlements()) {
+        for (Settlement settlement : board.getSettlements()) {
             if (settlement.getUserId().equals(player.getUserId())) {
                 buildingPoins += settlement.getVictoryPoints();
             }
@@ -362,4 +322,32 @@ public class BoardService {
         return buildingPoins;
     }
 
+    public List<Building> getBuildingsFromTile(Game game, Tile tile, Player player) {
+
+        Board board = game.getBoard();
+
+        List<Building> buildings = new ArrayList<>();
+
+        for (Settlement settlement : board.getSettlements()) {
+            if (settlement.getUserId().equals(player.getUserId())) {
+                for (Coordinate coordinate : tile.getCoordinates()) {
+                    if (settlement.getCoordinate() == coordinate) {
+                        buildings.add(settlement);
+                    }
+                }
+            }
+        }
+
+        for (City city : board.getCities()) {
+            if (city.getUserId().equals(player.getUserId())) {
+                for (Coordinate coordinate : tile.getCoordinates()) {
+                    if (city.getCoordinate() == coordinate) {
+                        buildings.add(city);
+                    }
+                }
+            }
+        }
+
+        return buildings;
+    }
 }

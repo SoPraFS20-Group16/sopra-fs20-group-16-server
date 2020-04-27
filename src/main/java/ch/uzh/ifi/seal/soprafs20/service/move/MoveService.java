@@ -2,12 +2,11 @@ package ch.uzh.ifi.seal.soprafs20.service.move;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
-import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
@@ -173,6 +172,26 @@ public class MoveService {
      */
     public void performDiceMove(DiceMove diceMove) {
 
+        // get number from simulated dice roll (between 2 and 12)
+        int diceRoll = getDiceRoll();
+
+        // get tile(s) with rolled number
+        List<Tile> tiles = boardService.getTilesWithNumber(diceMove.getGameId(), diceRoll);
+
+        // get game
+        Game game = gameService.findGameById(diceMove.getGameId());
+
+        // update wallet of every player with buildings on tile
+        for (Tile tile : tiles) {
+            ResourceType type = tileService.convertToResource(tile.getType());
+            for (Player player : game.getPlayers()) {
+                List<Building> buildings = boardService.getBuildingsFromTile(game, tile, player);
+                playerService.updateResources(type, buildings, player);
+            }
+        }
+    }
+
+    private int getDiceRoll() {
         // roll dice1 & dice2
         int min = 1;    // inclusive
         int max = 7;    // exclusive
@@ -183,28 +202,7 @@ public class MoveService {
         dice1 = ThreadLocalRandom.current().nextInt(min, max);
         dice2 = ThreadLocalRandom.current().nextInt(min, max);
 
-        int diceRoll = dice1 + dice2;
-
-        // get tile(s) with rolled number
-        List<Tile> tiles = boardService.getTilesWithNumber(diceMove.getGameId(), diceRoll);
-
-        // update wallet of every player with building on tile
-        for (Tile tile : tiles) {
-
-            // get tile type
-            TileType tileType = tile.getType();
-
-            // convert into resource
-            ResourceType resourceType = tileService.convertToResource(tileType);
-
-            // get playerIDs with settlements on tile & update their wallets
-            List<Long> playersWithSettlement = boardService.getPlayerIDsWithSettlement(diceMove.getGameId(), tile);
-            playerService.updateWallet(playersWithSettlement, resourceType, new Settlement().getBuildingFactor());
-
-            // get playerIDs with settlements on tile & update their wallets
-            List<Long> playersWithCity = boardService.getPlayerIDsWithCity(diceMove.getGameId(), tile);
-            playerService.updateWallet(playersWithCity, resourceType, new City().getBuildingFactor());
-        }
+        return dice1 + dice2;
     }
 
     public void deleteAllMovesForGame(Long gameId) {
