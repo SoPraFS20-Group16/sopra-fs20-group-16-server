@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
-import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
@@ -12,7 +11,10 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.PlayerDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.BuildMoveDTO;
@@ -114,7 +116,4 @@ public interface DTOMapper {
     @Mapping(source = "neededType", target = "neededType")
     @Mapping(source = "offeredType", target = "offeredType")
     TradeMoveDTO convertTradeMovetoTradeMoveDTO(TradeMove tradeMove);
-
-    @Mapping(source = "resources", target = "resources")
-    ResourceDTO convertWalletToResourceDTO(ResourceWallet wallet);
 }

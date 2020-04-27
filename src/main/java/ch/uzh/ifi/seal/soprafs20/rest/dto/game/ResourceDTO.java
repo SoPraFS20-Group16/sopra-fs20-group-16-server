@@ -1,18 +1,20 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 
-import java.util.Map;
+import java.util.EnumMap;
 
-public class ResourceDTO {
+public class ResourceDTO extends EnumMap<ResourceType, Integer> {
 
-    private Map<ResourceType, Integer> resources;
-
-    public Map<ResourceType, Integer> getResources() {
-        return resources;
+    public ResourceDTO(ResourceWallet wallet) {
+        super(ResourceType.class);
+        this.setWallet(wallet);
     }
 
-    public void setResources(Map<ResourceType, Integer> resources) {
-        this.resources = resources;
+    private void setWallet(ResourceWallet wallet) {
+        for (ResourceType type : ResourceType.values()) {
+            this.put(type, wallet.getResourceAmount(type));
+        }
     }
 }
