@@ -99,7 +99,7 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
-    public Player payForResource(TradeMove move) {
+    public Player payForTrade(TradeMove move) {
 
         //Find Player
         Player player = playerRepository.findByUserId(move.getUserId());
@@ -110,7 +110,7 @@ public class PlayerService {
 
         // pay for resource
         ResourceWallet funds = player.getWallet();
-        ResourceType type = move.getNeededType();
+        ResourceType type = move.getOfferedType();
 
         int tradeRatio = GameConstants.TRADE_WITH_BANK_RATIO;
 
@@ -121,7 +121,7 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
-    public Player addResource(TradeMove move) {
+    public Player receiveFromTrade(TradeMove move) {
 
         //Find Player
         Player player = playerRepository.findByUserId(move.getUserId());
@@ -134,10 +134,8 @@ public class PlayerService {
         ResourceType type = move.getNeededType();
         ResourceWallet funds = player.getWallet();
 
-        int tradeRatio = 1;
-
         // add resource to players' wallet
-        funds.addResource(type, tradeRatio);
+        funds.addResource(type, 1);
 
         player.setWallet(funds);
 
@@ -219,8 +217,6 @@ public class PlayerService {
         for (ResourceType type : price.getAllTypes()) {
             funds.removeResource(type, price.getResourceAmount(type));
         }
-
-        player.setWallet(funds);
     }
 
     public void removeDevelopmentCard(CardMove move) {
@@ -246,18 +242,6 @@ public class PlayerService {
         player.setDevelopmentCards(ownedCards);
     }
 
-    public void addVictoryPoint(CardMove move) {
-
-        // find player
-        Player player = playerRepository.findByUserId(move.getUserId());
-
-        // get and increase victoryPoints
-        int victoryPoints = player.getVictoryPoints() + 1;
-
-        // set new victoryPoints
-        player.setVictoryPoints(victoryPoints);
-    }
-
     public int getPointsFromDevelopmentCards(Player player) {
         int victoryPoints = 0;
 
@@ -275,8 +259,8 @@ public class PlayerService {
         return playerRepository.findByUserId(id);
     }
 
-    public void save(Player player) {
-        playerRepository.saveAndFlush(player);
+    public Player save(Player player) {
+        return playerRepository.saveAndFlush(player);
     }
 
     public void stealResource(StealMove move) {

@@ -487,7 +487,7 @@ public class GameControllerTest {
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
-        given(moveService.getMovesForPlayerWithUserId(Mockito.any(),Mockito.any())).willReturn(new ArrayList<>());
+        given(moveService.findMovesForGameAndPlayer(Mockito.any(), Mockito.any())).willReturn(new ArrayList<>());
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/games/1")
@@ -537,7 +537,7 @@ public class GameControllerTest {
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
-        given(moveService.getMovesForPlayerWithUserId(Mockito.any(),Mockito.any())).willReturn(moves);
+        given(moveService.findMovesForGameAndPlayer(Mockito.any(), Mockito.any())).willReturn(moves);
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/games/1")
@@ -589,7 +589,7 @@ public class GameControllerTest {
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);
 
-        given(moveService.getMovesForPlayerWithUserId(Mockito.any(),Mockito.any())).willReturn(new ArrayList<>());
+        given(moveService.findMovesForGameAndPlayer(Mockito.any(), Mockito.any())).willReturn(new ArrayList<>());
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/games/1")

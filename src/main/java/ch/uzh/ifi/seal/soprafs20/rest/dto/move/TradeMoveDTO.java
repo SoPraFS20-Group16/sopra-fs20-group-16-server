@@ -5,14 +5,14 @@ import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 public class TradeMoveDTO extends MoveDTO {
 
     private ResourceType neededType;
-    private ResourceType tradedType;
+    private ResourceType offeredType;
 
-    public void setTradedType(ResourceType tradedType) {
-        this.tradedType = tradedType;
+    public ResourceType getOfferedType() {
+        return offeredType;
     }
 
-    public ResourceType getTradedType() {
-        return tradedType;
+    public void setOfferedType(ResourceType offeredType) {
+        this.offeredType = offeredType;
     }
 
     public void setNeededType(ResourceType neededType) {

@@ -113,6 +113,6 @@ public interface DTOMapper {
     @Mapping(source = "moveName", target = "moveName")
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "neededType", target = "neededType")
-    @Mapping(source = "tradedType", target = "tradedType")
+    @Mapping(source = "offeredType", target = "offeredType")
     TradeMoveDTO convertTradeMovetoTradeMoveDTO(TradeMove tradeMove);
 }

@@ -21,15 +21,15 @@ public class QueueService {
     }
 
     public Long getNextForGame(Long id) {
-        PlayerQueue queue =  queueRepository.findByGameId(id);
+        PlayerQueue queue = queueRepository.findByGameId(id);
         Long next = queue.getNext();
         save(queue);
 
         return next;
     }
 
-    public void save(PlayerQueue queue) {
-        queueRepository.saveAndFlush(queue);
+    public PlayerQueue save(PlayerQueue queue) {
+        return queueRepository.saveAndFlush(queue);
     }
 
     public void addPlayerToQueue(Long gameId, Long userId) {

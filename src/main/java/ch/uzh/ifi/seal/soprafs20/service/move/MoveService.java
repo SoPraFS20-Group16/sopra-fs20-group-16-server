@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service.move;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -163,10 +164,10 @@ public class MoveService {
         int numberOfPlayers = game.getPlayers().size();
         int numberOfRoads = game.getBoard().getRoads().size();
 
-        return (numberOfRoads / 2) == numberOfPlayers;
+        return (numberOfRoads / GameConstants.NUMBER_OF_FIRST_ROUNDS) == numberOfPlayers;
     }
 
-    public List<Move> getMovesForPlayerWithUserId(Long gameId, Long userId) {
+    public List<Move> findMovesForGameAndPlayer(Long gameId, Long userId) {
         return moveRepository.findAllByGameIdAndUserId(gameId, userId);
     }
 
@@ -332,10 +333,10 @@ public class MoveService {
     public void performTradeMove(TradeMove tradeMove) {
 
         // player must pay for needed resourceType
-        playerService.payForResource(tradeMove);
+        playerService.payForTrade(tradeMove);
 
         // new resource gets added to the players wallet
-        playerService.addResource(tradeMove);
+        playerService.receiveFromTrade(tradeMove);
 
     }
 

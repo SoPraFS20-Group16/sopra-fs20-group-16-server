@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.calculator;
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
@@ -299,10 +300,12 @@ public class MoveCalculator {
         // get all development cards from player
         List<DevelopmentCard> developmentCards = player.getDevelopmentCards();
 
-        // create and add a new CardMove for every development card
+        // create and add a new CardMove for every development card (except victoryPoints)
         for (DevelopmentCard card : developmentCards) {
-            CardMove move = MoveCreator.createCardMove(game, player, card);
-            possibleMoves.add(move);
+            if (card.getDevelopmentType() != DevelopmentType.VICTORYPOINT) {
+                CardMove move = MoveCreator.createCardMove(game, player, card);
+                possibleMoves.add(move);
+            }
         }
 
         return possibleMoves;

@@ -17,7 +17,8 @@ public class TradeMove extends Move {
     private ResourceType neededType;
 
     @Enumerated(EnumType.ORDINAL)
-    private ResourceType tradedType;
+    private ResourceType offeredType;
+
 
     @Override
     public MoveHandler getMoveHandler() {
@@ -33,11 +34,11 @@ public class TradeMove extends Move {
         return neededType;
     }
 
-    public void setTradedType(ResourceType tradedType) {
-        this.tradedType = tradedType;
+    public ResourceType getOfferedType() {
+        return offeredType;
     }
 
-    public ResourceType getTradedType() {
-        return tradedType;
+    public void setOfferedType(ResourceType tradedType) {
+        this.offeredType = tradedType;
     }
 }

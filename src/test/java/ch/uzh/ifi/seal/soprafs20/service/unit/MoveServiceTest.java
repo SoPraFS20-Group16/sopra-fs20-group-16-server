@@ -1,15 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service.unit;
 
-import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
-import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
-import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
-import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.DiceMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
 import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
@@ -28,11 +20,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 public class MoveServiceTest {
@@ -127,44 +117,6 @@ public class MoveServiceTest {
         //Calculated points are
         assertEquals(3, testGame.getCurrentPlayer().getVictoryPoints(), "Victory point calculation wrong!");
     }
-
-    @Test
-    public void testPerformDiceMove() {
-
-        //setup
-        DiceMove diceMove = new DiceMove();
-        diceMove.setGameId(testGame.getId());
-        diceMove.setUserId(testPlayer.getUserId());
-
-        testPlayer.setWallet(new ResourceWallet());
-
-        Tile testTileForest = new Tile();
-        testTileForest.setType(TileType.FOREST);
-
-        Tile testTileField = new Tile();
-        testTileField.setType(TileType.FIELD);
-
-        List<Tile> testTiles = new ArrayList<>();
-        testTiles.add(testTileField);
-        testTiles.add(testTileForest);
-
-        List<Building> testBuildings = new ArrayList<>();
-        Settlement settlement = new Settlement();
-        City city = new City();
-        testBuildings.add(settlement);
-        testBuildings.add(city);
-
-        //given
-        given(boardService.getTilesWithNumber(Mockito.eq(testGame.getId()), Mockito.anyInt())).willReturn(testTiles);
-        given(boardService.getBuildingsFromTile(Mockito.eq(testGame), Mockito.any(), Mockito.eq(testPlayer)))
-                .willReturn(testBuildings);
-
-        //call method
-        moveService.performDiceMove(diceMove);
-
-        //assert the method changed the players wallet
-        assertTrue(testPlayer.getWallet().getResourceAmount(ResourceType.LUMBER) > 0, "The player should have received Lumber!");
-        assertTrue(testPlayer.getWallet().getResourceAmount(ResourceType.GRAIN) > 0, "The player should have received Grain");
-    }
+    //Perform moves are tested in integration tests!
 
 }

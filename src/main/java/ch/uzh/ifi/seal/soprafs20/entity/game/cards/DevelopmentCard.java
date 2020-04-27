@@ -17,6 +17,15 @@ public class DevelopmentCard extends Card {
     @Column(updatable = false, nullable = false)
     private DevelopmentType developmentType;
 
+    public DevelopmentCard() {
+        super();
+    }
+
+    public DevelopmentCard(DevelopmentType developmentType) {
+        super();
+        this.setDevelopmentType(developmentType);
+    }
+
 
     public DevelopmentType getDevelopmentType() {
         return developmentType;
