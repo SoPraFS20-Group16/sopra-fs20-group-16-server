@@ -29,6 +29,7 @@ public class Tile implements Serializable {
     @ManyToMany
     private List<Coordinate> coordinates;
 
+
     public Tile() {
         this.coordinates = new ArrayList<>();
     }

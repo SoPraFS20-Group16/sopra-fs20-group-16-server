@@ -13,9 +13,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
 
 import java.util.ArrayList;
 import java.util.List;

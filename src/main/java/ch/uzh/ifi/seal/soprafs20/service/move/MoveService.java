@@ -9,9 +9,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstPassMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstRoadMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.first.FirstSettlementMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
 import ch.uzh.ifi.seal.soprafs20.service.FirstStackService;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
@@ -85,18 +85,6 @@ public class MoveService {
 
 
     /**
-     * Gets the passed Move from the moveRepository
-     *
-     * @param moveId the moveId
-     * @return the move
-     */
-    public Move findMoveById(Long moveId) {
-        Optional<Move> optionalMove = moveRepository.findById(moveId);
-
-        return optionalMove.orElse(null);
-    }
-
-    /**
      * Gets the correct move handler form the move
      * passes the move an the MoveService (this) to the handler
      *
@@ -119,7 +107,7 @@ public class MoveService {
         makeRecalculations(game, handler, move);
     }
 
-    //Is performed after performMove terminates
+    // is performed after performMove terminates
     public void makeRecalculations(Game game, MoveHandler handler, Move move) {
 
         // update the victory points of the current player
@@ -152,6 +140,48 @@ public class MoveService {
         moveRepository.flush();
     }
 
+    // -- helper methods --
+
+    private int getDiceRoll() {
+        // roll dice1 & dice2
+        int min = 1;    // inclusive
+        int max = 7;    // exclusive
+
+        int dice1;
+        int dice2;
+
+        dice1 = ThreadLocalRandom.current().nextInt(min, max);
+        dice2 = ThreadLocalRandom.current().nextInt(min, max);
+
+        return dice1 + dice2;
+    }
+
+    public boolean canExitFirstPart(Long gameId) {
+
+        Game game = gameService.findGameById(gameId);
+
+        int numberOfPlayers = game.getPlayers().size();
+        int numberOfRoads = game.getBoard().getRoads().size();
+
+        return (numberOfRoads / 2) == numberOfPlayers;
+    }
+
+    public List<Move> getMovesForPlayerWithUserId(Long gameId, Long userId) {
+        return moveRepository.findAllByGameIdAndUserId(gameId, userId);
+    }
+
+    /**
+     * Gets the passed Move from the moveRepository
+     *
+     * @param moveId the moveId
+     * @return the move
+     */
+    public Move findMoveById(Long moveId) {
+        Optional<Move> optionalMove = moveRepository.findById(moveId);
+
+        return optionalMove.orElse(null);
+    }
+
     public void makeSetupRecalculations(Game game) {
 
         //Calculate the first move
@@ -162,10 +192,50 @@ public class MoveService {
         }
     }
 
+    public void deleteAllMovesForGame(Long gameId) {
+        List<Move> expiredMoves = moveRepository.findAllByGameId(gameId);
+        moveRepository.deleteAll(expiredMoves);
+        moveRepository.flush();
+    }
+
+    // -- start move(s) --
+
+    public void performStartMove(StartMove startMove) {
+
+        firstStackService.createStackForGameWithId(startMove.getGameId());
+    }
+
+    // -- initial moves --
+
+    public void performFirstPassMove(FirstPassMove firstPassMove) {
+        Game game = gameService.findGameById(firstPassMove.getGameId());
+
+        //Find the userId for the next player in the game!
+        Long nextUserId = firstStackService.getNextPlayerInGame(game.getId());
+
+        Player nextPlayer = playerService.findPlayerByUserId(nextUserId);
+
+        game.setCurrentPlayer(nextPlayer);
+
+        gameService.save(game);
+    }
+
+    public void performFirstSettlementMove(FirstSettlementMove firstSettlementMove) {
+        boardService.build(firstSettlementMove);
+    }
+
+    public void performFirstRoadMove(FirstRoadMove firstRoadMove) {
+        boardService.build(firstRoadMove);
+    }
+
+    // -- standard moves --
+
+    // - default moves -
+
     /**
      * Performs a DiceMove
      * Is called from the DiceMoveHandler
-     *
+     * <p>
      * imitates dice roll and distributes resources to designated players
      *
      * @param diceMove the DiceMove that is passed to the handler
@@ -191,30 +261,10 @@ public class MoveService {
         }
     }
 
-    private int getDiceRoll() {
-        // roll dice1 & dice2
-        int min = 1;    // inclusive
-        int max = 7;    // exclusive
-
-        int dice1;
-        int dice2;
-
-        dice1 = ThreadLocalRandom.current().nextInt(min, max);
-        dice2 = ThreadLocalRandom.current().nextInt(min, max);
-
-        return dice1 + dice2;
-    }
-
-    public void deleteAllMovesForGame(Long gameId) {
-        List<Move> expiredMoves = moveRepository.findAllByGameId(gameId);
-        moveRepository.deleteAll(expiredMoves);
-        moveRepository.flush();
-    }
-
     /**
      * Performs a PassMove
      * Is called from the PassMoveHandler
-     *
+     * <p>
      * will set the next player to the current player (current player passes to make another move)
      *
      * @param passMove the PassMove that is passed from the handler
@@ -232,23 +282,49 @@ public class MoveService {
         gameService.save(game);
     }
 
-    public void performFirstPassMove(FirstPassMove firstPassMove) {
-        Game game = gameService.findGameById(firstPassMove.getGameId());
+    // - build moves -
 
-        //Find the userId for the next player in the game!
-        Long nextUserId = firstStackService.getNextPlayerInGame(game.getId());
+    /**
+     * Performs a BuildMove
+     * Is called from the BuildMoveHandler
+     * <p>
+     * the player pays for and builds a building (road, settlement or city)
+     *
+     * @param buildMove the BuildMove that is passed from the handler
+     */
+    public void performBuildMove(BuildMove buildMove) {
 
-        Player nextPlayer = playerService.findPlayerByUserId(nextUserId);
+        //Player must pay for the building
+        playerService.payForBuilding(buildMove);
 
-        game.setCurrentPlayer(nextPlayer);
+        if (buildMove.getBuilding().getClass() == City.class) {
+            boardService.removeSettlementForCity(buildMove);
+        }
 
-        gameService.save(game);
+        //Build the building on the board
+        boardService.build(buildMove);
     }
+
+    // - card moves -
+
+    // removes invoked development card from player
+    public void performCardMove(CardMove cardMove) {
+
+        // get the development card type from the move
+        DevelopmentType type = cardMove.getDevelopmentCard().getDevelopmentType();
+
+        // remove development card from player, if it's not a victoryPoint card
+        if (type != DevelopmentType.VICTORYPOINT) {
+            playerService.removeDevelopmentCard(cardMove);
+        }
+    }
+
+    // - other moves -
 
     /**
      * Performs a TradeMove
      * Is called from the TradeMoveHandler
-     *
+     * <p>
      * the player can trade resources to get a designated resource
      *
      * @param tradeMove the TradeMove that is passed from the handler
@@ -266,7 +342,7 @@ public class MoveService {
     /**
      * Performs a purchaseMove
      * Is called from the PurchaseMoveHandler
-     *
+     * <p>
      * the player can purchase a (random) development card with resources
      *
      * @param purchaseMove the PurchaseMove that is passed from the handler
@@ -281,24 +357,20 @@ public class MoveService {
 
     }
 
-    // -- card moves section --
-
-    // removes invoked development card from player
-    public void performCardMove(CardMove cardMove) {
-
-        // get the development card type from the move
-        DevelopmentType type = cardMove.getDevelopmentCard().getDevelopmentType();
-
-        // remove development card from player, if it's not a victoryPoint card
-        if (type != DevelopmentType.VICTORYPOINT) {
-            playerService.removeDevelopmentCard(cardMove);
-        }
-    }
+    // -- development card moves --
 
     // performs monopoly move
     public void performMonopolyMove(MonopolyMove monopolyMove) {
 
-        playerService.monopolizeResources(monopolyMove);
+        // get current game
+        Game game = gameService.findGameById(monopolyMove.getGameId());
+
+        // get player that monopolizes and opponents
+        Player player = game.getCurrentPlayer();
+        List<Player> opponents = game.getPlayers();
+        opponents.remove(player);
+
+        playerService.monopolizeResources(monopolyMove, player, opponents);
     }
 
     // performs plenty move
@@ -329,55 +401,5 @@ public class MoveService {
 
         // deduct a random resource from victim and add it to player wallet
         playerService.stealResource(stealMove);
-    }
-
-    // -- end card moves section--
-
-    /**
-     * Performs a BuildMove
-     * Is called from the BuildMoveHandler
-     *
-     * the player pays for and builds a building (road, settlement or city)
-     *
-     * @param buildMove the BuildMove that is passed from the handler
-     */
-    public void performBuildMove(BuildMove buildMove) {
-
-        //Player must pay for the building
-        playerService.payForBuilding(buildMove);
-
-        if (buildMove.getBuilding().getClass() == City.class) {
-            boardService.removeSettlementForCity(buildMove);
-        }
-
-        //Build the building on the board
-        boardService.build(buildMove);
-    }
-
-    public List<Move> getMovesForPlayerWithUserId(Long gameId, Long userId) {
-        return moveRepository.findAllByGameIdAndUserId(gameId, userId);
-    }
-
-    public void performFirstSettlementMove(FirstSettlementMove firstSettlementMove) {
-        boardService.build(firstSettlementMove);
-    }
-
-    public void performFirstRoadMove(FirstRoadMove firstRoadMove) {
-        boardService.build(firstRoadMove);
-    }
-
-    public boolean canExitFirstPart(Long gameId) {
-
-        Game game = gameService.findGameById(gameId);
-
-        int numberOfPlayers = game.getPlayers().size();
-        int numberOfRoads = game.getBoard().getRoads().size();
-
-        return (numberOfRoads / 2) == numberOfPlayers;
-    }
-
-    public void performStartMove(StartMove startMove) {
-
-        firstStackService.createStackForGameWithId(startMove.getGameId());
     }
 }

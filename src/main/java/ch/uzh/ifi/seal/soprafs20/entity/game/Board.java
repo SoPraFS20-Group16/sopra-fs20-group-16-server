@@ -34,6 +34,7 @@ public class Board implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Settlement> settlements;
 
+
     public Board() {
         tiles = new ArrayList<>();
         cities = new ArrayList<>();
@@ -45,7 +46,6 @@ public class Board implements Serializable {
         return id;
     }
 
-    //getters and setters
     public void setId(Long id) {
         this.id = id;
     }
@@ -109,6 +109,7 @@ public class Board implements Serializable {
     }
 
     public boolean hasBuildingWithCoordinate(Coordinate coordinate) {
+
         //Check cities
         for (City city : cities) {
             if (city.getCoordinate().equals(coordinate)) {

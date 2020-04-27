@@ -22,6 +22,7 @@ public class ResourceWallet implements Serializable {
     @ElementCollection
     private final Map<ResourceType, Integer> resources;
 
+
     public ResourceWallet() {
         resources = new EnumMap<>(ResourceType.class);
 

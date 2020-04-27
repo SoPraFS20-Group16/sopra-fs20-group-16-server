@@ -100,6 +100,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO getUserWithId(@PathVariable(name = "userId") Long userId) {
+
         // convert API user to internal representation
         User userInput = new User();
         userInput.setId(userId);
@@ -118,7 +119,6 @@ public class UserController {
      *
      * Success: 200 OK, Failure: 401 UNAUTHORIZED
      *
-     *
      * @param userPostDTO the user post dto
      * @return token of the logged in user
      */
@@ -126,6 +126,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TokenDTO putLogin(@RequestBody UserPostDTO userPostDTO) {
+
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
@@ -140,10 +141,20 @@ public class UserController {
         return new TokenDTO(loggedInUser.getToken());
     }
 
+    /**
+     * PUT /logout
+     * <p>
+     * logs out the user with the passed credentials
+     * <p>
+     * Success: 204 NO CONTENT, Failure: 401 UNAUTHORIZED
+     *
+     * @param userPostDTO the user post DTO
+     */
     @PutMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void logoutUser(@RequestBody UserPostDTO userPostDTO) {
+
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 

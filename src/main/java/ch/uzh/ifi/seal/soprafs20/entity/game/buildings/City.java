@@ -26,6 +26,14 @@ public class City extends Building {
         super.setType(BuildingType.CITY);
     }
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
+
 
     @Override
     public int getVictoryPoints() {
@@ -33,17 +41,8 @@ public class City extends Building {
     }
 
     @Override
-    //TODO: Check if there is a more intuitive name!
-    public int getBuildingFactor() {
-        return BuildingConstants.BUILDING_FACTOR_CITY;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
+    public int getResourceDistributingAmount() {
+        return BuildingConstants.RESOURCE_DISTRIBUTING_AMOUNT_CITY;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class City extends Building {
         int oreRequired = 3;
         int grainRequired = 2;
 
-        //Create new wallet
+        // create new wallet
         ResourceWallet price = new ResourceWallet();
         price.addResource(ResourceType.ORE, oreRequired);
         price.addResource(ResourceType.GRAIN, grainRequired);

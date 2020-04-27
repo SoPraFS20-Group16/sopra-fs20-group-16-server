@@ -144,8 +144,27 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
-    public void monopolizeResources(MonopolyMove move) {
-        // TODO: implement functionality
+    public void monopolizeResources(MonopolyMove move, Player player, List<Player> opponents) {
+
+        // get monopolized resource
+        ResourceType monopolyType = move.getMonopolyType();
+
+        // get funds of player
+        ResourceWallet funds = player.getWallet();
+
+        // get all resources of monopoly type from all opponents and add them to player funds
+        for (Player opponent : opponents) {
+
+            ResourceWallet wallet = opponent.getWallet();
+            int transfer = wallet.getResourceAmount(monopolyType);
+
+            wallet.removeResource(monopolyType, transfer);
+            funds.addResource(monopolyType, transfer);
+
+            save(opponent);
+        }
+
+        save(player);
     }
 
     public void plentyResources(PlentyMove move) {
@@ -284,7 +303,7 @@ public class PlayerService {
 
         ResourceWallet funds = player.getWallet();
         for (Building building : buildings) {
-            int amount = building.getBuildingFactor();
+            int amount = building.getResourceDistributingAmount();
             funds.addResource(type, amount);
         }
         save(player);

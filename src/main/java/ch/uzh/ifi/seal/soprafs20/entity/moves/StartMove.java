@@ -9,6 +9,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "START_MOVE")
 public class StartMove extends Move {
+
     @Override
     public MoveHandler getMoveHandler() {
         return new StartMoveHandler();

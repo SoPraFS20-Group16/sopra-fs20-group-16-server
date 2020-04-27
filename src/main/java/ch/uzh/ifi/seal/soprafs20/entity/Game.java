@@ -42,6 +42,7 @@ public class Game implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long creatorId;     //Id of the user that created the game
 
+
     public Game() {
         players = new ArrayList<>();
     }

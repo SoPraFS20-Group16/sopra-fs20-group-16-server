@@ -29,7 +29,7 @@ public abstract class Building implements Serializable {
     //Abstract methods
     public abstract int getVictoryPoints();
 
-    public abstract int getBuildingFactor();
+    public abstract int getResourceDistributingAmount();
 
     public abstract ResourceWallet getPrice();
 
@@ -53,4 +53,3 @@ public abstract class Building implements Serializable {
     }
 
 }
-

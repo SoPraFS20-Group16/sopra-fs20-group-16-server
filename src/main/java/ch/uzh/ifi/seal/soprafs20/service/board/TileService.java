@@ -18,7 +18,6 @@ import java.util.List;
 @Transactional
 public class TileService {
 
-
     private final TileRepository tileRepository;
     private final CoordinateRepository coordinateRepository;
 

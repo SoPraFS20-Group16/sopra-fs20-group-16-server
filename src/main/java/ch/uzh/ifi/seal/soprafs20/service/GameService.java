@@ -95,9 +95,10 @@ public class GameService {
             return null;
         }
 
-        //Add creator as first player and set as current player
+        // creator of game is creatorPlayer
         Player creatorPlayer = playerService.createPlayerFromUserId(gameInput.getCreatorId());
 
+        // add creator to players list and set as current player
         gameInput.addPlayer(creatorPlayer);
         gameInput.setCurrentPlayer(creatorPlayer);
 

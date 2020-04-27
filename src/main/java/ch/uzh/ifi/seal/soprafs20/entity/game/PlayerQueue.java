@@ -13,6 +13,7 @@ public class PlayerQueue {
 
     @Column
     Long gameId;
+
     @Id
     @GeneratedValue
     private Long id;
@@ -20,10 +21,9 @@ public class PlayerQueue {
     @Column
     private int lastIndex;
 
-    @Column
-    private int queueSize;
     @ElementCollection
-    private Map<Integer, Long> queue;
+    private final Map<Integer, Long> queue;
+
 
     public PlayerQueue() {
         queue = new HashMap<>();
@@ -58,4 +58,3 @@ public class PlayerQueue {
         this.gameId = gameId;
     }
 }
-

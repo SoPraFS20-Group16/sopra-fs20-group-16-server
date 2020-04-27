@@ -8,19 +8,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "DEVELOPMENT_CARD")
 public class DevelopmentCard extends Card {
 
-
     private static final long serialVersionUID = 1L;
-
 
     @Column(updatable = false, nullable = false)
     private DevelopmentType developmentType;
 
-    //getters and setters
+
     public DevelopmentType getDevelopmentType() {
         return developmentType;
     }
@@ -44,6 +41,4 @@ public class DevelopmentCard extends Card {
 
         return price;
     }
-
-
 }

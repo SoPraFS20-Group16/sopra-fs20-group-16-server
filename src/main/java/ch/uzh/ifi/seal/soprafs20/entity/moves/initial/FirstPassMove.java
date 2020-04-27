@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.entity.moves.first;
+package ch.uzh.ifi.seal.soprafs20.entity.moves.initial;
 
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;

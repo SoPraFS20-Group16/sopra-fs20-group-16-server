@@ -6,7 +6,9 @@ import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +20,9 @@ public class Road extends Building {
 
     @OneToOne
     Coordinate coordinate1;
+
     @OneToOne
     Coordinate coordinate2;
-    @Id
-    @GeneratedValue
-    private Long id;
 
     public Road() {
         super.setType(BuildingType.ROAD);
@@ -34,24 +34,8 @@ public class Road extends Building {
     }
 
     @Override
-    public int getBuildingFactor() {
-        return BuildingConstants.BUILDING_FACTOR_ROAD;
-    }
-
-    public Coordinate getCoordinate1() {
-        return coordinate1;
-    }
-
-    public void setCoordinate1(Coordinate coordinate1) {
-        this.coordinate1 = coordinate1;
-    }
-
-    public Coordinate getCoordinate2() {
-        return coordinate2;
-    }
-
-    public void setCoordinate2(Coordinate coordinate2) {
-        this.coordinate2 = coordinate2;
+    public int getResourceDistributingAmount() {
+        return BuildingConstants.RESOURCE_DISTRIBUTING_AMOUNT_ROAD;
     }
 
     @Override
@@ -75,6 +59,22 @@ public class Road extends Building {
         coordinates.add(coordinate1);
         coordinates.add(coordinate2);
         return coordinates;
+    }
+
+    public Coordinate getCoordinate1() {
+        return coordinate1;
+    }
+
+    public void setCoordinate1(Coordinate coordinate1) {
+        this.coordinate1 = coordinate1;
+    }
+
+    public Coordinate getCoordinate2() {
+        return coordinate2;
+    }
+
+    public void setCoordinate2(Coordinate coordinate2) {
+        this.coordinate2 = coordinate2;
     }
 
 }

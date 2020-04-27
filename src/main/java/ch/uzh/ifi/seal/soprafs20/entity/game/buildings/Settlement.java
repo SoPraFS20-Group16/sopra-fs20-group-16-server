@@ -18,22 +18,12 @@ public class Settlement extends Building {
 
     private static final long serialVersionUID = 1L;
 
-
     @OneToOne
     private Coordinate coordinate;
 
+
     public Settlement() {
         super.setType(BuildingType.SETTLEMENT);
-    }
-
-    @Override
-    public int getVictoryPoints() {
-        return BuildingConstants.VICTORY_POINTS_SETTLEMENT;
-    }
-
-    @Override
-    public int getBuildingFactor() {
-        return BuildingConstants.BUILDING_FACTOR_SETTLEMENT;
     }
 
     public Coordinate getCoordinate() {
@@ -42,6 +32,17 @@ public class Settlement extends Building {
 
     public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
+    }
+
+
+    @Override
+    public int getVictoryPoints() {
+        return BuildingConstants.VICTORY_POINTS_SETTLEMENT;
+    }
+
+    @Override
+    public int getResourceDistributingAmount() {
+        return BuildingConstants.RESOURCE_DISTRIBUTING_AMOUNT_SETTLEMENT;
     }
 
     @Override

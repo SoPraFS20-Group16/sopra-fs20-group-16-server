@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The type Game controller helper contains helper methods that are used by the GameController
+ * this class contains helper methods that are used by the GameController
  */
 class GameControllerHelper {
 
@@ -28,6 +28,7 @@ class GameControllerHelper {
     }
 
     static Game checkIfGameExists(GameService gameService, Long gameId) {
+
         Game gameInput = new Game();
         gameInput.setId(gameId);
 
@@ -42,7 +43,7 @@ class GameControllerHelper {
     }
 
     /**
-     * Throws RestException with statuscode 401 Unauthorized if token is not valid
+     * Throws RestException with status code 401 UNAUTHORIZED if token is not valid
      *
      * @param userService the user service
      * @param token       the user token
@@ -65,6 +66,7 @@ class GameControllerHelper {
      * @return returns true if the token is valid, else false
      */
     static boolean tokenNotValid(UserService userService, String token) {
+
         //Get the logged in user with the token
         User candidate = new User();
         candidate.setToken(token);
@@ -75,6 +77,7 @@ class GameControllerHelper {
     }
 
     static void addCardsAndMoves(MoveService moveService, PlayerService playerService, User requestingUser, GameDTO gameDTO) {
+
         //Add the players cards to the dto
         Player player = playerService.findPlayerByUserId(requestingUser.getId());
 
@@ -109,6 +112,7 @@ class GameControllerHelper {
     }
 
     static User checkIfUserIsPlayerElseThrow403(GameService gameService, UserService userService, String token, Game foundGame) {
+
         User tempUser = new User();
         tempUser.setToken(token);
         User requestingUser = userService.findUser(tempUser);
@@ -123,7 +127,8 @@ class GameControllerHelper {
     }
 
     static void checkIsValidGameMoveUserCombinationElseThrow(GameService gameService, Game foundGame, Move foundMove, User requestingUser) {
-        //If user is not a player of the game return  403 forbidden
+
+        //If user is not a player of the game return 403 FORBIDDEN
         if (!gameService.userCanAccessGame(requestingUser, foundGame)) {
 
             throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_PLAYER_IN_GAME,
@@ -137,7 +142,7 @@ class GameControllerHelper {
                     ErrorMsg.MOVE_INVALID);
         }
 
-        //If the users Id does not match the moves PlayerId return 403
+        //If the users Id does not match the moves PlayerId return 403 FORBIDDEN
         if (!requestingUser.getId().equals(foundMove.getUserId())) {
 
             throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.USER_NOT_MATCH_PLAYER_ID,
@@ -146,9 +151,10 @@ class GameControllerHelper {
     }
 
     static Move findMoveIfExistsElseThrow403(MoveService moveService, Long requestedMoveId) {
+
         Move foundMove = moveService.findMoveById(requestedMoveId);
 
-        //If move does not exist return 403
+        //If move does not exist return 403 FORBIDDEN
         if (foundMove == null) {
             throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.NO_MOVE_WITH_ID,
                     ErrorMsg.MOVE_INVALID);
@@ -157,6 +163,7 @@ class GameControllerHelper {
     }
 
     static void checkConflict(Game createdGame) {
+
         //if created game is null there was a conflict
         if (createdGame == null) {
             throw new RestException(HttpStatus.CONFLICT,

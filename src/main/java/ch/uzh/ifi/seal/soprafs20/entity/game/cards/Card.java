@@ -9,7 +9,6 @@ public abstract class Card implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
     @Id
     @GeneratedValue
     @Column(updatable = false, nullable = false)

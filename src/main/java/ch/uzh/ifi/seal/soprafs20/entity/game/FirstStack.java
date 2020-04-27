@@ -85,6 +85,7 @@ public class FirstStack {
     }
 
     public Long getFirstPlayersUserId() {
+        // TODO: necessary assertion?
         lastIndex = 0;
         return playerStack.get(lastIndex);
     }

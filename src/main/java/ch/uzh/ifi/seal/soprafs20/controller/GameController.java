@@ -47,10 +47,10 @@ public class GameController {
 
     /**
      * GET /games.
-     *
+     * <p>
      * returns for all games an Id and a link in an array
-     *
-     * Success: 200
+     * <p>
+     * Success: 200 OK, Failure 401 UNAUTHORIZED
      *
      * @return List of GameLinkDTOs
      */
@@ -64,8 +64,10 @@ public class GameController {
 
         //Get list of games from game service
         List<Game> games = gameService.getGames();
+
         //Create new list for DTOs
         List<GameLinkDTO> gameLinks = new ArrayList<>();
+
         //Create DTOs for each game
         for (Game game : games) {
             gameLinks.add(DTOMapper.INSTANCE.convertGameToGameLinkDTO(game));
@@ -75,9 +77,9 @@ public class GameController {
 
     /**
      * POST /games
-     * <p>
+     *
      * creates a new game instance
-     * <p>
+     *
      * Success: 201 CREATED, Failure 503 SERVICE UNAVAILABLE, 401 UNAUTHORIZED
      *
      * @param gamePostDTO the gamePostDTO
@@ -121,9 +123,9 @@ public class GameController {
 
     /**
      * GET /games/:gameId
-     * <p>
+     *
      * returns the game that has the Id gameId
-     * <p>
+     *
      * Success: 200 OK, Failure: 403 FORBIDDEN, 404 NOT FOUND, 401 UNAUTHORIZED
      * (If the game exists but the user lacks permission, then 403 is returned)
      *
@@ -156,6 +158,20 @@ public class GameController {
         return gameDTO;
     }
 
+    /**
+     * PUT /games/:gameId
+     * <p>
+     * a requested move is checked for authentication and identification and gets
+     * carried out eventually
+     * <p>
+     * Success: 202 ACCEPTED, Failure: 401 UNAUTHORIZED, 404 NOT FOUND, 403 FORBIDDEN
+     * (if the game and the move both exist, but the player lacks permission, then
+     * 403 is returned)
+     *
+     * @param token      unique authentication string for every user
+     * @param gameId     unique game Id
+     * @param movePutDTO the movePutDTO
+     */
     @PutMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ResponseBody
@@ -187,13 +203,21 @@ public class GameController {
         moveService.performMove(foundMove);
     }
 
-
+    /**
+     * POST /games/:gameId/players
+     * <p>
+     * creates and adds a new player to the game, based on a user request
+     * <p>
+     * Success: 202 ACCEPTED, Failure: 401 UNAUTHORIZED, 404 NOT FOUND, 403 FORBIDDEN
+     *
+     * @param gameId unique game Id
+     * @param token  unique authentication string for every user
+     */
     @PostMapping("/games/{gameId}/players")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public void postNewPlayerToGameWithGameId(@PathVariable Long gameId,
                                               @RequestHeader(name = "Token") String token) {
-
 
         //If user does not possess a valid token return 401
         GameControllerHelper.checkToken(userService, token);
@@ -210,7 +234,7 @@ public class GameController {
         //Create a new player form requesting user
         Player createdPlayer = playerService.createPlayerFromUserId(requestingUser.getId());
 
-
+        //Add player to the game
         gameService.addPlayerToGame(createdPlayer, game);
     }
 
