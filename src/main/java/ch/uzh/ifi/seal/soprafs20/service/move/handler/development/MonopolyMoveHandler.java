@@ -1,14 +1,10 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler.development;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
-import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
-
-import java.util.List;
 
 /**
  * The Handler for the Monopoly move
@@ -27,10 +23,5 @@ public class MonopolyMoveHandler implements MoveHandler {
 
         // send back to moveService
         moveService.performMonopolyMove(monopolyMove);
-    }
-
-    @Override
-    public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculateAllStandardMoves(game);
     }
 }

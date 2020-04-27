@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.service.board;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.TileType;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.repository.CoordinateRepository;
@@ -112,5 +113,20 @@ public class TileService {
 
         return resourceType;
 
+    }
+
+    public void setRobber(Long tileId, Board board) {
+
+        // remove robber from previous tile
+        for (Tile tile : board.getTiles()) {
+            if (tile.hasRobber()) {
+                tile.setHasRobber(false);
+                break;
+            }
+        }
+
+        // add robber
+        Tile tile = tileRepository.findById(tileId).orElseThrow();
+        tile.setHasRobber(true);
     }
 }

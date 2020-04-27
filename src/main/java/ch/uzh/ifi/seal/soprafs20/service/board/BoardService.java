@@ -120,6 +120,7 @@ public class BoardService {
         newTile = tileService.createTileWithTopCoordinate(new Coordinate(5, 4));
         newTile.setTileNumber(0);
         newTile.setType(TileType.DESERT);
+        newTile.setHasRobber(true);
         tiles.add(newTile);
 
         newTile = tileService.createTileWithTopCoordinate(new Coordinate(7, 4));
@@ -296,7 +297,7 @@ public class BoardService {
 
     public int getPointsFromBuildings(Game game, Player player) {
 
-        int buildingPoins = 0;
+        int buildingPoints = 0;
 
         //Get the board on which the building is built
         Optional<Game> gameOptional = gameRepository.findById(game.getId());
@@ -309,35 +310,32 @@ public class BoardService {
 
         for (City city: board.getCities()) {
             if (city.getUserId().equals(player.getUserId())) {
-                buildingPoins += city.getVictoryPoints();
+                buildingPoints += city.getVictoryPoints();
             }
         }
 
         for (Settlement settlement : board.getSettlements()) {
             if (settlement.getUserId().equals(player.getUserId())) {
-                buildingPoins += settlement.getVictoryPoints();
+                buildingPoints += settlement.getVictoryPoints();
             }
         }
 
-        return buildingPoins;
+        return buildingPoints;
     }
 
-    public List<Building> getBuildingsFromTile(Game game, Tile tile, Player player) {
+    public List<Building> getBuildingsFromTileForPlayer(Game game, Tile tile, Player player) {
 
         Board board = game.getBoard();
 
         List<Building> buildings = new ArrayList<>();
 
-        for (Settlement settlement : board.getSettlements()) {
-            if (settlement.getUserId().equals(player.getUserId())) {
-                for (Coordinate coordinate : tile.getCoordinates()) {
-                    if (settlement.getCoordinate() == coordinate) {
-                        buildings.add(settlement);
-                    }
-                }
-            }
-        }
+        getSettlementsFromTileForPlayer(tile, player, board, buildings);
+        getCitiesFromTileForPlayer(tile, player, board, buildings);
 
+        return buildings;
+    }
+
+    private void getCitiesFromTileForPlayer(Tile tile, Player player, Board board, List<Building> buildings) {
         for (City city : board.getCities()) {
             if (city.getUserId().equals(player.getUserId())) {
                 for (Coordinate coordinate : tile.getCoordinates()) {
@@ -347,7 +345,17 @@ public class BoardService {
                 }
             }
         }
+    }
 
-        return buildings;
+    private void getSettlementsFromTileForPlayer(Tile tile, Player player, Board board, List<Building> buildings) {
+        for (Settlement settlement : board.getSettlements()) {
+            if (settlement.getUserId().equals(player.getUserId())) {
+                for (Coordinate coordinate : tile.getCoordinates()) {
+                    if (settlement.getCoordinate() == coordinate) {
+                        buildings.add(settlement);
+                    }
+                }
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
@@ -31,7 +32,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 @Service
@@ -143,20 +143,6 @@ public class MoveService {
 
     // -- helper methods --
 
-    private int getDiceRoll() {
-        // roll dice1 & dice2
-        int min = 1;    // inclusive
-        int max = 7;    // exclusive
-
-        int dice1;
-        int dice2;
-
-        dice1 = ThreadLocalRandom.current().nextInt(min, max);
-        dice2 = ThreadLocalRandom.current().nextInt(min, max);
-
-        return dice1 + dice2;
-    }
-
     public boolean canExitFirstPart(Long gameId) {
 
         Game game = gameService.findGameById(gameId);
@@ -241,10 +227,7 @@ public class MoveService {
      *
      * @param diceMove the DiceMove that is passed to the handler
      */
-    public void performDiceMove(DiceMove diceMove) {
-
-        // get number from simulated dice roll (between 2 and 12)
-        int diceRoll = getDiceRoll();
+    public void performDiceMove(DiceMove diceMove, int diceRoll) {
 
         // get tile(s) with rolled number
         List<Tile> tiles = boardService.getTilesWithNumber(diceMove.getGameId(), diceRoll);
@@ -256,7 +239,7 @@ public class MoveService {
         for (Tile tile : tiles) {
             ResourceType type = tileService.convertToResource(tile.getType());
             for (Player player : game.getPlayers()) {
-                List<Building> buildings = boardService.getBuildingsFromTile(game, tile, player);
+                List<Building> buildings = boardService.getBuildingsFromTileForPlayer(game, tile, player);
                 playerService.updateResources(type, buildings, player);
             }
         }
@@ -390,11 +373,14 @@ public class MoveService {
     // performs knight move (relocates the robber on board)
     public void performKnightMove(KnightMove knightMove) {
 
-        // TODO: implement functionality
+        // get current board
+        Board board = gameService.findGameById(knightMove.getGameId()).getBoard();
 
-        // get tile where robber will be placed
+        // get tileId where robber will be placed
+        Long tileId = knightMove.getTileId();
 
         // set robber on board
+        tileService.setRobber(tileId, board);
     }
 
     // performs stealing move (usually invoked after knight move)

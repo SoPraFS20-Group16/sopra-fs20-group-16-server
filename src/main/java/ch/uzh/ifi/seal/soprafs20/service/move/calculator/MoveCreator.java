@@ -13,6 +13,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
@@ -225,5 +226,13 @@ public class MoveCreator {
         }
         // return list of plentyMoves
         return plentyMoves;
+    }
+
+    static StealMove createStealMove(Game game, Long playerId) {
+        StealMove move = new StealMove();
+        move.setVictimId(playerId);
+        move.setGameId(game.getId());
+        move.setUserId(game.getCurrentPlayer().getUserId());
+        return move;
     }
 }
