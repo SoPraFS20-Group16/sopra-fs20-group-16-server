@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.calculator;
 
-import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
@@ -20,7 +19,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * this helper class creates individual moves and the entities (e.g. road) that come with it
@@ -138,34 +136,12 @@ public class MoveCreator {
 
     static PurchaseMove createPurchaseMove(Game game, Player player) {
 
-        // generate and set random development Card
-        DevelopmentCard developmentCard = new DevelopmentCard();
-
-        DevelopmentType devType;
-        int randomCard = ThreadLocalRandom.current().nextInt(1, 100 + 1);
-
-        if (randomCard == 1 || randomCard == 25) {
-            devType = DevelopmentType.MONOPOLYPROGRESS;
-        } else if (randomCard == 2 || randomCard == 24) {
-            devType = DevelopmentType.PLENTYPROGRESS;
-        } else if (randomCard == 3 || randomCard == 23) {
-            devType = DevelopmentType.ROADPROGRESS;
-        } else if (4 <= randomCard && randomCard <= 8) {
-            devType = DevelopmentType.VICTORYPOINT;
-        } else {
-            devType = DevelopmentType.KNIGHT;
-        }
-
-        developmentCard.setDevelopmentType(devType);
-
-        // create new Move
+        // create new purchase Move
         PurchaseMove move = new PurchaseMove();
-        move.setDevelopmentCard(developmentCard);
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
 
         return move;
-
     }
 
     static PassMove createPassMove(Game game, Player player) {

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional
@@ -71,7 +72,7 @@ public class PlayerService {
         }
 
         // pay for developmentCard
-        ResourceWallet price = move.getDevelopmentCard().getPrice();
+        ResourceWallet price = new DevelopmentCard().getPrice();
         ResourceWallet funds = player.getWallet();
 
         for (ResourceType type: price.getAllTypes()) {
@@ -93,8 +94,32 @@ public class PlayerService {
             throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
         }
 
+        // generate and set random development Card
+        DevelopmentCard developmentCard = new DevelopmentCard();
+
+        DevelopmentType devType;
+        int randomCard = ThreadLocalRandom.current().nextInt(1, 100 + 1);
+
+        if (randomCard >= 1 && randomCard <= 56) {
+            devType = DevelopmentType.KNIGHT;
+        }
+        else if (randomCard >= 57 && randomCard <= 76) {
+            devType = DevelopmentType.VICTORYPOINT;
+        }
+        else if (randomCard >= 77 && randomCard <= 84) {
+            devType = DevelopmentType.ROADPROGRESS;
+        }
+        else if (randomCard >= 85 && randomCard <= 92) {
+            devType = DevelopmentType.PLENTYPROGRESS;
+        }
+        else {
+            devType = DevelopmentType.MONOPOLYPROGRESS;
+        }
+
+        developmentCard.setDevelopmentType(devType);
+
         // add DevelopmentCard
-        player.addDevelopmentCard(move.getDevelopmentCard());
+        player.addDevelopmentCard(developmentCard);
 
         return playerRepository.saveAndFlush(player);
     }

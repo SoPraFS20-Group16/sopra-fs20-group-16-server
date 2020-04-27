@@ -94,4 +94,5 @@ public class Player implements Serializable {
     public void setWallet(ResourceWallet wallet) {
         this.wallet = wallet;
     }
+
 }

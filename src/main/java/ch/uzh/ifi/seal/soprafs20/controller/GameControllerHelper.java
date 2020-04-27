@@ -9,6 +9,7 @@ import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.PlayerDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
@@ -89,7 +90,7 @@ class GameControllerHelper {
                 playerDTO.setDevelopmentCards(player.getDevelopmentCards());
 
                 //set resource wallet
-                playerDTO.setResourceWallet(player.getWallet());
+                playerDTO.setResources(DTOMapper.INSTANCE.convertWalletToResourceDTO(player.getWallet()));
 
                 //No need to further compare playerDTOs
                 break;

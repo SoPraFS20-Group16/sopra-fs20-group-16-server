@@ -4,10 +4,7 @@ import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
-import ch.uzh.ifi.seal.soprafs20.entity.game.FirstStack;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
-import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
+import ch.uzh.ifi.seal.soprafs20.entity.game.*;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
@@ -626,16 +623,65 @@ public class MoveServiceIntegrationTest {
 
     @Test
     public void testPerformPurchaseMove() {
+        PurchaseMove purchaseMove = new PurchaseMove();
+        setupTestMove(purchaseMove, testPlayer, testGame);
+
+        // give the player purchase funds
+        testPlayer.setWallet(new DevelopmentCard().getPrice());
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        moveService.performMove(purchaseMove);
+
+        // assert that the player got one development card and has paid for it
+        testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
+        assertEquals(1, testPlayer.getDevelopmentCards().size(),
+                "There should be a development card added");
+
+        for (ResourceType type : testPlayer.getWallet().getAllTypes()) {
+            assertEquals(0, testPlayer.getWallet().getResourceAmount(type),
+                    "Wallet should be empty!");
+        }
 
     }
 
     @Test
     public void testPerformMonopolyMove() {
+        MonopolyMove monopolyMove = new MonopolyMove();
+        setupTestMove(monopolyMove, testPlayer, testGame);
+        monopolyMove.setMonopolyType(ResourceType.ORE);
 
+        testPlayer.setWallet(new ResourceWallet());
+
+        // support opponents with funds
+        Player opponent = setupSecondTestPlayer();
+
+        ResourceWallet funds1 = new ResourceWallet();
+        opponent.setWallet(funds1);
+
+        for (ResourceType type : ResourceType.values()) {
+            funds1.addResource(type, 3);
+        }
+
+        testPlayer = playerService.save(testPlayer);
+        opponent = playerService.save(opponent);
+
+        // perform
+        moveService.performMove(monopolyMove);
+
+        // assert that the test player monopolized the
+        testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
+        opponent = playerService.findPlayerByUserId(opponent.getUserId());
+
+        assertEquals(0, opponent.getWallet().getResourceAmount(ResourceType.ORE),
+                "the monopolized resource should have been removed");
+        assertEquals(3, testPlayer.getWallet().getResourceAmount(ResourceType.ORE),
+                "the monopolized resource should have been added to the player");
     }
 
     @Test
     public void testPerformPlentyMove() {
+
 
     }
 
