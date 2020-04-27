@@ -1,9 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
-import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
-
-import java.util.List;
-
 public class PlayerDTO {
 
     private String username;
@@ -12,7 +8,7 @@ public class PlayerDTO {
 
     private ResourceDTO resources;
 
-    private List<DevelopmentCard> developmentCards;
+    private DevelopmentCardsDTO developmentCards;
 
 
     public String getUsername() {
@@ -39,11 +35,11 @@ public class PlayerDTO {
         this.resources = resources;
     }
 
-    public List<DevelopmentCard> getDevelopmentCards() {
+    public DevelopmentCardsDTO getDevelopmentCards() {
         return developmentCards;
     }
 
-    public void setDevelopmentCards(List<DevelopmentCard> developmentCards) {
+    public void setDevelopmentCards(DevelopmentCardsDTO developmentCards) {
         this.developmentCards = developmentCards;
     }
 }
