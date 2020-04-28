@@ -239,6 +239,8 @@ public class MoveCalculatorIntegrationTest {
         for (Move move : moves) {
             assertEquals(FirstSettlementMove.class, move.getClass(),
                     "the move must be a firstSettlement move");
+            assertEquals(Settlement.class, ((BuildMove) move).getBuilding().getClass(),
+                    "the building must be a settlement");
         }
     }
 
@@ -252,13 +254,7 @@ public class MoveCalculatorIntegrationTest {
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
 
-        Road road = new Road();
-        road.setCoordinate1(coordinate);
-        road.setCoordinate2(coordinate.getNeighbors().get(0));
-        road.setUserId(testPlayer.getUserId());
-
         testBoard.addSettlement(settlement);
-        testBoard.addRoad(road);
 
         // perform
         List<Move> moves = MoveCalculator.calculateFirstSettlementMoves(testGame);
@@ -267,19 +263,16 @@ public class MoveCalculatorIntegrationTest {
         // assert
         moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
 
-        assertEquals(testBoard.getAllCoordinates().size() - 4, moves.size(),
-                "one move must be added for every coordinate minus 4 * settlements on board" +
-                        "(minimum space between settlements is one coordinate) in this test case");
-        for (Move move : moves) {
-            assertEquals(FirstSettlementMove.class, move.getClass(),
-                    "the move must be a firstSettlement move");
-        }
+        // one settlement reduces the available building coordinates by 4
+        // if building is located at edge of board, then only by 3
+        assertThat(moves.size(), anyOf(equalTo(testBoard.getAllCoordinates().size() - 3),
+                equalTo(testBoard.getAllCoordinates().size() - 4)));
     }
 
     @Test
     public void testCalculateFirstRoadMoves_valid() {
 
-        // set buildings on testBoard
+        // set buildings on testBoard and create firstSettlementMove
         Coordinate coordinate = testBoard.getAllCoordinates().get(0);
 
         Settlement settlement = new Settlement();
@@ -302,11 +295,16 @@ public class MoveCalculatorIntegrationTest {
         // assert
         moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
 
-        // if settlement got build at the rim of the game board, only two adjacent roads can be build
+        // a settlement has three adjacent road building options
+        // if building is located at edge of board, then only 2
         assertThat(moves.size(), anyOf(equalTo(2), equalTo(3)));
         for (Move move : moves) {
             assertEquals(FirstRoadMove.class, move.getClass(),
                     "the move must be a firstRoad move");
+            assertEquals(Road.class, ((BuildMove) move).getBuilding().getClass(),
+                    "the building must be road");
+            assertTrue(((BuildMove) move).getBuilding().getCoordinates().contains(coordinate),
+                    "every possible road should share a coordinate with the connecting settlement");
         }
     }
 
@@ -366,6 +364,7 @@ public class MoveCalculatorIntegrationTest {
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
+
         testBoard.addSettlement(settlement);
 
         // perform
@@ -375,13 +374,14 @@ public class MoveCalculatorIntegrationTest {
         // assert
         moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
 
-        // when settlement is build at the rim, only two possible roads can be build
+        // a settlement has three adjacent road building options
+        // if building is located at edge of board, then only 2
         assertThat(moves.size(), anyOf(equalTo(2), equalTo(3)));
-        assertEquals(Road.class, moves.get(1).getBuilding().getClass(),
-                "the building should be a road");
-        assertTrue(moves.get(0).getBuilding().getCoordinates().contains(coordinate),
-                "the building coordinate should be the one of the settlement");
         for (BuildMove move : moves) {
+            assertEquals(BuildMove.class, move.getClass(),
+                    "the move must be a build move");
+            assertEquals(Road.class, move.getBuilding().getClass(),
+                    "the building should be a road");
             assertTrue(move.getBuilding().getCoordinates().contains(coordinate),
                     "every possible road should share a coordinate with the connecting settlement");
         }
@@ -389,6 +389,7 @@ public class MoveCalculatorIntegrationTest {
 
     @Test
     public void testCalculateRoadMoves_connectingToCity_valid() {
+
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());
         playerService.save(testPlayer);
@@ -411,18 +412,16 @@ public class MoveCalculatorIntegrationTest {
 
         // when city is build at the rim, only two possible roads can be build
         assertThat(moves.size(), anyOf(equalTo(2), equalTo(3)));
-        assertEquals(Road.class, moves.get(1).getBuilding().getClass(),
-                "the building should be a road");
-        assertTrue(moves.get(0).getBuilding().getCoordinates().contains(coordinate),
-                "the building coordinate should be the one of the city");
         for (BuildMove move : moves) {
+            assertEquals(BuildMove.class, move.getClass(),
+                    "the move must be a build move");
+            assertEquals(Road.class, move.getBuilding().getClass(),
+                    "the building should be a road");
             assertTrue(move.getBuilding().getCoordinates().contains(coordinate),
                     "every possible road should share a coordinate with the connecting city");
         }
     }
 
-    // TODO: debug calculate getRoadEndPoints (nullPointer)
-    /*
     @Test
     public void testCalculateRoadMoves_connectingToRoad_valid() {
 
@@ -430,20 +429,20 @@ public class MoveCalculatorIntegrationTest {
         testPlayer.setWallet(new Road().getPrice());
         playerService.save(testPlayer);
 
-        // find random coordinate
-        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+        // add settlement on board with one adjacent road
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(5);
 
-        // add settlement on board
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
+
         testBoard.addSettlement(settlement);
 
-        // add road on board
         Road road = new Road();
-        road.setCoordinate2(coordinate);
-        road.setCoordinate2(coordinate.getNeighbors().get(1));
+        road.setCoordinate1(coordinate);
+        road.setCoordinate2(coordinate.getNeighbors().get(0));
         road.setUserId(testPlayer.getUserId());
+
         testBoard.addRoad(road);
 
         // perform
@@ -453,20 +452,20 @@ public class MoveCalculatorIntegrationTest {
         // assert
         moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
 
-        // when settlement is build at the rim, only two possible roads can be build
-        assertThat(moves.size(), anyOf(equalTo(2), equalTo(4)));
-        assertEquals(Road.class, moves.get(1).getBuilding().getClass(),
-                "the building should be a road");
-        // every possible new road must either contain the coordinate of the settlement or of the new road
-        for (BuildMove move: moves) {
-            assertThat(move.getBuilding().getCoordinates().get(0), anyOf(equalTo(settlement.getCoordinate()),
-                    equalTo(road.getCoordinate1()), equalTo(road.getCoordinate2())));
-            assertTrue(move.getBuilding().getCoordinates().contains(coordinate),
-                    "every possible road should share a coordinate with the connecting settlement");
+        // a building has three adjacent road options, if not build at edge of board
+        // a road already adjacent to building provides an extra road building option
+        assertEquals(4, moves.size(),
+                "a road provides one additional road building option");
+        for (Move move : moves) {
+            assertEquals(BuildMove.class, move.getClass(),
+                    "the move must be a build move");
+            assertEquals(Road.class, ((BuildMove) move).getBuilding().getClass(),
+                    "the building of the move must be a road");
+            // every possible road should shares a coordinate with either the settlement or the adjacent road
+            assertTrue(((BuildMove) move).getBuilding().getCoordinates().contains(coordinate) ||
+                    ((BuildMove) move).getBuilding().getCoordinates().contains(coordinate.getNeighbors().get(0)));
         }
-
     }
-    */
 
     @Test
     public void testCalculateRoadMoves_notEnoughResources() {
@@ -482,6 +481,7 @@ public class MoveCalculatorIntegrationTest {
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
+
         testBoard.addSettlement(settlement);
 
         // perform
@@ -509,6 +509,7 @@ public class MoveCalculatorIntegrationTest {
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
+
         testBoard.addSettlement(settlement);
 
         // player has already max amount of allowed roads build on board
@@ -527,15 +528,24 @@ public class MoveCalculatorIntegrationTest {
 
         assertEquals(0, moves.size(),
                 "the player cannot build another road, since max amount is reached");
-
     }
 
     @Test
     public void testCalculateRoadMoves_noValidBuildingsToConnect() {
 
-        // player can afford city
+        // player can afford road
         testPlayer.setWallet(new Road().getPrice());
         testPlayer = playerService.save(testPlayer);
+
+        // only opponent has building on board
+        Player opponent = setupSecondTestPlayer();
+
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(opponent.getUserId());
+
+        testBoard.addSettlement(settlement);
 
         // perform
         List<BuildMove> moves = MoveCalculator.calculateRoadMoves(testGame);
@@ -551,6 +561,46 @@ public class MoveCalculatorIntegrationTest {
     @Test
     public void testCalculateSettlementMoves_valid() {
 
+        // player can afford settlement
+        testPlayer.setWallet(new Settlement().getPrice());
+        testPlayer = playerService.save(testPlayer);
+
+        // setup board, create settlement with two adjacent roads
+        Coordinate coordinate = testBoard.getAllCoordinates().get(0);
+
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(testPlayer.getUserId());
+
+        testBoard.addSettlement(settlement);
+
+        Road road1 = new Road();
+        road1.setCoordinate1(coordinate);
+        road1.setCoordinate2(coordinate.getNeighbors().get(0));
+        road1.setUserId(testPlayer.getUserId());
+
+        testBoard.addRoad(road1);
+
+        Road road2 = new Road();
+        road2.setCoordinate1(coordinate.getNeighbors().get(0));
+        road2.setCoordinate2(coordinate.getNeighbors().get(0).getNeighbors().get(0));
+        road2.setUserId(testPlayer.getUserId());
+
+        testBoard.addRoad(road2);
+
+        // perform
+        List<BuildMove> moves = MoveCalculator.calculateSettlementMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "for every open road end point, a move gets added");
+        assertEquals(BuildMove.class, moves.get(0).getClass(),
+                "the added move must be a build move");
+        assertEquals(Settlement.class, moves.get(0).getBuilding().getClass(),
+                "the building must be a settlement");
     }
 
     @Test
@@ -560,14 +610,21 @@ public class MoveCalculatorIntegrationTest {
         testPlayer.setWallet(new ResourceWallet());
         testPlayer = playerService.save(testPlayer);
 
-        // find random coordinate
-        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+        // setup board, create settlement with one adjacent road
+        Coordinate coordinate = testBoard.getAllCoordinates().get(0);
 
-        // add road on board (provides valid building coordinate)
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(testPlayer.getUserId());
+
+        testBoard.addSettlement(settlement);
+
         Road road = new Road();
         road.setCoordinate1(coordinate);
         road.setCoordinate2(coordinate.getNeighbors().get(0));
         road.setUserId(testPlayer.getUserId());
+
+        testBoard.addRoad(road);
 
         // perform
         List<BuildMove> moves = MoveCalculator.calculateSettlementMoves(testGame);
@@ -589,12 +646,14 @@ public class MoveCalculatorIntegrationTest {
         testPlayer = playerService.save(testPlayer);
 
         // add road on board (provides valid building coordinate)
-        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+        Coordinate coordinate = testBoard.getAllCoordinates().get(0);
 
         Road road = new Road();
         road.setCoordinate1(coordinate);
         road.setCoordinate2(coordinate.getNeighbors().get(0));
         road.setUserId(testPlayer.getUserId());
+
+        testBoard.addRoad(road);
 
         // player has already max amount of allowed cities build on board
         for (int i = 0; i < PlayerConstants.MAX_NUMBER_SETTLEMENTS; i++) {
@@ -616,11 +675,6 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateSettlementMoves_noValidRoadEndpoints() {
-
-    }
-
-    @Test
     public void testCalculateCityMoves_valid() {
 
         // player can afford city
@@ -634,6 +688,7 @@ public class MoveCalculatorIntegrationTest {
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
+
         testBoard.addSettlement(settlement);
 
         // perform
@@ -649,6 +704,7 @@ public class MoveCalculatorIntegrationTest {
                 "the building should be a city");
         assertTrue(moves.get(0).getBuilding().getCoordinates().contains(coordinate),
                 "the building coordinate should be the one of the settlement");
+
     }
 
     @Test
@@ -665,6 +721,7 @@ public class MoveCalculatorIntegrationTest {
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
+
         testBoard.addSettlement(settlement);
 
         // perform
@@ -693,6 +750,7 @@ public class MoveCalculatorIntegrationTest {
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
+
         testBoard.addSettlement(settlement);
 
         // player has already max amount of allowed cities build on board
@@ -721,6 +779,15 @@ public class MoveCalculatorIntegrationTest {
         testPlayer.setWallet(new City().getPrice());
         testPlayer = playerService.save(testPlayer);
 
+        // add city on board
+        Coordinate coordinate = testBoard.getAllCoordinates().get(0);
+
+        City city = new City();
+        city.setCoordinate(coordinate);
+        city.setUserId(testPlayer.getUserId());
+
+        testBoard.addCity(city);
+
         // perform
         List<BuildMove> moves = MoveCalculator.calculateCityMoves(testGame);
         moveRepository.saveAll(moves);
@@ -740,6 +807,7 @@ public class MoveCalculatorIntegrationTest {
         // player has development card
         DevelopmentCard developmentCard = new DevelopmentCard();
         developmentCard.setDevelopmentType(DevelopmentType.MONOPOLYPROGRESS);
+
         testPlayer.addDevelopmentCard(developmentCard);
         testPlayer = playerService.save(testPlayer);
 
@@ -762,6 +830,7 @@ public class MoveCalculatorIntegrationTest {
         // player has development card
         DevelopmentCard developmentCard = new DevelopmentCard();
         developmentCard.setDevelopmentType(DevelopmentType.VICTORYPOINT);
+
         testPlayer.addDevelopmentCard(developmentCard);
         testPlayer = playerService.save(testPlayer);
 
@@ -816,9 +885,9 @@ public class MoveCalculatorIntegrationTest {
 
         assertEquals(ResourceType.values().length - 1, moves.size(),
                 "a trade move must be added for every resource type (minus offered resource type)");
-        assertEquals(TradeMove.class, moves.get(0).getClass(),
-                "the added move must be a trade move");
         for (Move move : moves) {
+            assertEquals(TradeMove.class, move.getClass(),
+                    "the added move must be a trade move");
             TradeMove tradeMove = (TradeMove) move;
             assertNotEquals(ResourceType.GRAIN, tradeMove.getNeededType(),
                     "offered type cannot be needed type");
@@ -919,6 +988,8 @@ public class MoveCalculatorIntegrationTest {
     @Test
     public void testCalculateAllKnightMoves_valid() {
 
+        // no preconditions
+
         // perform
         List<Move> moves = MoveCalculator.calculateAllKnightMoves(testGame);
         moveRepository.saveAll(moves);
@@ -970,7 +1041,7 @@ public class MoveCalculatorIntegrationTest {
                 "there should be a separate move for every combination of two resource types");
         for (Move move : moves) {
             assertEquals(PlentyMove.class, move.getClass(),
-                    "the added move must be a monopoly move");
+                    "the added move must be a plenty move");
         }
     }
 
@@ -1011,17 +1082,43 @@ public class MoveCalculatorIntegrationTest {
         moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
 
         assertEquals(1, moves.size(),
-                "a steal move must be added");
+                "a steal move must be added for every opponent");
         assertEquals(StealMove.class, moves.get(0).getClass(),
                 "the move must be a steal move");
         StealMove stealMove = (StealMove) moves.get(0);
         assertEquals(opponent.getUserId(), stealMove.getVictimId(),
-                "the victim must be the player with building on robber tile");
-
+                "the victim must be the player with building on tile with robber");
     }
 
     @Test
-    public void testCalculateAllRoadProgressMoves() {
+    public void testCalculateAllRoadProgressMoves_maxNumberOfRoadsReached() {
+
+        // find random coordinate
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+
+        // add settlement on board
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(testPlayer.getUserId());
+
+        testBoard.addSettlement(settlement);
+
+        // player has already max amount of allowed roads build on board
+        for (int i = 0; i < PlayerConstants.MAX_NUMBER_ROADS; i++) {
+            Road road = new Road();
+            road.setUserId(testPlayer.getUserId());
+            testBoard.addRoad(road);
+        }
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllRoadProgressMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "the player cannot build another road, since max amount is reached");
 
     }
 
