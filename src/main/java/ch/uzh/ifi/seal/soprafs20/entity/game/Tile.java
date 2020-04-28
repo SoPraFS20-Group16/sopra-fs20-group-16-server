@@ -23,6 +23,9 @@ public class Tile implements Serializable {
     private int tileNumber;
 
     @Column
+    private boolean hasRobber = false;
+
+    @Column
     private TileType type;
 
     @Size(max = 6)
@@ -73,5 +76,13 @@ public class Tile implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setHasRobber(boolean hasRobber) {
+        this.hasRobber = hasRobber;
+    }
+
+    public boolean hasRobber() {
+        return hasRobber;
     }
 }

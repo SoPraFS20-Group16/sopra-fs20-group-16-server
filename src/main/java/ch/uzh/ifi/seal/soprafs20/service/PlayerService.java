@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -291,15 +292,26 @@ public class PlayerService {
         ResourceWallet fundsPlayer = player.getWallet();
 
         // find victim & corresponding funds
-        Player victim = playerRepository.findByUserId(move.getVictim().getUserId());
+        Player victim = playerRepository.findByUserId(move.getVictimId());
         ResourceWallet fundsVictim = victim.getWallet();
 
-        // deduct random card from opponent and add to player
-        // TODO: implement fuctionality
+        // deduct random resource card from opponent and add to player
+        List<ResourceType> availableTypes = new ArrayList<>();
+
+        for (ResourceType type : ResourceType.values()) {
+            if (fundsVictim.getResourceAmount(type) > 0) {
+                availableTypes.add(type);
+            }
+        }
+
+        int random = ThreadLocalRandom.current().nextInt(0, availableTypes.size());
+
+        ResourceType stolenType = availableTypes.get(random);
+
+        fundsPlayer.addResource(stolenType, 1);
+        fundsVictim.removeResource(stolenType, 1);
 
         // save players
-        player.setWallet(fundsPlayer);
-        victim.setWallet(fundsVictim);
         playerRepository.saveAndFlush(player);
         playerRepository.saveAndFlush(victim);
     }
