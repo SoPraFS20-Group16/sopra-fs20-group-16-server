@@ -1,6 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.service.integration;
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -9,10 +12,13 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.repository.*;
 import ch.uzh.ifi.seal.soprafs20.service.FirstStackService;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
@@ -31,13 +37,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
 @SpringBootTest
@@ -154,6 +160,62 @@ public class MoveCalculatorIntegrationTest {
         queueRepository.deleteAll();
         gameRepository.deleteAll();
     }
+
+    private Player setupSecondTestPlayer() {
+        //Add a player that can be passed to
+        Player secondPlayer = new Player();
+        secondPlayer.setUsername("secondPlayer");
+        secondPlayer.setUserId(22L);
+        secondPlayer = playerService.save(secondPlayer);
+        testGame.addPlayer(secondPlayer);
+        testGame = gameService.save(testGame);
+        return secondPlayer;
+    }
+
+    // -- start move(s) --
+
+    @Test
+    public void testCalculateStartMove() {
+
+    }
+
+    // -- initial moves --
+
+    @Test
+    public void testCalculateFirstPassMove() {
+
+    }
+
+    @Test
+    public void testCalculateFirstSettlementMoves() {
+
+    }
+
+    @Test
+    public void testCalculateFirstRoadMoves() {
+
+    }
+
+    // -- standard moves --
+
+    // - default moves -
+
+    @Test
+    public void testCalculatePassMove() {
+
+    }
+
+    @Test
+    public void testCalculateDiceMove() {
+
+    }
+
+    @Test
+    public void testCalculateAllStandardMoves() {
+
+    }
+
+    // - build moves -
 
     @Test
     public void testCalculateRoadMoves_connectingToSettlement_valid() {
@@ -352,6 +414,26 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
+    public void testCalculateSettlementMoves_valid() {
+
+    }
+
+    @Test
+    public void testCalculateSettlementMoves_notEnoughResources() {
+
+    }
+
+    @Test
+    public void testCalculateSettlementMoves_maxNumberOfSettlementsReached() {
+
+    }
+
+    @Test
+    public void testCalculateSettlementMoves_noValidRoadEndpoints() {
+
+    }
+
+    @Test
     public void testCalculateCityMoves_valid() {
 
         // player can afford city
@@ -463,5 +545,290 @@ public class MoveCalculatorIntegrationTest {
                 "a city move cannot be added, since the player does not have any settlements");
     }
 
+    // - card moves -
+
+    @Test
+    public void testCalculateCardMoves_valid() {
+
+        // player has development card
+        DevelopmentCard developmentCard = new DevelopmentCard();
+        developmentCard.setDevelopmentType(DevelopmentType.MONOPOLYPROGRESS);
+        testPlayer.addDevelopmentCard(developmentCard);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<CardMove> moves = MoveCalculator.calculateCardMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "a cardMove must be added to to player");
+        assertEquals(CardMove.class, moves.get(0).getClass(),
+                "the move must be a cardMove");
+    }
+
+    @Test
+    public void testCalculateCardMoves_VictoryPointCard_resultsInNoMove() {
+
+        // player has development card
+        DevelopmentCard developmentCard = new DevelopmentCard();
+        developmentCard.setDevelopmentType(DevelopmentType.VICTORYPOINT);
+        testPlayer.addDevelopmentCard(developmentCard);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<CardMove> moves = MoveCalculator.calculateCardMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "a victory point card does not produce a cardMove");
+    }
+
+    @Test
+    public void testCalculateCardMoves_noCard() {
+
+        // player has no development card
+        testPlayer.setDevelopmentCards(new ArrayList<>());
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<CardMove> moves = MoveCalculator.calculateCardMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "without a development card, no card move gets created");
+    }
+
+    // - other moves -
+
+    @Test
+    public void testCalculateTradeMoves_oneTrade_valid() {
+
+        // player has enough funds for one trade
+        ResourceWallet resourceWallet = new ResourceWallet();
+        for (int i = 0; i < GameConstants.TRADE_WITH_BANK_RATIO; i++) {
+            resourceWallet.addResource(ResourceType.GRAIN, 1);
+        }
+        testPlayer.setWallet(resourceWallet);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateTradeMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(ResourceType.values().length - 1, moves.size(),
+                "a trade move must be added for every resource type (minus offered resource type)");
+        assertEquals(TradeMove.class, moves.get(0).getClass(),
+                "the added move must be a trade move");
+        for (Move move : moves) {
+            TradeMove tradeMove = (TradeMove) move;
+            assertNotEquals(ResourceType.GRAIN, tradeMove.getNeededType(),
+                    "offered type cannot be needed type");
+        }
+    }
+
+    @Test
+    public void testCalculateTradeMoves_twoTrades_valid() {
+
+        // player has enough funds for one trade
+        ResourceWallet resourceWallet = new ResourceWallet();
+        for (int i = 0; i < GameConstants.TRADE_WITH_BANK_RATIO; i++) {
+            resourceWallet.addResource(ResourceType.GRAIN, 1);
+        }
+        for (int i = 0; i < GameConstants.TRADE_WITH_BANK_RATIO; i++) {
+            resourceWallet.addResource(ResourceType.WOOL, 1);
+        }
+        testPlayer.setWallet(resourceWallet);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateTradeMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(ResourceType.values().length * 2 - 2, moves.size(),
+                "a trade moves must be added for every resource type twice, minus offered two types");
+        for (Move move : moves) {
+            assertEquals(TradeMove.class, move.getClass(),
+                    "the added move must be a trade move");
+        }
+    }
+
+    @Test
+    public void testCalculateTradeMoves_notEnoughResources() {
+
+        // player has NOT enough funds for one trade
+        ResourceWallet resourceWallet = new ResourceWallet();
+        for (int i = 0; i < (GameConstants.TRADE_WITH_BANK_RATIO / 2); i++) {
+            resourceWallet.addResource(ResourceType.GRAIN, 1);
+        }
+        testPlayer.setWallet(resourceWallet);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateTradeMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "player cannot afford trade move");
+    }
+
+    @Test
+    public void testCalculatePurchaseMoves_valid() {
+
+        // player can afford purchase
+        testPlayer.setWallet(new DevelopmentCard().getPrice());
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<PurchaseMove> moves = MoveCalculator.calculatePurchaseMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "a move must be added");
+        assertEquals(PurchaseMove.class, moves.get(0).getClass(),
+                "the added move must be a purchase move");
+    }
+
+    @Test
+    public void testCalculatePurchaseMoves_notEnoughResources() {
+
+        // player can NOT afford purchase
+        testPlayer.setWallet(new ResourceWallet());
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        List<PurchaseMove> moves = MoveCalculator.calculatePurchaseMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "the player cannot afford this move");
+    }
+
+    // -- development card moves --
+
+    @Test
+    public void testCalculateAllKnightMoves_valid() {
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllKnightMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(testBoard.getTiles().size(), moves.size(),
+                "there must be one knight move for every tile on board");
+        for (Move move : moves) {
+            assertEquals(KnightMove.class, move.getClass(),
+                    "the added move must be knight move");
+        }
+    }
+
+    @Test
+    public void testCalculateAllMonopolyMoves() {
+
+        // no preconditions
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllMonopolyMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(ResourceType.values().length, moves.size(),
+                "there should be a separate move for every available resource");
+        for (Move move : moves) {
+            assertEquals(MonopolyMove.class, move.getClass(),
+                    "the added move must be a monopoly move");
+        }
+    }
+
+    @Test
+    public void testCalculateAllPlentyMoves() {
+
+        // no preconditions
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllPlentyMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(Math.pow(ResourceType.values().length, 2), moves.size(),
+                "there should be a separate move for every combination of two resource types");
+        for (Move move : moves) {
+            assertEquals(PlentyMove.class, move.getClass(),
+                    "the added move must be a monopoly move");
+        }
+    }
+
+    @Test
+    public void testCalculateAllStealMoves() {
+
+        // set robber on tile
+        testBoard.getTiles().get(0).setHasRobber(true);
+
+        // set opponent building on tile
+        Player opponent = setupSecondTestPlayer();
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+        City city = new City();
+        city.setCoordinate(coordinate);
+        city.setUserId(opponent.getUserId());
+
+        testBoard.addCity(city);
+
+        // save entities
+        testPlayer = playerService.save(testPlayer);
+        opponent = playerService.save(opponent);
+
+        boardRepository.save(testBoard);
+        gameRepository.save(testGame);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllStealMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "a steal move must be added");
+        assertEquals(StealMove.class, moves.get(0).getClass(),
+                "the move must be a steal move");
+        StealMove stealMove = (StealMove) moves.get(0);
+        assertEquals(opponent.getUserId(), stealMove.getVictimId(),
+                "the victim must be the player with building on robber tile");
+
+    }
+
+    @Test
+    public void testCalculateAllRoadProgressMoves() {
+
+    }
 
 }
