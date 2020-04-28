@@ -19,6 +19,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.*;
 import ch.uzh.ifi.seal.soprafs20.service.FirstStackService;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
@@ -172,11 +175,32 @@ public class MoveCalculatorIntegrationTest {
         return secondPlayer;
     }
 
+    private void setupTestMove(Move move, Player player, Game game) {
+        move.setUserId(player.getUserId());
+        move.setGameId(game.getId());
+    }
+
     // -- start move(s) --
 
     @Test
     public void testCalculateStartMove() {
 
+        // no additional preconditions
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateStartMove(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "one move must be added");
+        assertEquals(StartMove.class, moves.get(0).getClass(),
+                "the move must be a start move");
+        StartMove startMove = (StartMove) moves.get(0);
+        assertEquals(startMove.getUserId(), testGame.getCreatorId(),
+                "the userId of the start move must be the creatorId");
     }
 
     // -- initial moves --
@@ -184,16 +208,106 @@ public class MoveCalculatorIntegrationTest {
     @Test
     public void testCalculateFirstPassMove() {
 
+        // no additional preconditions
+        // perform
+        List<Move> moves = MoveCalculator.calculateFirstPassMove(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "one move must be added");
+        assertEquals(FirstPassMove.class, moves.get(0).getClass(),
+                "the move must be a firstPass move");
     }
 
     @Test
-    public void testCalculateFirstSettlementMoves() {
+    public void testCalculateFirstSettlementMoves_emptyBoard() {
 
+        // no additional preconditions
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateFirstSettlementMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(testBoard.getAllCoordinates().size(), moves.size(),
+                "one move must be added for every coordinate");
+        for (Move move : moves) {
+            assertEquals(FirstSettlementMove.class, move.getClass(),
+                    "the move must be a firstSettlement move");
+        }
     }
 
     @Test
-    public void testCalculateFirstRoadMoves() {
+    public void testCalculateFirstSettlementMoves_nonEmptyBoard() {
 
+        // set buildings on testBoard
+        Coordinate coordinate = testBoard.getAllCoordinates().get(0);
+
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(testPlayer.getUserId());
+
+        Road road = new Road();
+        road.setCoordinate1(coordinate);
+        road.setCoordinate2(coordinate.getNeighbors().get(0));
+        road.setUserId(testPlayer.getUserId());
+
+        testBoard.addSettlement(settlement);
+        testBoard.addRoad(road);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateFirstSettlementMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(testBoard.getAllCoordinates().size() - 4, moves.size(),
+                "one move must be added for every coordinate minus 4 * settlements on board" +
+                        "(minimum space between settlements is one coordinate) in this test case");
+        for (Move move : moves) {
+            assertEquals(FirstSettlementMove.class, move.getClass(),
+                    "the move must be a firstSettlement move");
+        }
+    }
+
+    @Test
+    public void testCalculateFirstRoadMoves_valid() {
+
+        // set buildings on testBoard
+        Coordinate coordinate = testBoard.getAllCoordinates().get(0);
+
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(testPlayer.getUserId());
+
+        FirstSettlementMove firstSettlementMove = new FirstSettlementMove();
+        setupTestMove(firstSettlementMove, testPlayer, testGame);
+        firstSettlementMove.setBuilding(settlement);
+
+        testBoard.addSettlement(settlement);
+
+        gameService.save(testGame);
+
+        // perform
+
+        List<Move> moves = MoveCalculator.calculateFirstRoadMoves(testGame, firstSettlementMove);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        // if settlement got build at the rim of the game board, only two adjacent roads can be build
+        assertThat(moves.size(), anyOf(equalTo(2), equalTo(3)));
+        for (Move move : moves) {
+            assertEquals(FirstRoadMove.class, move.getClass(),
+                    "the move must be a firstRoad move");
+        }
     }
 
     // -- standard moves --
@@ -203,15 +317,36 @@ public class MoveCalculatorIntegrationTest {
     @Test
     public void testCalculatePassMove() {
 
+        // no additional preconditions
+        // perform
+        List<Move> moves = MoveCalculator.calculatePassMove(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "one move must be added");
+        assertEquals(PassMove.class, moves.get(0).getClass(),
+                "the move must be a firstPass move");
+
     }
 
     @Test
     public void testCalculateDiceMove() {
 
-    }
+        // no additional preconditions
+        // perform
+        List<Move> moves = MoveCalculator.calculateDiceMove(testGame);
+        moveRepository.saveAll(moves);
 
-    @Test
-    public void testCalculateAllStandardMoves() {
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(1, moves.size(),
+                "one move must be added");
+        assertEquals(DiceMove.class, moves.get(0).getClass(),
+                "the move must be a dice move");
 
     }
 
@@ -421,10 +556,62 @@ public class MoveCalculatorIntegrationTest {
     @Test
     public void testCalculateSettlementMoves_notEnoughResources() {
 
+        // empty resource wallet
+        testPlayer.setWallet(new ResourceWallet());
+        testPlayer = playerService.save(testPlayer);
+
+        // find random coordinate
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+
+        // add road on board (provides valid building coordinate)
+        Road road = new Road();
+        road.setCoordinate1(coordinate);
+        road.setCoordinate2(coordinate.getNeighbors().get(0));
+        road.setUserId(testPlayer.getUserId());
+
+        // perform
+        List<BuildMove> moves = MoveCalculator.calculateSettlementMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "the player cannot afford this move");
+
     }
 
     @Test
     public void testCalculateSettlementMoves_maxNumberOfSettlementsReached() {
+
+        // player can afford settlement
+        testPlayer.setWallet(new City().getPrice());
+        testPlayer = playerService.save(testPlayer);
+
+        // add road on board (provides valid building coordinate)
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+
+        Road road = new Road();
+        road.setCoordinate1(coordinate);
+        road.setCoordinate2(coordinate.getNeighbors().get(0));
+        road.setUserId(testPlayer.getUserId());
+
+        // player has already max amount of allowed cities build on board
+        for (int i = 0; i < PlayerConstants.MAX_NUMBER_SETTLEMENTS; i++) {
+            Settlement settlement = new Settlement();
+            settlement.setUserId(testPlayer.getUserId());
+            testBoard.addSettlement(settlement);
+        }
+
+        // perform
+        List<BuildMove> moves = MoveCalculator.calculateSettlementMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "the player cannot build another settlement, since max amount is reached");
 
     }
 
@@ -793,12 +980,19 @@ public class MoveCalculatorIntegrationTest {
         // set robber on tile
         testBoard.getTiles().get(0).setHasRobber(true);
 
-        // set opponent building on tile
+        // set opponent buildings on tile
         Player opponent = setupSecondTestPlayer();
-        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+
+        Coordinate coordinate1 = testBoard.getTiles().get(0).getCoordinates().get(0);
+        Coordinate coordinate2 = testBoard.getTiles().get(0).getCoordinates().get(2);
+
         City city = new City();
-        city.setCoordinate(coordinate);
+        city.setCoordinate(coordinate1);
         city.setUserId(opponent.getUserId());
+
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate2);
+        settlement.setUserId(opponent.getUserId());
 
         testBoard.addCity(city);
 
