@@ -11,10 +11,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
@@ -675,31 +672,109 @@ public class MoveServiceIntegrationTest {
 
         assertEquals(0, opponent.getWallet().getResourceAmount(ResourceType.ORE),
                 "the monopolized resource should have been removed");
+        assertEquals(3, opponent.getWallet().getResourceAmount(ResourceType.BRICK),
+                "this resource should not have been removed");
         assertEquals(3, testPlayer.getWallet().getResourceAmount(ResourceType.ORE),
                 "the monopolized resource should have been added to the player");
     }
 
     @Test
     public void testPerformPlentyMove() {
+        PlentyMove plentyMove = new PlentyMove();
+        setupTestMove(plentyMove, testPlayer, testGame);
+        plentyMove.setPlentyType1(ResourceType.BRICK);
+        plentyMove.setPlentyType2(ResourceType.LUMBER);
 
+        testPlayer.setWallet(new ResourceWallet());
+        testPlayer = playerService.save(testPlayer);
 
+        // perform
+        moveService.performMove(plentyMove);
+
+        // assert that the plenty resources are added to the players' wallet
+        testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
+
+        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.BRICK),
+                "this plenty resource should have been added");
+        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.LUMBER),
+                "this plenty resource should have been added");
     }
 
     @Test
     public void testPerformRoadProgressMove() {
+        RoadProgressMove roadProgressMove = new RoadProgressMove();
+        setupTestMove(roadProgressMove, testPlayer, testGame);
+
+        //find random coordinates
+        Coordinate coord1 = testBoard.getTiles().get(0).getCoordinates().get(0);
+        Coordinate coord2 = testBoard.getTiles().get(0).getCoordinates().get(1);
+
+        //Add road to move
+        Road road = new Road();
+        road.setCoordinate1(coord1);
+        road.setCoordinate2(coord2);
+        roadProgressMove.setRoad(road);
+
+        //Perform
+        moveService.performMove(roadProgressMove);
+
+        // assert
+        assertTrue(testBoard.hasRoadWithCoordinates(coord2, coord1),
+                "Road not built on given coordinates");
+        assertEquals(1, testBoard.getRoads().size(), "There should be one road");
+        assertNotNull(testBoard.getRoads().get(0), "Road should not be null");
 
     }
 
     @Test
     public void testPerformKnightMove() {
+        KnightMove knightMove = new KnightMove();
+        setupTestMove(knightMove, testPlayer, testGame);
+        knightMove.setTileId(testBoard.getTiles().get(0).getId());
 
-        //Leave empty for now
+        testBoard.getTiles().get(1).setHasRobber(true);
+
+        // perform
+        moveService.performMove(knightMove);
+
+        assertTrue(testBoard.getTiles().get(0).hasRobber(),
+                "robber must be placed on this tile");
+        assertFalse(testBoard.getTiles().get(1).hasRobber(),
+                "robber must be removed from tile");
+
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+        for (Move move : moves) {
+            assertEquals(StealMove.class, move.getClass(),
+                    "after a knight move gets performed, a steal move must follow");
+        }
     }
 
     @Test
     public void testPerformStealMove() {
+        StealMove stealMove = new StealMove();
+        setupTestMove(stealMove, testPlayer, testGame);
+        Player victim = setupSecondTestPlayer();
+        stealMove.setVictimId(victim.getUserId());
 
-        //Leave empty for now
+        testPlayer.setWallet(new ResourceWallet());
+
+        // supply victim with resources
+        ResourceWallet funds = new ResourceWallet();
+        funds.addResource(ResourceType.ORE, 3);
+
+        victim.setWallet(funds);
+
+        testPlayer = playerService.save(testPlayer);
+        victim = playerService.save(victim);
+
+        // perform
+        moveService.performMove(stealMove);
+
+        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.ORE),
+                "the stolen resource must be added");
+        assertEquals(2, victim.getWallet().getResourceAmount(ResourceType.ORE),
+                "1 resource must be stolen from victim");
+
     }
 
     private void setupTestMove(Move move, Player player, Game game) {

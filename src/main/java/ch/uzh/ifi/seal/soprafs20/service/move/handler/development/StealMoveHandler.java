@@ -1,14 +1,10 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler.development;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
-import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
-
-import java.util.List;
 
 public class StealMoveHandler implements MoveHandler {
 
@@ -24,10 +20,5 @@ public class StealMoveHandler implements MoveHandler {
 
         // pass back to moveService
         moveService.performStealMove(stealMove);
-    }
-
-    @Override
-    public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculateAllStandardMoves(game);
     }
 }

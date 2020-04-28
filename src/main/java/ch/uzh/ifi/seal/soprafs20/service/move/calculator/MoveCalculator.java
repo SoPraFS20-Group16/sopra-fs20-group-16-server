@@ -8,6 +8,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
@@ -18,16 +19,26 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
+import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+@Service
+@Transactional
 public class MoveCalculator {
 
-    private MoveCalculator() {
-        throw new IllegalStateException(ErrorMsg.INIT_MSG);
-    }
+    private PlayerService playerService;
 
+    @Autowired
+    public void setPlayerService(PlayerService playerService) {
+        this.playerService = playerService;
+    }
 
     // -- start move(s) --
 
@@ -387,18 +398,22 @@ public class MoveCalculator {
 
         List<StealMove> possibleMoves = new ArrayList<>();
 
-        // for every opponent player, create a move
-        for (Player victim: game.getPlayers()) {
-            if (victim != game.getCurrentPlayer()) {
+        // get all buildings adjacent to tile with robber
+        List<Building> buildings = MoveLandRegistry.getBuildingsFromTileWithRobber(game);
 
-                StealMove move = new StealMove();
-                move.setVictim(victim);
-                move.setGameId(game.getId());
-                move.setUserId(game.getCurrentPlayer().getUserId());
+        Set<Long> playerIds = new HashSet<>();
 
-                possibleMoves.add(move);
+        for (Building building : buildings) {
+            if (!building.getUserId().equals(game.getCurrentPlayer().getUserId())) {
+                playerIds.add(building.getUserId());
             }
         }
+
+        for (Long playerId : playerIds) {
+            StealMove move = MoveCreator.createStealMove(game, playerId);
+            possibleMoves.add(move);
+        }
+
         return possibleMoves;
     }
 
@@ -415,7 +430,7 @@ public class MoveCalculator {
         for (Tile tile: board.getTiles()) {
 
             KnightMove move = new KnightMove();
-            move.setTile(tile);
+            move.setTileId(tile.getId());
             move.setGameId(game.getId());
             move.setUserId(player.getId());
 

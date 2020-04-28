@@ -4,6 +4,8 @@ import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
@@ -173,5 +175,31 @@ public class MoveLandRegistry {
                     }
             }
         }
+    }
+
+    public static List<Building> getBuildingsFromTileWithRobber(Game game) {
+
+        List<Building> buildings = new ArrayList<>();
+
+        Board board = game.getBoard();
+
+        for (Tile tile : board.getTiles()) {
+
+            if (tile.hasRobber()) {
+
+                for (Settlement settlement : board.getSettlements()) {
+                    if (tile.getCoordinates().contains(settlement.getCoordinate())) {
+                        buildings.add(settlement);
+                    }
+                }
+
+                for (City city : board.getCities()) {
+                    if (tile.getCoordinates().contains(city.getCoordinate())) {
+                        buildings.add(city);
+                    }
+                }
+            }
+        }
+        return buildings;
     }
 }
