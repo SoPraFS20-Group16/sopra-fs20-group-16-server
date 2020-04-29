@@ -15,10 +15,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
@@ -1006,7 +1003,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllMonopolyMoves() {
+    public void testCalculateAllMonopolyMoves_valid() {
 
         // no preconditions
 
@@ -1026,7 +1023,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllPlentyMoves() {
+    public void testCalculateAllPlentyMoves_valid() {
 
         // no preconditions
 
@@ -1046,7 +1043,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllStealMoves() {
+    public void testCalculateAllStealMoves_valid() {
 
         // set robber on tile
         testBoard.getTiles().get(0).setHasRobber(true);
@@ -1091,6 +1088,46 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
+    public void testCalculateAllStealMoves_noBuildingOnRobberTile() {
+
+        // set robber on tile
+        testBoard.getTiles().get(0).setHasRobber(true);
+
+        // set opponent buildings on tile with NO robber
+        Player opponent = setupSecondTestPlayer();
+
+        Coordinate coordinate1 = testBoard.getTiles().get(11).getCoordinates().get(0);
+        Coordinate coordinate2 = testBoard.getTiles().get(11).getCoordinates().get(2);
+
+        City city = new City();
+        city.setCoordinate(coordinate1);
+        city.setUserId(opponent.getUserId());
+
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate2);
+        settlement.setUserId(opponent.getUserId());
+
+        testBoard.addCity(city);
+
+        // save entities
+        testPlayer = playerService.save(testPlayer);
+        opponent = playerService.save(opponent);
+
+        boardRepository.save(testBoard);
+        gameRepository.save(testGame);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllStealMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        assertEquals(0, moves.size(),
+                "when no buildings are on robber tile, there is no steal move");
+    }
+
+    @Test
     public void testCalculateAllRoadProgressMoves_maxNumberOfRoadsReached() {
 
         // find random coordinate
@@ -1122,4 +1159,47 @@ public class MoveCalculatorIntegrationTest {
 
     }
 
+    @Test
+    public void testCalculateAllRoadProgressMoves_valid() {
+        // player can afford road
+        testPlayer.setWallet(new Road().getPrice());
+        playerService.save(testPlayer);
+
+        // add settlement on board with one adjacent road
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(5);
+
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(testPlayer.getUserId());
+
+        testBoard.addSettlement(settlement);
+
+        Road road = new Road();
+        road.setCoordinate1(coordinate);
+        road.setCoordinate2(coordinate.getNeighbors().get(0));
+        road.setUserId(testPlayer.getUserId());
+
+        testBoard.addRoad(road);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllRoadProgressMoves(testGame);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        // a building has three adjacent road options, if not build at edge of board
+        // a road already adjacent to building provides an extra road building option
+        assertEquals(4, moves.size(),
+                "a road provides one additional road building option");
+        for (Move move : moves) {
+            assertEquals(RoadProgressMove.class, move.getClass(),
+                    "the move must be a roadProgress move");
+            assertEquals(Road.class, ((RoadProgressMove) move).getRoad().getClass(),
+                    "the building of the move must be a road");
+            // every possible road should shares a coordinate with either the settlement or the adjacent road
+            assertTrue(((RoadProgressMove) move).getRoad().getCoordinates().contains(coordinate) ||
+                    ((RoadProgressMove) move).getRoad().getCoordinates().contains(coordinate.getNeighbors().get(0)));
+        }
+    }
 }

@@ -187,19 +187,27 @@ public class MoveLandRegistry {
 
             if (tile.hasRobber()) {
 
-                for (Settlement settlement : board.getSettlements()) {
-                    if (tile.getCoordinates().contains(settlement.getCoordinate())) {
-                        buildings.add(settlement);
-                    }
-                }
+                getSettlementsFromTile(buildings, board, tile);
 
-                for (City city : board.getCities()) {
-                    if (tile.getCoordinates().contains(city.getCoordinate())) {
-                        buildings.add(city);
-                    }
-                }
+                getCitiesFromTile(buildings, board, tile);
             }
         }
         return buildings;
+    }
+
+    private static void getSettlementsFromTile(List<Building> buildings, Board board, Tile tile) {
+        for (Settlement settlement : board.getSettlements()) {
+            if (tile.getCoordinates().contains(settlement.getCoordinate())) {
+                buildings.add(settlement);
+            }
+        }
+    }
+
+    private static void getCitiesFromTile(List<Building> buildings, Board board, Tile tile) {
+        for (City city : board.getCities()) {
+            if (tile.getCoordinates().contains(city.getCoordinate())) {
+                buildings.add(city);
+            }
+        }
     }
 }
