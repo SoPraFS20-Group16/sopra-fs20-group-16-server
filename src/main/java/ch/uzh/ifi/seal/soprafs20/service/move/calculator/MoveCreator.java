@@ -172,7 +172,10 @@ public class MoveCreator {
         return move;
     }
 
-    static RoadProgressMove createRoadProgressMove(Game game, Player player, Coordinate coordinate, Coordinate neighbor) {
+    static RoadProgressMove createRoadProgressMove(Game game, Player player, Coordinate coordinate,
+                                                   Coordinate neighbor, int previousRoadProgressMoves) {
+
+        previousRoadProgressMoves += 1;
 
         Road newRoad = new Road();
         newRoad.setCoordinate1(coordinate);
@@ -180,7 +183,8 @@ public class MoveCreator {
         newRoad.setUserId(player.getUserId());
 
         RoadProgressMove move = new RoadProgressMove();
-        move.setRoad(newRoad);
+        move.setBuilding(newRoad);
+        move.setPreviousRoadProgressMoves(previousRoadProgressMoves);
         move.setGameId(game.getId());
         move.setUserId(player.getUserId());
 

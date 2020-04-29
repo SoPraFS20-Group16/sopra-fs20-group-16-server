@@ -3,6 +3,8 @@ package ch.uzh.ifi.seal.soprafs20.service.move.handler.development;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
@@ -23,6 +25,16 @@ public class PlentyMoveHandler implements MoveHandler {
 
         // pass back to moveService
         moveService.performPlentyMove(plentyMove);
+
+    }
+
+    @Override
+    public MoveDTO mapToDTO(Move move) {
+
+        // cast move
+        PlentyMove plentyMove = (PlentyMove) move;
+
+        return DTOMapper.INSTANCE.convertPlentyMoveToPlentyMove(plentyMove);
 
     }
 }

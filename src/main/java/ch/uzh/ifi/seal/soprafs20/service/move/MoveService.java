@@ -10,7 +10,10 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
@@ -237,10 +240,12 @@ public class MoveService {
 
         // update wallet of every player with buildings on tile
         for (Tile tile : tiles) {
-            ResourceType type = tileService.convertToResource(tile.getType());
-            for (Player player : game.getPlayers()) {
-                List<Building> buildings = boardService.getBuildingsFromTileForPlayer(game, tile, player);
-                playerService.updateResources(type, buildings, player);
+            if (!tile.hasRobber()) {
+                ResourceType type = tileService.convertToResource(tile.getType());
+                for (Player player : game.getPlayers()) {
+                    List<Building> buildings = boardService.getBuildingsFromTileForPlayer(game, tile, player);
+                    playerService.updateResources(type, buildings, player);
+                }
             }
         }
     }
@@ -364,10 +369,10 @@ public class MoveService {
     }
 
     // performs roadProgress move
-    public void performRoadProgressMove(RoadProgressMove roadProgressMove) {
+    public void performRoadProgressMove(BuildMove buildMove) {
 
         // since the player does not have to pay for road, it gets directly build
-        boardService.build(roadProgressMove);
+        boardService.build(buildMove);
     }
 
     // performs knight move (relocates the robber on board)

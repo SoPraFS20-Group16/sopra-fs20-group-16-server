@@ -15,7 +15,9 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.development.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
@@ -386,39 +388,6 @@ public class MoveCalculator {
 
     public static List<Move> calculateAllKnightMoves(Game game) {
 
-        return new ArrayList<>(getAllKnightMoves(game));
-    }
-
-    public static List<Move> calculateAllStealMoves(Game game) {
-
-        return new ArrayList<>(getAllStealMoves(game));
-    }
-
-    private static List<StealMove> getAllStealMoves(Game game) {
-
-        List<StealMove> possibleMoves = new ArrayList<>();
-
-        // get all buildings adjacent to tile with robber
-        List<Building> buildings = MoveLandRegistry.getBuildingsFromTileWithRobber(game);
-
-        Set<Long> playerIds = new HashSet<>();
-
-        for (Building building : buildings) {
-            if (!building.getUserId().equals(game.getCurrentPlayer().getUserId())) {
-                playerIds.add(building.getUserId());
-            }
-        }
-
-        for (Long playerId : playerIds) {
-            StealMove move = MoveCreator.createStealMove(game, playerId);
-            possibleMoves.add(move);
-        }
-
-        return possibleMoves;
-    }
-
-    private static List<KnightMove> getAllKnightMoves(Game game) {
-
         List<KnightMove> knightMoves = new ArrayList<>();
 
         // get player
@@ -438,44 +407,52 @@ public class MoveCalculator {
         }
 
         // return all possible robber placement moves
-        return knightMoves;
+        return new ArrayList<>(knightMoves);
+    }
+
+    public static List<Move> calculateAllStealMoves(Game game) {
+
+        List<StealMove> possibleMoves = new ArrayList<>();
+
+        // get all buildings adjacent to tile with robber
+        List<Building> buildings = MoveLandRegistry.getBuildingsFromTileWithRobber(game);
+
+        Set<Long> playerIds = new HashSet<>();
+
+        for (Building building : buildings) {
+            if (!building.getUserId().equals(game.getCurrentPlayer().getUserId())) {
+                playerIds.add(building.getUserId());
+            }
+        }
+
+        for (Long playerId : playerIds) {
+            StealMove move = MoveCreator.createStealMove(game, playerId);
+            possibleMoves.add(move);
+        }
+
+        return new ArrayList<>(possibleMoves);
     }
 
     public static List<Move> calculateAllMonopolyMoves(Game game) {
-
-        return new ArrayList<>(getAllMonopolyMoves(game));
-
-    }
-
-    public static List<Move> calculateAllPlentyMoves(Game game) {
-
-        return new ArrayList<>(getAllPlentyMoves(game));
-    }
-
-    public static List<Move> calculateAllRoadProgressMoves(Game game) {
-
-        return new ArrayList<>(getAllRoadProgressMoves(game));
-    }
-
-    private static List<MonopolyMove> getAllMonopolyMoves(Game game) {
 
         // get current player
         Player player = game.getCurrentPlayer();
 
         // create & return moves for every resourceType
-        return MoveCreator.createMonopolyMove(game, player);
+        return new ArrayList<>(MoveCreator.createMonopolyMove(game, player));
+
     }
 
-    private static List<PlentyMove> getAllPlentyMoves(Game game) {
+    public static List<Move> calculateAllPlentyMoves(Game game) {
 
         // get current player
         Player player = game.getCurrentPlayer();
 
         // create & return moves for possible requested resourceType(s)
-        return MoveCreator.createPlentyMove(game, player);
+        return new ArrayList<>(MoveCreator.createPlentyMove(game, player));
     }
 
-    private static List<RoadProgressMove> getAllRoadProgressMoves(Game game) {
+    public static List<Move> calculateAllRoadProgressMoves(Game game, int previousRoadProgressMoves) {
 
         // create list for all possible moves
         List<RoadProgressMove> possibleMoves = new ArrayList<>();
@@ -517,15 +494,17 @@ public class MoveCalculator {
         for (Coordinate coordinate : roadEndPoints) {
             for (Coordinate neighbor : coordinate.getNeighbors())
                 if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player, coordinate, neighbor);
+                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player,
+                            coordinate, neighbor, previousRoadProgressMoves);
                     possibleMoves.add(move);
                 }
         }
 
         // - calculate all possible road building moves connecting to settlement/city -
 
-        MoveLandRegistry.calculateRoadProgressMovesConnectingToBuilding(game, possibleMoves, player, board);
+        MoveLandRegistry.calculateRoadProgressMovesConnectingToBuilding(game, possibleMoves,
+                player, board, previousRoadProgressMoves);
 
-        return possibleMoves;
+        return new ArrayList<>(possibleMoves);
     }
 }
