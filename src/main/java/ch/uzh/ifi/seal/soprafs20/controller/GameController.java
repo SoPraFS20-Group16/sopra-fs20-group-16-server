@@ -19,9 +19,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 @RestController
 public class GameController {
@@ -136,8 +138,11 @@ public class GameController {
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameDTO getGameWithId(@RequestHeader(name = "Token") String token,
-                                 @PathVariable Long gameId) {
+    public DeferredResult<GameDTO> getGameWithId(
+            @RequestHeader(name = "Token") String token,
+            @PathVariable Long gameId,
+            @RequestParam(name = "polling", required = false, defaultValue = "false") boolean polling) {
+
 
         //Check token for validity
         GameControllerHelper.checkToken(userService, token);
@@ -155,9 +160,31 @@ public class GameController {
         //Add cards and moves to player
         GameControllerHelper.addCardsAndMoves(moveService, playerService, requestingUser, gameDTO);
 
-        //Return gameDTO
-        return gameDTO;
+        //Create the deferred result that will time out after 5 sec.
+        DeferredResult<GameDTO> response = new DeferredResult<>(5000L);
+
+        //If game was not updated on timeout return game
+        response.onTimeout(() -> response.setResult(gameDTO));
+
+        //Check if request uses polling
+        if (polling) {
+
+            ForkJoinPool.commonPool().submit(() -> {
+
+                //TODO: Observe the game for change
+
+            });
+
+            //Else return the gameDTO immediately
+        }
+        else {
+            response.setResult(gameDTO);
+        }
+
+        //Return DeferredResult with GameDTO
+        return response;
     }
+
 
     /**
      * PUT /games/:gameId
@@ -198,8 +225,6 @@ public class GameController {
         //Check if move and game and user build a valid set of instructions
         GameControllerHelper.checkIsValidGameMoveUserCombinationElseThrow(gameService, foundGame, foundMove, requestingUser);
 
-        log.debug("successfully passed through gameController");
-
         //If everything is correct perform the move
         moveService.performMove(foundMove);
     }
@@ -238,5 +263,4 @@ public class GameController {
         //Add player to the game
         gameService.addPlayerToGame(createdPlayer, game);
     }
-
 }
