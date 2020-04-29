@@ -87,6 +87,7 @@ public class GameController {
      */
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public ResponseEntity<HttpHeaders> postGames(@RequestHeader(name = "Token") String token,
                                                  @RequestBody GamePostDTO gamePostDTO) {
 
@@ -117,7 +118,7 @@ public class GameController {
         headers.add("Location", String.format("/games/%d", createdGame.getId()));
 
         //Compose Response
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return new ResponseEntity(createdGame.getId(), headers, HttpStatus.CREATED);
     }
 
 

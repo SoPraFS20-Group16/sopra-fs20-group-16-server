@@ -110,6 +110,10 @@ public class Game implements Serializable {
         players.add(player);
     }
 
+    public void removePlayer(Player player) {
+        players.remove(player);
+    }
+
     public List<Player> getPlayers() {
         return players;
     }
