@@ -10,6 +10,10 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
@@ -17,10 +21,7 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.PlayerDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.move.BuildMoveDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.move.CardMoveDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.move.TradeMoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import org.mapstruct.BeanMapping;
@@ -116,4 +117,29 @@ public interface DTOMapper {
     @Mapping(source = "neededType", target = "neededType")
     @Mapping(source = "offeredType", target = "offeredType")
     TradeMoveDTO convertTradeMovetoTradeMoveDTO(TradeMove tradeMove);
+
+    @Mapping(source = "id", target = "moveId")
+    @Mapping(source = "moveName", target = "moveName")
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "tileId", target = "tileId")
+    KnightMoveDTO convertKnightMoveToKnightMoveDTO(KnightMove knightMove);
+
+    @Mapping(source = "id", target = "moveId")
+    @Mapping(source = "moveName", target = "moveName")
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "monopolyType", target = "monopolyType")
+    MonopolyMoveDTO convertMonopolyMoveToMonopolyMoveDTO(MonopolyMove monopolyMove);
+
+    @Mapping(source = "id", target = "moveId")
+    @Mapping(source = "moveName", target = "moveName")
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "plentyType1", target = "plentyType1")
+    @Mapping(source = "plentyType2", target = "plentyType2")
+    PlentyMoveDTO convertPlentyMoveToPlentyMove(PlentyMove plentyMove);
+
+    @Mapping(source = "id", target = "moveId")
+    @Mapping(source = "moveName", target = "moveName")
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "victimId", target = "victimId")
+    StealMoveDTO convertStealMoveToStealMove(StealMove stealMove);
 }

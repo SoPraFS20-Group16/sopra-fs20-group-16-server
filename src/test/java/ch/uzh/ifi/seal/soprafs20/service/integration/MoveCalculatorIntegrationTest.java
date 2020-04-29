@@ -1148,7 +1148,7 @@ public class MoveCalculatorIntegrationTest {
         }
 
         // perform
-        List<Move> moves = MoveCalculator.calculateAllRoadProgressMoves(testGame);
+        List<Move> moves = MoveCalculator.calculateAllRoadProgressMoves(testGame, 0);
         moveRepository.saveAll(moves);
 
         // assert
@@ -1161,6 +1161,7 @@ public class MoveCalculatorIntegrationTest {
 
     @Test
     public void testCalculateAllRoadProgressMoves_valid() {
+
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());
         playerService.save(testPlayer);
@@ -1182,7 +1183,7 @@ public class MoveCalculatorIntegrationTest {
         testBoard.addRoad(road);
 
         // perform
-        List<Move> moves = MoveCalculator.calculateAllRoadProgressMoves(testGame);
+        List<Move> moves = MoveCalculator.calculateAllRoadProgressMoves(testGame, 0);
         moveRepository.saveAll(moves);
 
         // assert
@@ -1195,11 +1196,11 @@ public class MoveCalculatorIntegrationTest {
         for (Move move : moves) {
             assertEquals(RoadProgressMove.class, move.getClass(),
                     "the move must be a roadProgress move");
-            assertEquals(Road.class, ((RoadProgressMove) move).getRoad().getClass(),
+            assertEquals(Road.class, ((RoadProgressMove) move).getBuilding().getClass(),
                     "the building of the move must be a road");
             // every possible road should shares a coordinate with either the settlement or the adjacent road
-            assertTrue(((RoadProgressMove) move).getRoad().getCoordinates().contains(coordinate) ||
-                    ((RoadProgressMove) move).getRoad().getCoordinates().contains(coordinate.getNeighbors().get(0)));
+            assertTrue(((RoadProgressMove) move).getBuilding().getCoordinates().contains(coordinate) ||
+                    ((RoadProgressMove) move).getBuilding().getCoordinates().contains(coordinate.getNeighbors().get(0)));
         }
     }
 }

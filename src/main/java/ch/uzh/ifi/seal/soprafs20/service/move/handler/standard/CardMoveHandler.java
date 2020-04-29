@@ -45,7 +45,7 @@ public class CardMoveHandler implements MoveHandler {
             case PLENTYPROGRESS:
                 return MoveCalculator.calculateAllPlentyMoves(game);
             case ROADPROGRESS:
-                return MoveCalculator.calculateAllRoadProgressMoves(game);
+                return MoveCalculator.calculateAllRoadProgressMoves(game, 0);
             case KNIGHT:
                 return MoveCalculator.calculateAllKnightMoves(game);
             default:

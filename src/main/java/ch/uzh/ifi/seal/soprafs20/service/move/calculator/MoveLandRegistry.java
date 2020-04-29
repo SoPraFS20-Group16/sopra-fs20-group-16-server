@@ -124,14 +124,16 @@ public class MoveLandRegistry {
         }
     }
 
-    static void calculateRoadProgressMovesConnectingToBuilding(Game game, List<RoadProgressMove> possibleMoves, Player player, Board board) {
+    static void calculateRoadProgressMovesConnectingToBuilding(Game game, List<RoadProgressMove> possibleMoves,
+                                                               Player player, Board board, int previousRoadProgressMoves) {
 
         List<Settlement> settlements = getSettlementsOfPlayer(player, board);
         for (Settlement settlement : settlements) {
             Coordinate coordinate = settlement.getCoordinate();
             for (Coordinate neighbor : coordinate.getNeighbors()) {
                 if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player, coordinate, neighbor);
+                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player, coordinate,
+                            neighbor, previousRoadProgressMoves);
                     possibleMoves.add(move);
                 }
             }
@@ -142,7 +144,8 @@ public class MoveLandRegistry {
             Coordinate coordinate = city.getCoordinate();
             for (Coordinate neighbor : coordinate.getNeighbors()) {
                 if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player, coordinate, neighbor);
+                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player, coordinate,
+                            neighbor, previousRoadProgressMoves);
                     possibleMoves.add(move);
                 }
             }

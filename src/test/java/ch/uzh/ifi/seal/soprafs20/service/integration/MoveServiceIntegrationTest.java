@@ -713,7 +713,7 @@ public class MoveServiceIntegrationTest {
         Road road = new Road();
         road.setCoordinate1(coord1);
         road.setCoordinate2(coord2);
-        roadProgressMove.setRoad(road);
+        roadProgressMove.setBuilding(road);
 
         //Perform
         moveService.performMove(roadProgressMove);
