@@ -10,6 +10,8 @@ public class PlayerDTO {
 
     private DevelopmentCardsDTO developmentCards;
 
+    private int points;
+
 
     public String getUsername() {
         return username;
@@ -41,5 +43,13 @@ public class PlayerDTO {
 
     public void setDevelopmentCards(DevelopmentCardsDTO developmentCards) {
         this.developmentCards = developmentCards;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 }

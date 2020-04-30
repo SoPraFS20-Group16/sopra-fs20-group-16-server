@@ -93,6 +93,9 @@ class GameControllerHelper {
                 //set resource wallet
                 playerDTO.setResources(new ResourceDTO(player.getWallet()));
 
+                //Add the victory points
+                playerDTO.setPoints(player.getVictoryPoints());
+
                 //No need to further compare playerDTOs
                 break;
             }
@@ -110,6 +113,7 @@ class GameControllerHelper {
 
         //Set the moves of the GameDTO
         gameDTO.setMoves(moveDTOs);
+
 
     }
 
