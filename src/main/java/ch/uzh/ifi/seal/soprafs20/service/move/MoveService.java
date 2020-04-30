@@ -193,6 +193,9 @@ public class MoveService {
     public void performStartMove(StartMove startMove) {
 
         firstStackService.createStackForGameWithId(startMove.getGameId());
+        Game startedGame = gameService.findGameById(startMove.getGameId());
+        startedGame.setStarted(true);
+        gameService.save(startedGame);
     }
 
     // -- initial moves --
