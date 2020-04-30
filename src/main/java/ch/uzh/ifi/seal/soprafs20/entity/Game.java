@@ -42,9 +42,20 @@ public class Game implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long creatorId;     //Id of the user that created the game
 
+    @Column
+    private boolean started;
+
 
     public Game() {
         players = new ArrayList<>();
+    }
+
+    public boolean getStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
     }
 
     public Long getId() {

@@ -1,9 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -19,11 +21,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
 
 @RestController
 public class GameController {
@@ -138,11 +138,8 @@ public class GameController {
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DeferredResult<GameDTO> getGameWithId(
-            @RequestHeader(name = "Token") String token,
-            @PathVariable Long gameId,
-            @RequestParam(name = "polling", required = false, defaultValue = "false") boolean polling) {
-
+    public GameDTO getGameWithId(@RequestHeader(name = "Token") String token,
+                                 @PathVariable Long gameId) {
 
         //Check token for validity
         GameControllerHelper.checkToken(userService, token);
@@ -160,31 +157,44 @@ public class GameController {
         //Add cards and moves to player
         GameControllerHelper.addCardsAndMoves(moveService, playerService, requestingUser, gameDTO);
 
-        //Create the deferred result that will time out after 5 sec.
-        DeferredResult<GameDTO> response = new DeferredResult<>(5000L);
-
-        //If game was not updated on timeout return game
-        response.onTimeout(() -> response.setResult(gameDTO));
-
-        //Check if request uses polling
-        if (polling) {
-
-            ForkJoinPool.commonPool().submit(() -> {
-
-                //TODO: Observe the game for change
-
-            });
-
-            //Else return the gameDTO immediately
-        }
-        else {
-            response.setResult(gameDTO);
-        }
-
-        //Return DeferredResult with GameDTO
-        return response;
+        //Return gameDTO
+        return gameDTO;
     }
 
+    @PostMapping("/games/{gameId}/start")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Boolean startGame(@RequestHeader(name = "Token") String token,
+                                 @PathVariable Long gameId,
+                                 @RequestBody Boolean isStarted) {
+
+        //If user does not possess a valid token return 401
+        GameControllerHelper.checkToken(userService, token);
+
+        //If game does not exists return 404
+        Game foundGame = GameControllerHelper.checkIfGameExists(gameService, gameId);
+
+        //check if the user is also a player
+        User requestingUser = GameControllerHelper.checkIfUserIsPlayerElseThrow403(
+                gameService, userService, token, foundGame);
+
+        //If user has access create the GameDTO
+        // GameDTO gameDTO = DTOMapper.INSTANCE.convertGameToGameDTO(foundGame);
+        System.out.println("****** " + isStarted);
+
+
+        if (foundGame.getCreatorId().equals(requestingUser.getId()) && foundGame.getStarted() != isStarted) {
+            foundGame.setStarted(isStarted);
+            gameService.save(foundGame);
+            System.out.println("Inside*******" +  gameService.findGameById(gameId).getStarted());
+        } else {
+            throw new RestException(HttpStatus.UNAUTHORIZED,
+                    ErrorMsg.GAME_ACCESS_DENIED);
+        }
+
+        //Compose Response
+        return isStarted;
+    }
 
     /**
      * PUT /games/:gameId
@@ -225,6 +235,8 @@ public class GameController {
         //Check if move and game and user build a valid set of instructions
         GameControllerHelper.checkIsValidGameMoveUserCombinationElseThrow(gameService, foundGame, foundMove, requestingUser);
 
+        log.debug("successfully passed through gameController");
+
         //If everything is correct perform the move
         moveService.performMove(foundMove);
     }
@@ -263,4 +275,5 @@ public class GameController {
         //Add player to the game
         gameService.addPlayerToGame(createdPlayer, game);
     }
+
 }
