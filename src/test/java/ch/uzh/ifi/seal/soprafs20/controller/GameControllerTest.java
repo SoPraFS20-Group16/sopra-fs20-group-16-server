@@ -23,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -344,9 +343,7 @@ public class GameControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         // then
-        MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        mockMvc.perform(asyncDispatch(result))
+        mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(game.getName())))
                 .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
@@ -498,9 +495,7 @@ public class GameControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         // then
-        MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        mockMvc.perform(asyncDispatch(result))
+        mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(game.getName())))
                 .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
@@ -550,9 +545,7 @@ public class GameControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         // then
-        MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        mockMvc.perform(asyncDispatch(result))
+        mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(game.getName())))
                 .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
@@ -604,9 +597,7 @@ public class GameControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         // then
-        MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        mockMvc.perform(asyncDispatch(result))
+        mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(game.getName())))
                 .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
