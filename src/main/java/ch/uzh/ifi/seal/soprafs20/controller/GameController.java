@@ -88,7 +88,7 @@ public class GameController {
     @PostMapping("/games")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ResponseEntity<HttpHeaders> postGames(@RequestHeader(name = "Token") String token,
+    public ResponseEntity<GameLinkDTO> postGames(@RequestHeader(name = "Token") String token,
                                                  @RequestBody GamePostDTO gamePostDTO) {
 
         //Check token for validity
@@ -117,8 +117,11 @@ public class GameController {
 
         headers.add("Location", String.format("/games/%d", createdGame.getId()));
 
+        //response body dtp
+        GameLinkDTO responseBody = DTOMapper.INSTANCE.convertGameToGameLinkDTO(createdGame);
+
         //Compose Response
-        return new ResponseEntity(createdGame.getId(), headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseBody, headers, HttpStatus.CREATED);
     }
 
 
