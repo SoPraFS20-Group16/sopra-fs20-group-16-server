@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +68,7 @@ public class BoardService {
         List<Tile> tiles = new ArrayList<>();
 
         //A list of TileTypes that should be on the board in the correct number
-        List<TileType> necessaryTiles = getTileTypeList();
+        List<TileType> necessaryTiles = getTileTypeListRandom();
 
         //The new tiles
         Tile newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 0));
@@ -179,7 +180,7 @@ public class BoardService {
      *
      * @return the list of TileType Objects
      */
-    private List<TileType> getTileTypeList() {
+    private List<TileType> getTileTypeListRandom() {
 
         List<TileType> typeList = new ArrayList<>();
 
@@ -208,6 +209,9 @@ public class BoardService {
         for (int i = 0; i < BoardConstants.NUMBER_OF_PASTURES; i++) {
             typeList.add(TileType.PASTURE);
         }
+
+        //Randomize
+        Collections.shuffle(typeList);
 
         return typeList;
     }

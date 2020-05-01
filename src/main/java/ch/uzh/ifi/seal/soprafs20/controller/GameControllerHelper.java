@@ -187,4 +187,10 @@ class GameControllerHelper {
             throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.ALREADY_PLAYER_IN_ANOTHER_GAME, ErrorMsg.YOU_ARE_IN_ANOTHER_GAME);
         }
     }
+
+    public static void checkPlayerMax(Game game) {
+        if (game.getPlayers().size() >= game.getPlayerMaximum()) {
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.GAME_IS_FULL);
+        }
+    }
 }

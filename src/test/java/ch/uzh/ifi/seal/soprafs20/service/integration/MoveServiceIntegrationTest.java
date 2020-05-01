@@ -318,6 +318,9 @@ public class MoveServiceIntegrationTest {
                 "The second player should be current player now");
     }
 
+    /**
+     * Test for the execution of a FirstSettlementMove and the resulting game state
+     */
     @Test
     public void testPerformFirstSettlementMove() {
         FirstSettlementMove firstSettlementMove = new FirstSettlementMove();

@@ -1014,8 +1014,65 @@ public class GameControllerTest {
 
     /**
      * Tests the POST /games/gameId/players endpoint
-     *
-     *Token is wrong
+     * <p>
+     * Assumes max player count was reached.
+     * Should return 403
+     */
+    @Test
+    public void testPostNewPlayerToGame_playerMaxReached() throws Exception {
+
+        //given
+        String testToken = "ThisIsTheUserToken";
+        User user = new User();
+        user.setToken(testToken);
+        user.setId(12L);
+
+        Player player = new Player();
+        player.setUserId(user.getId());
+        player.setId(1234L);
+        player.setUsername(user.getUsername());
+
+        Move move = new BuildMove();
+        move.setId(123L);
+        move.setGameId(1L);
+        move.setUserId(22L);
+
+        MovePutDTO postDTO = new MovePutDTO();
+        postDTO.setMoveId(123L);
+
+        Game game = new Game();
+        game.setId(1L);
+        game.setName("GameName");
+        game.setWithBots(false);
+        game.setPlayerMaximum(0);
+
+
+        //this mocks the UserService
+        given(userService.findUser(Mockito.any())).willReturn(user);
+        given(userService.findUserWithToken(Mockito.any())).willReturn(user);
+
+        //this mocks the game Service
+        given(gameService.findGame(Mockito.any())).willReturn(game);
+
+        //this mocks the player service
+        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+
+
+        // when
+        MockHttpServletRequestBuilder postRequest = post("/games/1/players")
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(postDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Tests the POST /games/gameId/players endpoint
+     * <p>
+     * Token is wrong
      * Should return 401
      */
     @Test

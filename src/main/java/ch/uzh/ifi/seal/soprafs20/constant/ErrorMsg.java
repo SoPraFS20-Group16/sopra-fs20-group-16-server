@@ -29,6 +29,7 @@ public class ErrorMsg {
     public static final String WRONG_BUILDING_IN_FIRST_SETTLEMENT_MOVE = "The building in the first settlement move should be a settlement";
     public static final String REMOVE_SETTLEMENT_ERROR = "BuildMove tries to remove settlement, but does not have a city";
     public static final String INIT_MSG = "This class should not be initialized!";
+    public static final String GAME_IS_FULL = "The game reached the maximum player count!";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

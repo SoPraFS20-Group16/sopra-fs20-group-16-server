@@ -269,6 +269,9 @@ public class GameController {
         //Check if the user is already a player in the game
         GameControllerHelper.checkIfUserIsInAnotherGameElseThrow403Forbidden(requestingUser, playerService);
 
+        //Returns 403 if max was already reached
+        GameControllerHelper.checkPlayerMax(game);
+
         //Create a new player form requesting user
         Player createdPlayer = playerService.createPlayerFromUserId(requestingUser.getId());
 

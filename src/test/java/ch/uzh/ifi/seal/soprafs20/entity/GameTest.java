@@ -56,6 +56,9 @@ public class GameTest {
                 "The player that was added does not match the player found!");
     }
 
+    /**
+     * Tests that if null is passed a NullPointerException is thrown.
+     */
     @Test
     public void testAddPlayer_passedNull() {
 
