@@ -4,6 +4,7 @@ import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
+import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,6 +40,9 @@ public class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    GameService gameService;
 
     /**
      * Tests the GET /users endpoint which has to return an array of UserGetDTOs

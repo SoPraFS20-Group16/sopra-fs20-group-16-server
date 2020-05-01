@@ -3,7 +3,9 @@ package ch.uzh.ifi.seal.soprafs20.service.integration;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.repository.*;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import org.junit.jupiter.api.AfterEach;
@@ -150,5 +152,31 @@ public class GamesServiceIntegrationTest {
         assertNotNull(foundGames, "There should be a list of game objects!");
         assertEquals(1, foundGames.size(), "There should be one game in the repository!");
         assertEquals(testGame.getName(), foundGames.get(0).getName(), "The names does not match!");
+    }
+
+    @Test
+    public void testTeardownGame() {
+        gameRepository.deleteAll();
+
+        Game createdGame = gameService.createGame(testGame);
+
+        //Teardown
+        gameService.teardownGameWithId(createdGame.getId());
+
+        //games should be empty
+        List<Game> games = gameRepository.findAll();
+        assertEquals(0, games.size(), "Game should be deleted");
+
+        //players should be empty
+        List<Player> players = playerRepository.findAll();
+        assertEquals(0, players.size(), "Players should be deleted");
+
+        //board should be empty
+        List<Board> boards = boardRepository.findAll();
+        assertEquals(0, boards.size(), "Boards should be deleted");
+
+        //tiles should be empty
+        List<Tile> tiles = tileRepository.findAll();
+        assertEquals(0, tiles.size(), "Tiles should be deleted");
     }
 }

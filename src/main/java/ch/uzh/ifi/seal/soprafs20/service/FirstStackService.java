@@ -50,12 +50,20 @@ public class FirstStackService {
         stack.setup(game.getPlayers());
         Long firstPlayersUserId = stack.getFirstPlayersUserId();
 
-        for (Player player: game.getPlayers()) {
+        for (Player player : game.getPlayers()) {
             if (player.getUserId().equals(firstPlayersUserId)) {
                 game.setCurrentPlayer(player);
             }
         }
 
         firstStackRepository.saveAndFlush(stack);
+    }
+
+    public void deleteStackForGame(Long gameId) {
+        FirstStack stack = firstStackRepository.findByGameId(gameId);
+        if (stack != null) {
+            firstStackRepository.delete(stack);
+            firstStackRepository.flush();
+        }
     }
 }

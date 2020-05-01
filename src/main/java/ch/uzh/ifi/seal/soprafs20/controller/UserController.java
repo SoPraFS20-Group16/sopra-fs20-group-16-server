@@ -1,11 +1,13 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.TokenDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
+import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,14 +25,17 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    private final GameService gameService;
     private final UserService userService;
 
     /**
      * Instantiates a new User controller.
      *
+     * @param gameService the game service
      * @param userService the user service
      */
-    UserController(UserService userService) {
+    UserController(GameService gameService, UserService userService) {
+        this.gameService = gameService;
         this.userService = userService;
     }
 
@@ -164,5 +169,14 @@ public class UserController {
         if (loggedOutUser == null) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
         }
+
+        //If logged out user is player tear down game
+        Game game = gameService.findGameOfUser(loggedOutUser.getId());
+
+        //If a game is found then teardown
+        if (game != null) {
+            gameService.teardownGameWithId(game.getId());
+        }
+
     }
 }
