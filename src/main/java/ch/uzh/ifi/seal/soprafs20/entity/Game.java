@@ -46,7 +46,7 @@ public class Game implements Serializable {
     private Long creatorId;     //Id of the user that created the game
 
     @Column
-    private boolean started;
+    private boolean started = false;
 
 
     public Game() {

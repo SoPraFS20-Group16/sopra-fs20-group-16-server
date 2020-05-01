@@ -66,7 +66,6 @@ public interface DTOMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "name", target = "name")
     @Mapping(source = "withBots", target = "withBots")
-    @Mapping(source = "started", target = "started")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
     @BeanMapping(ignoreByDefault = true)

@@ -1,11 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
-import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -159,41 +157,6 @@ public class GameController {
 
         //Return gameDTO
         return gameDTO;
-    }
-
-    @PostMapping("/games/{gameId}/start")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Boolean startGame(@RequestHeader(name = "Token") String token,
-                                 @PathVariable Long gameId,
-                                 @RequestBody Boolean isStarted) {
-
-        //If user does not possess a valid token return 401
-        GameControllerHelper.checkToken(userService, token);
-
-        //If game does not exists return 404
-        Game foundGame = GameControllerHelper.checkIfGameExists(gameService, gameId);
-
-        //check if the user is also a player
-        User requestingUser = GameControllerHelper.checkIfUserIsPlayerElseThrow403(
-                gameService, userService, token, foundGame);
-
-        //If user has access create the GameDTO
-        // GameDTO gameDTO = DTOMapper.INSTANCE.convertGameToGameDTO(foundGame);
-        System.out.println("****** " + isStarted);
-
-
-        if (foundGame.getCreatorId().equals(requestingUser.getId()) && foundGame.getStarted() != isStarted) {
-            foundGame.setStarted(isStarted);
-            gameService.save(foundGame);
-            System.out.println("Inside*******" +  gameService.findGameById(gameId).getStarted());
-        } else {
-            throw new RestException(HttpStatus.UNAUTHORIZED,
-                    ErrorMsg.GAME_ACCESS_DENIED);
-        }
-
-        //Compose Response
-        return isStarted;
     }
 
     /**

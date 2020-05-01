@@ -14,15 +14,6 @@ public class GameDTO {
     private BoardDTO board;
     private List<MoveDTO> moves;
     private boolean started;
-    private Long creatorId;
-
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
-    }
 
     public Long getGameId() {
         return gameId;
