@@ -37,4 +37,13 @@ public class QueueService {
         queue.addUserId(userId);
         save(queue);
     }
+
+    public void deleteQueueForGame(Long gameId) {
+        PlayerQueue queue = queueRepository.findByGameId(gameId);
+
+        if (queue != null) {
+            queueRepository.delete(queue);
+            queueRepository.flush();
+        }
+    }
 }

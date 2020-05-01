@@ -30,6 +30,7 @@ public class GameService {
     private PlayerService playerService;
     private QueueService queueService;
     private MoveService moveService;
+    private FirstStackService firstStackService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
@@ -42,6 +43,11 @@ public class GameService {
     @Autowired
     public void setMoveService(MoveService moveService) {
         this.moveService = moveService;
+    }
+
+    @Autowired
+    public void setFirstStackService(FirstStackService firstStackService) {
+        this.firstStackService = firstStackService;
     }
 
     @Autowired
@@ -182,5 +188,41 @@ public class GameService {
 
     public Game save(Game game) {
         return gameRepository.saveAndFlush(game);
+    }
+
+    public Game findGameOfUser(Long userId) {
+
+        List<Game> games = gameRepository.findAll();
+        for (Game game : games) {
+            for (Player player : game.getPlayers()) {
+                if (player.getUserId().equals(userId)) {
+                    return game;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void teardownGameWithId(Long gameId) {
+
+        //delete moves
+        moveService.deleteAllMovesForGame(gameId);
+
+        //delete queue
+        queueService.deleteQueueForGame(gameId);
+
+        //delete stack
+        firstStackService.deleteStackForGame(gameId);
+
+        //delete game
+        this.deleteGameWithId(gameId);
+    }
+
+    private void deleteGameWithId(Long gameId) {
+        Optional<Game> game = gameRepository.findById(gameId);
+        if (game.isPresent()) {
+            gameRepository.delete(game.get());
+            gameRepository.flush();
+        }
     }
 }

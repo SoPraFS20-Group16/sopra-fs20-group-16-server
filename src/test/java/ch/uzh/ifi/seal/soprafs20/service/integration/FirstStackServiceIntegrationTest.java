@@ -45,7 +45,7 @@ public class FirstStackServiceIntegrationTest {
         second = 222L;
         stack = new FirstStack();
         stack.setGameId(1L);
-        firstStackRepository.saveAndFlush(stack);
+        stack = firstStackRepository.saveAndFlush(stack);
     }
 
     @Test
@@ -77,5 +77,15 @@ public class FirstStackServiceIntegrationTest {
 
         //assert the first goes twice as well
         assertEquals(first, firstStackService.getNextPlayerInGame(1L));
+    }
+
+    @Test
+    public void testTeardown() {
+        firstStackService.deleteStackForGame(stack.getGameId());
+
+        List<FirstStack> stacks = firstStackRepository.findAll();
+
+        //stacks should be empty
+        assertEquals(0, stacks.size(), "Stacks should be empty");
     }
 }
