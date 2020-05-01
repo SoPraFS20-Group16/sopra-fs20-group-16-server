@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.service.move;
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -213,8 +214,23 @@ public class MoveService {
         gameService.save(game);
     }
 
-    public void performFirstSettlementMove(FirstSettlementMove firstSettlementMove) {
-        boardService.build(firstSettlementMove);
+    public void performFirstSettlementMove(FirstSettlementMove move) {
+
+        // build settlement
+        boardService.build(move);
+
+        // get adjacent tiles
+        List<Tile> tiles = boardService.getTilesWithBuilding(move.getGameId(),
+                move.getBuilding());
+
+        // if tile is not a desert (produces no resource), update wallet of player
+        for (Tile tile : tiles) {
+            if (tile.getType() != TileType.DESERT) {
+                ResourceType type = tileService.convertToResource(tile.getType());
+                playerService.receiveInitialResources(type, move.getUserId(), move.getBuilding());
+            }
+        }
+
     }
 
     public void performFirstRoadMove(FirstRoadMove firstRoadMove) {
