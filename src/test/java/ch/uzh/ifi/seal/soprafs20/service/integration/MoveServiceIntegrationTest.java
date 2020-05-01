@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.service.integration;
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.constant.TileType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.*;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
@@ -37,8 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
@@ -322,7 +322,7 @@ public class MoveServiceIntegrationTest {
      * Test for the execution of a FirstSettlementMove and the resulting game state
      */
     @Test
-    public void testPerformFirstSettlementMove() {
+    public void testPerformFirstSettlementMove_availableRoadMoves() {
         FirstSettlementMove firstSettlementMove = new FirstSettlementMove();
         setupTestMove(firstSettlementMove, testPlayer, testGame);
 
@@ -350,6 +350,42 @@ public class MoveServiceIntegrationTest {
 
         assertEquals(1, testBoard.getSettlements().size(), "There should be a settlement");
         assertNotNull(testBoard.getSettlements().get(0), "The settlement should not be null");
+    }
+
+    @Test
+    public void testPerformFirstSettlementMove_receiveResources() {
+
+        // setup move
+        FirstSettlementMove firstSettlementMove = new FirstSettlementMove();
+        setupTestMove(firstSettlementMove, testPlayer, testGame);
+
+        //find random coordinate
+        Coordinate coord = testBoard.getTiles().get(0).getCoordinates().get(0);
+
+        //Add building to move
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coord);
+        firstSettlementMove.setBuilding(settlement);
+
+        // setup player wallet
+        testPlayer.setWallet(new ResourceWallet());
+
+        // setup board
+        for (Tile tile : testBoard.getTiles()) {
+            if (tile.getCoordinates().contains(coord)) {
+                tile.setType(TileType.HILL);
+            }
+        }
+
+        // perform
+        moveService.performMove(firstSettlementMove);
+
+        // assert
+        assertFalse(testPlayer.getWallet().isEmpty(),
+                "the player should have received resources");
+        // the player should receive one resource per adjacent tile = 3 (building at edge only 2 or 1)
+        assertThat(testPlayer.getWallet().getResourceAmount(ResourceType.BRICK), anyOf(
+                equalTo(1), equalTo(2), equalTo(3)));
     }
 
     @Test

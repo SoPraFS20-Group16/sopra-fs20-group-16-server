@@ -357,4 +357,22 @@ public class BoardService {
             }
         }
     }
+
+    public List<Tile> getTilesWithBuilding(Long gameId, Building building) {
+
+        List<Tile> tiles = new ArrayList<>();
+
+        // get board
+        Board board = getBoardByGameId(gameId);
+
+        // get tiles adjacent to building
+        for (Tile tile : board.getTiles()) {
+            if (tile.getCoordinates().containsAll(building.getCoordinates())) {
+                tiles.add(tile);
+            }
+        }
+
+        // return all tiles
+        return tiles;
+    }
 }

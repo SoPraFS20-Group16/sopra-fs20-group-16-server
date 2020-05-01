@@ -325,4 +325,17 @@ public class PlayerService {
         }
         save(player);
     }
+
+    public void receiveInitialResources(ResourceType type, Long userId, Building building) {
+
+        // get player wallet
+        Player player = findPlayerByUserId(userId);
+        ResourceWallet funds = player.getWallet();
+
+        // add resources accordingly (type and distributingAmount)
+        funds.addResource(type, building.getResourceDistributingAmount());
+
+        // save player
+        save(player);
+    }
 }
