@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
@@ -265,17 +266,19 @@ public class UserControllerTest {
     @Test
     public void logoutUser_success() throws Exception {
 
+        String testToken = "TestToken";
+
         User user = new User();
         user.setUsername("firstname@lastname");
+        user.setStatus(UserStatus.ONLINE);
+        user.setId(1L);
+        user.setToken(testToken);
 
-        UserPostDTO userPostDTO = new UserPostDTO();
-        userPostDTO.setUsername("testUser");
-
-        given(userService.logoutUser(Mockito.any())).willReturn(user);
+        given(userService.findUserWithToken(testToken)).willReturn(user);
 
         MockHttpServletRequestBuilder putRequest = put("/logout")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userPostDTO));
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(putRequest)
                 .andExpect(status().isNoContent());
@@ -284,18 +287,17 @@ public class UserControllerTest {
     @Test
     public void logoutUser_userNotFound() throws Exception {
 
-        UserPostDTO userPostDTO = new UserPostDTO();
-        userPostDTO.setUsername(null);
+        String testToken = "TestToken";
 
-        given(userService.logoutUser(Mockito.any())).willThrow(new RestException(HttpStatus.UNAUTHORIZED, "The Mocked Exception Reason"));
+        given(userService.findUserWithToken(testToken)).willReturn(null);
 
         MockHttpServletRequestBuilder putRequest = put("/logout")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userPostDTO));
+                .header("Token", testToken)
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(putRequest)
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errorMessage", is("The Mocked Exception Reason")));
+                .andExpect(jsonPath("$.errorMessage", is(ErrorMsg.NO_USER_LOGOUT)));
     }
 
     /**

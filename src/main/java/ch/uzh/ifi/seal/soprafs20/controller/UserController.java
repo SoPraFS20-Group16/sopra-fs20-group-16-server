@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
@@ -153,25 +154,27 @@ public class UserController {
      * <p>
      * Success: 204 NO CONTENT, Failure: 401 UNAUTHORIZED
      *
-     * @param userPostDTO the user post DTO
+     * @param token the userToken
      */
     @PutMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void logoutUser(@RequestBody UserPostDTO userPostDTO) {
+    public void logoutUser(@RequestHeader(name = "Token") String token) {
 
-        // convert API user to internal representation
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-
-        // logout user
-        User loggedOutUser = userService.logoutUser(userInput);
-
-        if (loggedOutUser == null) {
-            throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
+        //Get user from token
+        User requestingUser = userService.findUserWithToken(token);
+        if (requestingUser == null) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, ErrorMsg.NO_USER_LOGOUT);
         }
 
+        // logout user
+        userService.logoutUser(requestingUser);
+
+
+        //------- Teardown ---------
+
         //If logged out user is player tear down game
-        Game game = gameService.findGameOfUser(loggedOutUser.getId());
+        Game game = gameService.findGameOfUser(requestingUser.getId());
 
         //If a game is found then teardown
         if (game != null) {
