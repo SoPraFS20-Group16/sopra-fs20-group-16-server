@@ -237,30 +237,16 @@ public class MoveCalculator {
             return new ArrayList<>();
         }
 
-        // get all roads from user
-        List<Road> roads = MoveLandRegistry.getRoadsOfPlayer(player, board);
+        // get all roads end points from user (possible building coordinate)
+        List<Coordinate> roadEndPoints = MoveLandRegistry.getRoadEndPoints(player, board);
 
-        // get all coordinates from roads
-        List<Coordinate> roadCoordinates = new ArrayList<>();
-
-        for (Road road : roads) {
-            roadCoordinates.add(road.getCoordinate1());
-            roadCoordinates.add(road.getCoordinate2());
-        }
-
-        // get road end points
-        List<Coordinate> roadEndPoints = MoveLandRegistry.getRoadEndPoints(roadCoordinates);
-
-        // if all roads are connected to another road or settlement/city on both ends
-        if (roadEndPoints.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        // get all valid building coordinates
-        for (Coordinate coordinate : roadEndPoints) {
-            if (MoveLandRegistry.isValidBuildingCoordinate(board, coordinate)) {
-                BuildMove move = MoveCreator.createSettlementMove(game, player, coordinate);
-                possibleMoves.add(move);
+        // get all valid building coordinates and create moves
+        if (!roadEndPoints.isEmpty()) {
+            for (Coordinate coordinate : roadEndPoints) {
+                if (MoveLandRegistry.isValidBuildingCoordinate(board, coordinate)) {
+                    BuildMove move = MoveCreator.createSettlementMove(game, player, coordinate);
+                    possibleMoves.add(move);
+                }
             }
         }
 
@@ -471,33 +457,19 @@ public class MoveCalculator {
 
         // - calculate all possible road building moves connecting to another road -
 
-        // get all roads from user
-        List<Road> roads = MoveLandRegistry.getRoadsOfPlayer(player, board);
-
-        // get all coordinates from roads
-        List<Coordinate> roadCoordinates = new ArrayList<>();
-
-        for (Road road : roads) {
-            roadCoordinates.add(road.getCoordinate1());
-            roadCoordinates.add(road.getCoordinate2());
-        }
-
         // get road end points
-        List<Coordinate> roadEndPoints = MoveLandRegistry.getRoadEndPoints(roadCoordinates);
+        List<Coordinate> roadEndPoints = MoveLandRegistry.getRoadEndPoints(player, board);
 
-        // if all roads are connected to another road or settlement/city on both ends
-        if (roadEndPoints.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        // get all valid building coordinates
-        for (Coordinate coordinate : roadEndPoints) {
-            for (Coordinate neighbor : coordinate.getNeighbors())
-                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player,
-                            coordinate, neighbor, previousRoadProgressMoves);
-                    possibleMoves.add(move);
-                }
+        // get all valid building coordinates and create moves
+        if (!roadEndPoints.isEmpty()) {
+            for (Coordinate coordinate : roadEndPoints) {
+                for (Coordinate neighbor : coordinate.getNeighbors())
+                    if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                        RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player,
+                                coordinate, neighbor, previousRoadProgressMoves);
+                        possibleMoves.add(move);
+                    }
+            }
         }
 
         // - calculate all possible road building moves connecting to settlement/city -

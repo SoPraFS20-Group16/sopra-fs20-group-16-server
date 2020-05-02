@@ -27,6 +27,7 @@ public class MoveLandRegistry {
         throw new IllegalStateException(ErrorMsg.INIT_MSG);
     }
 
+    // -- get building(s) from player --
 
     static List<Road> getRoadsOfPlayer(Player player, Board board) {
 
@@ -64,6 +65,43 @@ public class MoveLandRegistry {
         return cities;
     }
 
+    // -- get building(s) from tile --
+
+    private static void getSettlementsFromTile(List<Building> buildings, Board board, Tile tile) {
+        for (Settlement settlement : board.getSettlements()) {
+            if (tile.getCoordinates().contains(settlement.getCoordinate())) {
+                buildings.add(settlement);
+            }
+        }
+    }
+
+    private static void getCitiesFromTile(List<Building> buildings, Board board, Tile tile) {
+        for (City city : board.getCities()) {
+            if (tile.getCoordinates().contains(city.getCoordinate())) {
+                buildings.add(city);
+            }
+        }
+    }
+
+    public static List<Building> getBuildingsFromTileWithRobber(Game game) {
+
+        List<Building> buildings = new ArrayList<>();
+
+        Board board = game.getBoard();
+
+        for (Tile tile : board.getTiles()) {
+
+            if (tile.hasRobber()) {
+
+                getSettlementsFromTile(buildings, board, tile);
+
+                getCitiesFromTile(buildings, board, tile);
+            }
+        }
+        return buildings;
+    }
+
+    // -- valid-building-coordinate helper methods --
 
     static boolean isValidBuildingCoordinate(Board board, Coordinate coordinate) {
 
@@ -78,7 +116,22 @@ public class MoveLandRegistry {
         return true;
     }
 
-    static List<Coordinate> getRoadEndPoints(List<Coordinate> coordinates) {
+    static List<Coordinate> getRoadCoordinates(List<Road> roads) {
+
+        List<Coordinate> roadCoordinates = new ArrayList<>();
+
+        for (Road road : roads) {
+            roadCoordinates.add(road.getCoordinate1());
+            roadCoordinates.add(road.getCoordinate2());
+        }
+
+        return roadCoordinates;
+    }
+
+    static List<Coordinate> getRoadEndPoints(Player player, Board board) {
+
+        List<Road> roads = getRoadsOfPlayer(player, board);
+        List<Coordinate> coordinates = getRoadCoordinates(roads);
 
         int currentSize = coordinates.size();
         for (int i = 0; i < currentSize; i++) {
@@ -154,19 +207,8 @@ public class MoveLandRegistry {
 
     static void calculateRoadBuildingMovesConnectingToRoad(Game game, List<BuildMove> possibleMoves, Player player, Board board) {
 
-        // get all roads from user
-        List<Road> roads = getRoadsOfPlayer(player, board);
-
-        // get all coordinates from roads
-        List<Coordinate> roadCoordinates = new ArrayList<>();
-
-        for (Road road : roads) {
-            roadCoordinates.add(road.getCoordinate1());
-            roadCoordinates.add(road.getCoordinate2());
-        }
-
-        // get road end points
-        List<Coordinate> roadEndPoints = getRoadEndPoints(roadCoordinates);
+        // get all road end points
+        List<Coordinate> roadEndPoints = getRoadEndPoints(player, board);
 
         // if there are open road end points, then calculate building coordinates
         if (!roadEndPoints.isEmpty()) {
@@ -180,37 +222,4 @@ public class MoveLandRegistry {
         }
     }
 
-    public static List<Building> getBuildingsFromTileWithRobber(Game game) {
-
-        List<Building> buildings = new ArrayList<>();
-
-        Board board = game.getBoard();
-
-        for (Tile tile : board.getTiles()) {
-
-            if (tile.hasRobber()) {
-
-                getSettlementsFromTile(buildings, board, tile);
-
-                getCitiesFromTile(buildings, board, tile);
-            }
-        }
-        return buildings;
-    }
-
-    private static void getSettlementsFromTile(List<Building> buildings, Board board, Tile tile) {
-        for (Settlement settlement : board.getSettlements()) {
-            if (tile.getCoordinates().contains(settlement.getCoordinate())) {
-                buildings.add(settlement);
-            }
-        }
-    }
-
-    private static void getCitiesFromTile(List<Building> buildings, Board board, Tile tile) {
-        for (City city : board.getCities()) {
-            if (tile.getCoordinates().contains(city.getCoordinate())) {
-                buildings.add(city);
-            }
-        }
-    }
 }
