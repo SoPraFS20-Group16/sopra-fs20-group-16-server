@@ -79,6 +79,7 @@ public interface DTOMapper {
     @Mapping(source = "board", target = "board")
     @Mapping(source = "players", target = "players")
     @Mapping(source = "started", target = "started")
+    @Mapping(source = "lastDiceRoll", target = "lastDiceRoll")
     GameDTO convertGameToGameDTO(Game game);
 
     @Mapping(source = "coordinates", target = "coordinates")
