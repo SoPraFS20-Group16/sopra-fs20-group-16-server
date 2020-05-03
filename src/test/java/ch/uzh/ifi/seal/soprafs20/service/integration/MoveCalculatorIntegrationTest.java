@@ -394,7 +394,7 @@ public class MoveCalculatorIntegrationTest {
         // find random coordinate
         Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
 
-        // add settlement on board
+        // add city on board
         City city = new City();
         city.setCoordinate(coordinate);
         city.setUserId(testPlayer.getUserId());

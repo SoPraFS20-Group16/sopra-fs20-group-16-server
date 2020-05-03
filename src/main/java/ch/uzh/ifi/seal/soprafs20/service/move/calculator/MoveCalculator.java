@@ -21,25 +21,16 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
-import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Service
-@Transactional
 public class MoveCalculator {
 
-    private PlayerService playerService;
-
-    @Autowired
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
+    private MoveCalculator() {
+        throw new IllegalStateException(ErrorMsg.INIT_MSG);
     }
 
     // -- start move(s) --
