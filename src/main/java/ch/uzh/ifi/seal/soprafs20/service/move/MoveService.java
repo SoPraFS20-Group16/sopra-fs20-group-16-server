@@ -129,7 +129,7 @@ public class MoveService {
         playerService.save(player);
 
         //If the player has more 10 or more points, then the game is over
-        if (player.getVictoryPoints() >= 10) {
+        if (player.getVictoryPoints() >= GameConstants.WIN_POINTS) {
             deleteAllMovesForGame(game.getId());
             gameService.teardownGameWithId(game.getId());
             return;

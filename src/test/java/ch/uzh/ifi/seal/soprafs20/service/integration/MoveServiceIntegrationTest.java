@@ -236,6 +236,47 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
+    public void testMakeRecalculation_playerWins() {
+        //empty handler that does no move calculations, as they are tested separately
+        MoveHandler testHandler = new MoveHandler() {
+            @Override
+            public List<Move> calculateNextMoves(Game game, Move move) {
+                return new ArrayList<>();
+            }
+
+            @Override
+            public void perform(Move move, MoveService moveService) {
+            }
+        };
+
+        //Add a building to the board for the recalculation of points
+        City city = new City();
+        city.setUserId(testPlayer.getUserId());
+        testBoard.addCity(city);
+
+        Settlement settlement = new Settlement();
+        settlement.setUserId(testPlayer.getUserId());
+        testBoard.addSettlement(settlement);
+
+        int buildingPoints = (new Settlement().getVictoryPoints() + new City().getVictoryPoints());
+
+        //Add victory cards until player wins
+        int cardPoints = GameConstants.WIN_POINTS;
+        for (int i = 0; i < GameConstants.WIN_POINTS; i++) {
+            DevelopmentCard devCard = new DevelopmentCard();
+            devCard.setDevelopmentType(DevelopmentType.VICTORYPOINT);
+            testPlayer.addDevelopmentCard(devCard);
+        }
+
+        moveService.makeRecalculations(testGame, testHandler, testMove);
+
+        //When game is over, then game teardown is called
+        assertTrue(gameRepository.findById(testGame.getId()).isEmpty(), "The game should no longer exist");
+        assertEquals(0, moveRepository.findAllByGameId(testGame.getId()).size(),
+                "There should be no moves for the game!");
+    }
+
+    @Test
     public void testMakeSetupRecalculations_minReached() {
 
         //Delete the added testMove
@@ -280,7 +321,31 @@ public class MoveServiceIntegrationTest {
         setupTestMove(diceMove, testPlayer, testGame);
         moveService.performMove(diceMove);
 
-        //TODO: Maybe there is a good assertion strategy
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        assertTrue(moves.size() > 0, "There should be at least one move!");
+
+        //After a dice move there must either be all knight moves or one move must be a passMove
+        int onePassMove = 0;
+
+        //Test if there are only nightMoves or one is a pass move and none are knightmoves
+        if (moves.get(0).getClass().equals(KnightMove.class)) {
+            for (Move move : moves) {
+                assertEquals(KnightMove.class, move.getClass());
+            }
+        }
+        else {
+            for (Move move : moves) {
+                assertNotEquals(KnightMove.class, move.getClass());
+
+                //Test if it is a passmove
+                if (move.getClass().equals(PassMove.class)) {
+                    onePassMove++;
+                }
+            }
+
+            assertEquals(1, onePassMove, "There should be exactly one passMove");
+        }
     }
 
     @Test

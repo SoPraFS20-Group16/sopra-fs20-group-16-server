@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.unit;
 
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
@@ -92,14 +93,7 @@ public class MoveServiceTest {
     }
 
     @Test
-    public void testPerformMove() {
-        //TODO: Find a way to test this method.
-        // Should services always return their input or a boolean if operation is successful
-        // and is not expected to return something else?
-    }
-
-    @Test
-    public void testMakeRecalculations() {
+    public void testMakeRecalculations_belowWin() {
 
         //Setup
 
@@ -117,6 +111,28 @@ public class MoveServiceTest {
         //Calculated points are
         assertEquals(3, testGame.getCurrentPlayer().getVictoryPoints(), "Victory point calculation wrong!");
     }
+
+    @Test
+    public void testMakeRecalculations_aboveWin() {
+
+        //Setup
+
+        //Assumes the player has 1 victory point card
+        given(playerService.getPointsFromDevelopmentCards(Mockito.any())).willReturn(1);
+
+        //Assumes the player has 2 settlements or 1 city
+        given(boardService.getPointsFromBuildings(Mockito.any(), Mockito.any())).willReturn(GameConstants.WIN_POINTS);
+
+        //new Moves empty, recalculation tested in tests for MoveCalculator
+        given(testHandler.calculateNextMoves(Mockito.any(), Mockito.any())).willReturn(new ArrayList<>());
+
+        moveService.makeRecalculations(testGame, testHandler, testMove);
+
+        //Calculated points are
+        assertEquals(GameConstants.WIN_POINTS + 1, testGame.getCurrentPlayer().getVictoryPoints(), "Victory point calculation wrong!");
+    }
+
+
     //Perform moves are tested in integration tests!
 
 }

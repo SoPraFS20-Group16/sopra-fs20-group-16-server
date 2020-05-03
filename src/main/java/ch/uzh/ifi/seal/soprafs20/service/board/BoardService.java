@@ -71,108 +71,60 @@ public class BoardService {
         List<TileType> necessaryTiles = getTileTypeListRandom();
 
         //The new tiles
-        Tile newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 0));
-        newTile.setTileNumber(6);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 0), 6));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(5, 0));
-        newTile.setTileNumber(3);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(5, 0), 3));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(7, 0));
-        newTile.setTileNumber(8);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 0), 8));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(2, 2));
-        newTile.setTileNumber(2);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(2, 2), 2));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(4, 2));
-        newTile.setTileNumber(4);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(4, 2), 4));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(6, 2));
-        newTile.setTileNumber(5);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(6, 2), 5));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(8, 2));
-        newTile.setTileNumber(10);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(8, 2), 10));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(1, 4));
-        newTile.setTileNumber(5);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(1, 4), 5));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 4));
-        newTile.setTileNumber(9);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 4), 11));
 
         //The desert tile
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(5, 4));
-        newTile.setTileNumber(0);
-        newTile.setType(TileType.DESERT);
+        Tile newTile = createNewTile(TileType.DESERT, new Coordinate(5, 4), 0);
         newTile.setHasRobber(true);
         tiles.add(newTile);
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(7, 4));
-        newTile.setTileNumber(11);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 4), 9));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(9, 4));
-        newTile.setTileNumber(6);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(9, 4), 6));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(2, 6));
-        newTile.setTileNumber(9);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(2, 6), 9));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(4, 6));
-        newTile.setTileNumber(10);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(4, 6), 10));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(6, 6));
-        newTile.setTileNumber(3);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(6, 6), 3));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(8, 6));
-        newTile.setTileNumber(12);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(8, 6), 12));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(3, 8));
-        newTile.setTileNumber(8);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 8), 8));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(5, 8));
-        newTile.setTileNumber(4);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(5, 8), 4));
 
-        newTile = tileService.createTileWithTopCoordinate(new Coordinate(7, 8));
-        newTile.setTileNumber(11);
-        newTile.setType(necessaryTiles.remove(0));
-        tiles.add(newTile);
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 8), 11));
 
         board.setTiles(tiles);
 
         //Calculate coordinate neighbors
         coordinateService.calculateNeighbors();
         return boardRepository.saveAndFlush(board);
+    }
+
+    private Tile createNewTile(TileType tileType, Coordinate coordinate, int tileNumber) {
+        Tile newTile;
+        newTile = tileService.createTileWithTopCoordinate(coordinate);
+        newTile.setTileNumber(tileNumber);
+        newTile.setType(tileType);
+        return newTile;
     }
 
     /**
