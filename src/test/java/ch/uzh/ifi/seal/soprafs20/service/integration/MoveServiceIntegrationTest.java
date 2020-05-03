@@ -280,7 +280,31 @@ public class MoveServiceIntegrationTest {
         setupTestMove(diceMove, testPlayer, testGame);
         moveService.performMove(diceMove);
 
-        //TODO: Maybe there is a good assertion strategy
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        assertTrue(moves.size() > 0, "There should be at least one move!");
+
+        //After a dice move there must either be all knight moves or one move must be a passMove
+        int onePassMove = 0;
+
+        //Test if there are only nightMoves or one is a pass move and none are knightmoves
+        if (moves.get(0).getClass().equals(KnightMove.class)) {
+            for (Move move : moves) {
+                assertEquals(KnightMove.class, move.getClass());
+            }
+        }
+        else {
+            for (Move move : moves) {
+                assertNotEquals(KnightMove.class, move.getClass());
+
+                //Test if it is a passmove
+                if (move.getClass().equals(PassMove.class)) {
+                    onePassMove++;
+                }
+            }
+
+            assertEquals(1, onePassMove, "There should be exactly one passMove");
+        }
     }
 
     @Test

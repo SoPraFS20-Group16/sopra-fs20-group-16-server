@@ -1,26 +1,30 @@
 package ch.uzh.ifi.seal.soprafs20.service.unit;
 
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.FirstStack;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.repository.FirstStackRepository;
 import ch.uzh.ifi.seal.soprafs20.service.FirstStackService;
+import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 public class FirstStackServiceTest {
 
     @Mock
     private FirstStackRepository stackRepository;
+
+    @Mock
+    private GameService gameService;
 
     @InjectMocks
     private FirstStackService firstStackService;
@@ -30,13 +34,31 @@ public class FirstStackServiceTest {
     private Long first = 111L;
     private Long second = 222L;
 
+    private Player player1;
+    private Player player2;
+
+    private List<Player> players;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
+        ReflectionTestUtils.setField(firstStackService, "gameService", gameService);
+
         first = 111L;
         second = 222L;
         stack = new FirstStack();
+
+        player1 = new Player();
+        player1.setUserId(first);
+
+        player2 = new Player();
+        player2.setUserId(second);
+
+        players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
+
     }
 
     @Test
@@ -77,8 +99,23 @@ public class FirstStackServiceTest {
     }
 
     @Test
-    public void testCanExitForGame() {
+    public void testCreateStackForGame() {
+        Game game = new Game();
+        game.setId(1L);
+        game.setPlayers(players);
+        game.setCreatorId(player1.getUserId());
 
+        given(gameService.findGameById(Mockito.anyLong())).willReturn(game);
+        when(stackRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
+        FirstStack result = firstStackService.createStackForGameWithId(game.getId());
+
+        //Assert that stacks first player is the games current player
+        assertEquals(game.getCurrentPlayer().getUserId(), result.getFirstPlayersUserId(),
+                "The first should be set as current player");
+
+        //The first player should be the creator
+        assertEquals(game.getCreatorId(), result.getFirstPlayersUserId(),
+                "The creator should be first");
     }
 }

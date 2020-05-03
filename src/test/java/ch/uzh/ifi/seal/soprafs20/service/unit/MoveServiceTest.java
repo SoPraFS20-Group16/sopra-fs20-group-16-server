@@ -92,13 +92,6 @@ public class MoveServiceTest {
     }
 
     @Test
-    public void testPerformMove() {
-        //TODO: Find a way to test this method.
-        // Should services always return their input or a boolean if operation is successful
-        // and is not expected to return something else?
-    }
-
-    @Test
     public void testMakeRecalculations() {
 
         //Setup

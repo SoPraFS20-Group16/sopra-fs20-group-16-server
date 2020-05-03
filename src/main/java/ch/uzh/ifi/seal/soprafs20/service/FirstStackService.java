@@ -42,7 +42,7 @@ public class FirstStackService {
         return next;
     }
 
-    public void createStackForGameWithId(Long gameId) {
+    public FirstStack createStackForGameWithId(Long gameId) {
         Game game = gameService.findGameById(gameId);
 
         FirstStack stack = new FirstStack();
@@ -56,7 +56,7 @@ public class FirstStackService {
             }
         }
 
-        firstStackRepository.saveAndFlush(stack);
+        return firstStackRepository.saveAndFlush(stack);
     }
 
     public void deleteStackForGame(Long gameId) {
