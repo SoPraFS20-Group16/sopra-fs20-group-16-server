@@ -115,18 +115,8 @@ public class MoveService {
     // is performed after performMove terminates
     public void makeRecalculations(Game game, MoveHandler handler, Move move) {
 
-        // update the victory points of the current player
-        Player player = game.getCurrentPlayer();
-
-        int devPoints = playerService.getPointsFromDevelopmentCards(player);
-        int buildingPoints = boardService.getPointsFromBuildings(game, player);
-
-        int victoryPoints = devPoints + buildingPoints;
-
-        player.setVictoryPoints(victoryPoints);
-
-        //save player
-        playerService.save(player);
+        //Calculate current players points
+        Player player = updateVictoryPoints(game);
 
         //If the player has more 10 or more points, then the game is over
         if (player.getVictoryPoints() >= GameConstants.WIN_POINTS) {
@@ -144,6 +134,22 @@ public class MoveService {
 
         moveRepository.saveAll(nextMoves);
         moveRepository.flush();
+    }
+
+    private Player updateVictoryPoints(Game game) {
+        // update the victory points of the current player
+        Player player = game.getCurrentPlayer();
+
+        int devPoints = playerService.getPointsFromDevelopmentCards(player);
+        int buildingPoints = boardService.getPointsFromBuildings(game, player);
+
+        int victoryPoints = devPoints + buildingPoints;
+
+        player.setVictoryPoints(victoryPoints);
+
+        //save player
+        playerService.save(player);
+        return player;
     }
 
     // -- helper methods --

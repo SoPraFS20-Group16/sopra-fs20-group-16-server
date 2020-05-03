@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
 import java.net.Inet4Address;
 import java.net.Inet6Address;
-
 import java.net.InetAddress;
 import java.util.Map;
 
@@ -30,19 +30,22 @@ public class IpStackRequest {
         RestTemplate restTemplate = new RestTemplate();
 
         // check if ipAddress input matches convention
+        InetAddress address;
+
         try {
-            InetAddress address = InetAddress.getByName(ipAddress);
+            address = InetAddress.getByName(ipAddress);
             if (!(address instanceof Inet4Address) && !(address instanceof Inet6Address)) {
                 this.success = false;
                 return;
             }
-        } catch(Exception e) {
+        }
+        catch (Exception e) {
             log.error(e.getMessage());
             this.success = false;
             return;
         }
 
-        String url = "http://api.ipstack.com/" + ipAddress +
+        String url = "http://api.ipstack.com/" + address.getHostAddress() +
                 "?access_key=" + ApiConstants.API_KEY;
 
         ResponseEntity<String> response

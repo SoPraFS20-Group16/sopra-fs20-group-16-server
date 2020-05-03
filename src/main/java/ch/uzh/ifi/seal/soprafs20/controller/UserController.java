@@ -109,9 +109,12 @@ public class UserController {
 
         ipStackRequest.makeRequest();
 
-        if(!ipStackRequest.isSuccess()) {
+        if (!ipStackRequest.isSuccess()) {
             return "n/a";
         }
+
+        System.out.println(ipStackRequest.getZipCode() + ", " + ipStackRequest.getCity()
+                + ", " + ipStackRequest.getCountry());
 
         // transform into location parameters
         String zipCode = ipStackRequest.getZipCode();
