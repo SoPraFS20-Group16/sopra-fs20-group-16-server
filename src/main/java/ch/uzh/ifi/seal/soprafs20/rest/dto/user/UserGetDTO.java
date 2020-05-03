@@ -8,6 +8,9 @@ public class UserGetDTO {
     private String username;
     private UserStatus status;
 
+    private Boolean tracking;
+    private String location;
+
     public Long getUserId() {
         return userId;
     }
@@ -30,5 +33,21 @@ public class UserGetDTO {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Boolean getTracking() {
+        return tracking;
+    }
+
+    public void setTracking(Boolean tracking) {
+        this.tracking = tracking;
     }
 }

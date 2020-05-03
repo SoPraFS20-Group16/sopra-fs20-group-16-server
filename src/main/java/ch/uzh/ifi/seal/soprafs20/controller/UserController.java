@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.api.IpStackRequest;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,10 +76,17 @@ public class UserController {
      * @return the appropriate ResponseEntity according to the API specification
      */
     @PostMapping("/users")
-    public ResponseEntity<TokenDTO> postUsers(@RequestBody UserPostDTO userPostDTO) {
+    public ResponseEntity<TokenDTO> postUsers(@RequestBody UserPostDTO userPostDTO,
+                                              HttpServletRequest request) {
 
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+        // get location of user if allowed
+        if (userInput.isTracking()) {
+            String location = getLocation(request.getRemoteAddr());
+            userInput.setLocation(location);
+        }
 
         // create user
         User createdUser = userService.createUser(userInput);
@@ -88,6 +97,27 @@ public class UserController {
 
         // Compose Response
         return new ResponseEntity<>(new TokenDTO(createdUser.getToken()), headers, HttpStatus.CREATED);
+
+    }
+
+    private String getLocation(String ipAddress) {
+
+        // test ip address "2a02:1206:4544:3000:994:4ed3:5028:ae1f"
+
+        // get geolocation information from external API, based on IP address
+        IpStackRequest ipStackRequest = new IpStackRequest(ipAddress);
+        ipStackRequest.makeRequest();
+
+        // transform into location parameters
+        String zipCode = ipStackRequest.getZipCode();
+        String city = ipStackRequest.getCity();
+        String country = ipStackRequest.getCountry();
+
+        if (zipCode == null || city == null || country == null) {
+            return "n/a";
+        }
+
+        return zipCode + ", " + city + ", " + country;
 
     }
 

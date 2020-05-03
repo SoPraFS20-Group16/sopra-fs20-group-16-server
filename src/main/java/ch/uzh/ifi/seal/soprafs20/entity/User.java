@@ -35,6 +35,12 @@ public class User implements Serializable {
     @Column(nullable = false)
     private UserStatus status;
 
+    @Column(nullable = false)
+    private boolean tracking = false;
+
+    @Column
+    private String location;
+
     public Long getId() {
         return id;
     }
@@ -73,5 +79,21 @@ public class User implements Serializable {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public boolean isTracking() {
+        return tracking;
+    }
+
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

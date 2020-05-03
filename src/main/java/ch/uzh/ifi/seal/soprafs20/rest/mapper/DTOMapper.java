@@ -47,11 +47,14 @@ public interface DTOMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "token", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(source = "tracking", target = "tracking")
     User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
     @Mapping(source = "id", target = "userId")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "tracking", target = "tracking")
+    @Mapping(source = "location", target = "location")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
     @BeanMapping(ignoreByDefault = true)
