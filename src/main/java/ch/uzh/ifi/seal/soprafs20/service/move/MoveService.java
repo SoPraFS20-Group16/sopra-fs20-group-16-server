@@ -260,6 +260,7 @@ public class MoveService {
 
         //Set last dice roll
         game.setLastDiceRoll(diceRoll);
+        gameService.save(game);
 
         // update wallet of every player with buildings on tile
         for (Tile tile : tiles) {
