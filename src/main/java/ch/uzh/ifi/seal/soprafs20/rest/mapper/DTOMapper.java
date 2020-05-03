@@ -48,6 +48,7 @@ public interface DTOMapper {
     @Mapping(target = "token", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(source = "tracking", target = "tracking")
+    @Mapping(target = "location", ignore = true)
     User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
     @Mapping(source = "id", target = "userId")

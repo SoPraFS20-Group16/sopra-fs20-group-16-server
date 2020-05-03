@@ -1,39 +1,51 @@
 package ch.uzh.ifi.seal.soprafs20.api;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ApiConstants;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 public class IpStackRequest {
 
     private static final Logger log = LoggerFactory.getLogger(IpStackRequest.class);
 
-    private static final String API_KEY = "e0cb9e120039bf799a32662c58b9b5e0";
-
     private final String ipAddress;
     private Map<String, Object> mappedBody;
+    private boolean success = false;
 
     public IpStackRequest(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
-    public void makeRequest() {
+    public void makeRequest() throws UnknownHostException {
 
         RestTemplate restTemplate = new RestTemplate();
 
+        // check if ipAddress input matches convention
+        InetAddress address = InetAddress.getByName(ipAddress);
+
+        if (!(address instanceof Inet4Address) && !(address instanceof Inet6Address)) {
+            this.success = false;
+        }
+
         String url = "http://api.ipstack.com/" + ipAddress +
-                "?access_key=" + API_KEY;
+                "?access_key=" + ApiConstants.API_KEY;
 
         ResponseEntity<String> response
                 = restTemplate.getForEntity(url, String.class);
 
-        System.out.println(response);
         mapping(response.getBody());
+        this.success = true;
+
     }
 
     private void mapping(String body) {
@@ -81,6 +93,10 @@ public class IpStackRequest {
         } else {
             return null;
         }
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 
 }
