@@ -1,8 +1,14 @@
 package ch.uzh.ifi.seal.soprafs20.service.unit;
 
+import ch.uzh.ifi.seal.soprafs20.constant.BuildingType;
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.PurchaseMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.UserRepository;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
@@ -12,6 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -31,6 +40,7 @@ public class PlayerServiceTest {
     //TestObjects
     private User testUser;
     private Long testUserId;
+    private Long testGameId;
     private Player testPlayer;
 
 
@@ -40,6 +50,7 @@ public class PlayerServiceTest {
         MockitoAnnotations.initMocks(this);
 
         testUserId = 12L;
+        testGameId = 1L;
 
         testUser = new User();
         testUser.setToken("Token");
@@ -72,5 +83,36 @@ public class PlayerServiceTest {
 
         assertThrows(NullPointerException.class, () -> playerService.createPlayerFromUserId(1L),
                 "If the user does not exist an exception should be thrown!");
+    }
+
+    @Test
+    public void testAddDevelopmentCard_playerNull() {
+
+        PurchaseMove purchaseMove = new PurchaseMove();
+        purchaseMove.setUserId(testUserId);
+        purchaseMove.setGameId(testGameId);
+
+        given(playerRepository.findByUserId(testUserId)).willReturn(null);
+
+        assertThrows(NullPointerException.class, () -> playerService.addDevelopmentCard(purchaseMove));
+
+    }
+
+    @Test
+    public void testUpdateResources() {
+
+        testPlayer.setWallet(new ResourceWallet());
+
+        Settlement settlement = new Settlement();
+        settlement.setUserId(testUserId);
+        settlement.setType(BuildingType.SETTLEMENT);
+
+        List<Building> buildings = Collections.singletonList(settlement);
+
+        playerService.updateResources(ResourceType.BRICK, buildings, testPlayer);
+
+        assertEquals(settlement.getResourceDistributingAmount(),
+                testPlayer.getWallet().getResourceAmount(ResourceType.BRICK),
+                "The amount of Brick should match the resourceDistibutingAmount");
     }
 }
