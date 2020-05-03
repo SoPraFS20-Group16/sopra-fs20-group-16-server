@@ -258,10 +258,7 @@ public class MoveServiceIntegrationTest {
         settlement.setUserId(testPlayer.getUserId());
         testBoard.addSettlement(settlement);
 
-        int buildingPoints = (new Settlement().getVictoryPoints() + new City().getVictoryPoints());
-
         //Add victory cards until player wins
-        int cardPoints = GameConstants.WIN_POINTS;
         for (int i = 0; i < GameConstants.WIN_POINTS; i++) {
             DevelopmentCard devCard = new DevelopmentCard();
             devCard.setDevelopmentType(DevelopmentType.VICTORYPOINT);
