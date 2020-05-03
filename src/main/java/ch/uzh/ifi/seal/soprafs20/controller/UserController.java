@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +77,7 @@ public class UserController {
      */
     @PostMapping("/users")
     public ResponseEntity<TokenDTO> postUsers(@RequestBody UserPostDTO userPostDTO,
-                                              HttpServletRequest request) throws UnknownHostException {
+                                              HttpServletRequest request) {
 
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
@@ -101,7 +100,7 @@ public class UserController {
 
     }
 
-    private String getLocation(String ipAddress) throws UnknownHostException {
+    private String getLocation(String ipAddress) {
 
         // test ip address "2a02:1206:4544:3000:994:4ed3:5028:ae1f"
 

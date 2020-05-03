@@ -11,7 +11,6 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Map;
 
 public class IpStackRequest {
@@ -26,15 +25,21 @@ public class IpStackRequest {
         this.ipAddress = ipAddress;
     }
 
-    public void makeRequest() throws UnknownHostException {
+    public void makeRequest() {
 
         RestTemplate restTemplate = new RestTemplate();
 
         // check if ipAddress input matches convention
-        InetAddress address = InetAddress.getByName(ipAddress);
-
-        if (!(address instanceof Inet4Address) && !(address instanceof Inet6Address)) {
+        try {
+            InetAddress address = InetAddress.getByName(ipAddress);
+            if (!(address instanceof Inet4Address) && !(address instanceof Inet6Address)) {
+                this.success = false;
+                return;
+            }
+        } catch(Exception e) {
+            log.error(e.getMessage());
             this.success = false;
+            return;
         }
 
         String url = "http://api.ipstack.com/" + ipAddress +
