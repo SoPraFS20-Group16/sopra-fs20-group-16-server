@@ -105,6 +105,7 @@ public interface DTOMapper {
 
     @Mapping(source = "type", target = "buildingType")
     @Mapping(source = "coordinates", target = "coordinates")
+    @Mapping(source = "userId", target = "userId")
     BuildingDTO convertBuildingToBuildingDTO(Building building);
 
     @Mapping(source = "id", target = "moveId")

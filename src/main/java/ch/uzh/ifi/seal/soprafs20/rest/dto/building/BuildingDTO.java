@@ -9,6 +9,8 @@ public class BuildingDTO {
 
     private BuildingType buildingType;
 
+    private Long userId;
+
     private List<CoordinateDTO> coordinates;
 
     public BuildingType getBuildingType() {
@@ -25,5 +27,13 @@ public class BuildingDTO {
 
     public List<CoordinateDTO> getCoordinates() {
         return coordinates;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
