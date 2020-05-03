@@ -258,6 +258,9 @@ public class MoveService {
         // get game
         Game game = gameService.findGameById(diceMove.getGameId());
 
+        //Set last dice roll
+        game.setLastDiceRoll(diceRoll);
+
         // update wallet of every player with buildings on tile
         for (Tile tile : tiles) {
             if (!tile.hasRobber()) {

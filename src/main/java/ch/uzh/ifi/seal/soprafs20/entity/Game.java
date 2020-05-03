@@ -25,6 +25,9 @@ public class Game implements Serializable {
     private String name;
 
     @Column
+    private int lastDiceRoll;
+
+    @Column
     private int playerMaximum = GameConstants.DEFAULT_PLAYER_MAX;
 
     @Column
@@ -115,6 +118,14 @@ public class Game implements Serializable {
 
     public void setPlayerMaximum(int playerMaximum) {
         this.playerMaximum = playerMaximum;
+    }
+
+    public int getLastDiceRoll() {
+        return lastDiceRoll;
+    }
+
+    public void setLastDiceRoll(int lastDiceRoll) {
+        this.lastDiceRoll = lastDiceRoll;
     }
 
     /**

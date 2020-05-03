@@ -14,6 +14,7 @@ public class GameDTO {
     private BoardDTO board;
     private List<MoveDTO> moves;
     private boolean started;
+    private int lastDiceRoll;
 
     public Long getGameId() {
         return gameId;
@@ -69,5 +70,13 @@ public class GameDTO {
 
     public void setStarted(boolean started) {
         this.started = started;
+    }
+
+    public int getLastDiceRoll() {
+        return lastDiceRoll;
+    }
+
+    public void setLastDiceRoll(int lastDiceRoll) {
+        this.lastDiceRoll = lastDiceRoll;
     }
 }
