@@ -11,6 +11,8 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,8 @@ import java.util.List;
  */
 @RestController
 public class UserController {
+
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final GameService gameService;
     private final UserService userService;
@@ -62,6 +66,8 @@ public class UserController {
         for (User user : users) {
             userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
         }
+
+        log.info("GET /users called");
         return userGetDTOs;
     }
 
@@ -95,9 +101,10 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", String.format("/users/%d", createdUser.getId()));
 
+
+        log.info("POST /users called");
         // Compose Response
         return new ResponseEntity<>(new TokenDTO(createdUser.getToken()), headers, HttpStatus.CREATED);
-
     }
 
     private String getLocation(String ipAddress) {
@@ -112,9 +119,6 @@ public class UserController {
         if (!ipStackRequest.isSuccess()) {
             return "n/a";
         }
-
-        System.out.println(ipStackRequest.getZipCode() + ", " + ipStackRequest.getCity()
-                + ", " + ipStackRequest.getCountry());
 
         // transform into location parameters
         String zipCode = ipStackRequest.getZipCode();
@@ -152,6 +156,9 @@ public class UserController {
         // find user
         User foundUser = userService.findUser(userInput);
 
+        String message = String.format("GET /users/%s called", userId);
+        log.info(message);
+
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(foundUser);
     }
@@ -181,6 +188,7 @@ public class UserController {
             throw new RestException(HttpStatus.UNAUTHORIZED, "username does not exist, register first");
         }
 
+        log.info("PUT /login called");
         // convert internal representation of user back to API
         return new TokenDTO(loggedInUser.getToken());
     }
@@ -219,5 +227,6 @@ public class UserController {
             gameService.teardownGameWithId(game.getId());
         }
 
+        log.info("PUT /logout called");
     }
 }

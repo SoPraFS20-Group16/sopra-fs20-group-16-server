@@ -1,9 +1,11 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
@@ -72,6 +74,9 @@ public class GameController {
         for (Game game : games) {
             gameLinks.add(DTOMapper.INSTANCE.convertGameToGameLinkDTO(game));
         }
+
+        log.info("GET /games called");
+
         return gameLinks;
     }
 
@@ -120,6 +125,8 @@ public class GameController {
         //response body dtp
         GameLinkDTO responseBody = DTOMapper.INSTANCE.convertGameToGameLinkDTO(createdGame);
 
+        log.info("POST /games called");
+
         //Compose Response
         return new ResponseEntity<>(responseBody, headers, HttpStatus.CREATED);
     }
@@ -157,6 +164,9 @@ public class GameController {
 
         //Add cards and moves to player
         GameControllerHelper.addCardsAndMoves(moveService, playerService, requestingUser, gameDTO);
+
+        String message = String.format("GET /games/%d called", gameId);
+        log.info(message);
 
         //Return gameDTO
         return gameDTO;
@@ -201,7 +211,9 @@ public class GameController {
         //Check if move and game and user build a valid set of instructions
         GameControllerHelper.checkIsValidGameMoveUserCombinationElseThrow(gameService, foundGame, foundMove, requestingUser);
 
-        log.debug("successfully passed through gameController");
+        String message = String.format("PUT /games/%d called. Player: %d Move: %s",
+                gameId, requestingUser.getId(), foundMove.getClass().getSimpleName());
+        log.info(message);
 
         //If everything is correct perform the move
         moveService.performMove(foundMove);
@@ -223,6 +235,7 @@ public class GameController {
     public void postNewPlayerToGameWithGameId(@PathVariable Long gameId,
                                               @RequestHeader(name = "Token") String token) {
 
+
         //If user does not possess a valid token return 401
         GameControllerHelper.checkToken(userService, token);
 
@@ -238,8 +251,16 @@ public class GameController {
         //Returns 403 if max was already reached
         GameControllerHelper.checkPlayerMax(game);
 
+        //Check if game has started
+        if (game.getStarted()) {
+            throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.THE_GAME_HAS_STARTED);
+        }
+
         //Create a new player form requesting user
         Player createdPlayer = playerService.createPlayerFromUserId(requestingUser.getId());
+
+        String message = String.format("POST /games/%d /players called. Player: %d", gameId, requestingUser.getId());
+        log.info(message);
 
         //Add player to the game
         gameService.addPlayerToGame(createdPlayer, game);
