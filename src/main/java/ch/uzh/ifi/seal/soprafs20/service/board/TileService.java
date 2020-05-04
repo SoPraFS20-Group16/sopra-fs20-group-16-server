@@ -29,9 +29,10 @@ public class TileService {
         this.coordinateRepository = coordinateRepository;
     }
 
-    public Tile createTileWithTopCoordinate(Coordinate top) {
+    public Tile createTile(Coordinate top, Long gameId) {
 
         Tile createdTile = new Tile();
+        createdTile.setGameId(gameId);
 
         List<Coordinate> coordinates = new ArrayList<>();
 

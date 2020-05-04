@@ -115,16 +115,23 @@ public class MoveServiceIntegrationTest {
         gameRepository.deleteAll();
 
 
+        //Save game to give it Id
+        testGame = new Game();
+        testGame.setName("TestGameName");
+        testGame = gameService.save(testGame);
+
+
         testPlayer = new Player();
         testPlayer.setUserId(12L);
         testPlayer.setUsername("TestUsername");
+        testPlayer.setGameId(testGame.getId());
         testPlayer = playerService.save(testPlayer);
 
-        testBoard = boardService.createBoard();
+
+        testBoard = boardService.createBoard(testGame.getId());
         testBoard = boardRepository.saveAndFlush(testBoard);
 
-        testGame = new Game();
-        testGame.setName("TestGameName");
+        //Fill the board
         testGame.setCurrentPlayer(testPlayer);
         testGame.addPlayer(testPlayer);
         testGame.setCreatorId(testPlayer.getUserId());
@@ -184,6 +191,7 @@ public class MoveServiceIntegrationTest {
         Player nextPlayer = new Player();
         nextPlayer.setUsername("NextPlayer");
         nextPlayer.setUserId(22L);
+        nextPlayer.setGameId(testGame.getId());
         testGame.addPlayer(nextPlayer);
         testGame = gameService.save(testGame);
         testQueue.addUserId(nextPlayer.getUserId());
@@ -284,7 +292,9 @@ public class MoveServiceIntegrationTest {
             Player newPlayer = new Player();
             newPlayer.setUserId((long) (10 * i));
             newPlayer.setUsername(String.format("TestPlayerNumber %d", i));
+            newPlayer.setGameId(testGame.getId());
             testGame.addPlayer(newPlayer);
+
             testQueue.addUserId(newPlayer.getUserId());
             testQueue = queueService.save(testQueue);
             testGame = gameService.save(testGame);
@@ -888,6 +898,7 @@ public class MoveServiceIntegrationTest {
         Player secondPlayer = new Player();
         secondPlayer.setUsername("secondPlayer");
         secondPlayer.setUserId(22L);
+        secondPlayer.setGameId(testGame.getId());
         secondPlayer = playerService.save(secondPlayer);
         testGame.addPlayer(secondPlayer);
         testGame = gameService.save(testGame);

@@ -14,12 +14,11 @@ public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
-    @Column(nullable = false, updatable = false)
-    private Long id;
-
     @Column(unique = true, nullable = false, updatable = false)
     private Long userId;
+
+    @Column(nullable = false)
+    private Long gameId;
 
     @OneToOne(cascade = CascadeType.ALL)
     private ResourceWallet wallet;
@@ -79,14 +78,6 @@ public class Player implements Serializable {
         this.username = username;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public ResourceWallet getWallet() {
         return wallet;
     }
@@ -95,4 +86,11 @@ public class Player implements Serializable {
         this.wallet = wallet;
     }
 
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
+    }
 }

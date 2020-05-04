@@ -30,6 +30,8 @@ public class DTOMapperTest {
     @Autowired
     private TileService tileService;
 
+    private Long testGameId = 123L;
+
 
     @Test
     public void testCreateUser_fromUserPostDTO_toUser_success() {
@@ -139,7 +141,7 @@ public class DTOMapperTest {
 
     @Test
     public void testTileToTileDTO() {
-        Tile tile = tileService.createTileWithTopCoordinate(new Coordinate(1, 2));
+        Tile tile = tileService.createTile(new Coordinate(1, 2), testGameId);
 
         TileDTO result = DTOMapper.INSTANCE.convertTileToTileDTO(tile);
 

@@ -157,22 +157,28 @@ public class GameRepositoryIntegrationTest {
     @Test
     public void persistGameWithPlayer_userAlreadyExists() {
 
+        Game testGame = new Game();
+        testGame.setWithBots(false);
+        testGame.setName("TestGame");
+        testGame.setCreatorId(1L);
+
+        //Save the game to give it an id
+        entityManager.persist(testGame);
+        entityManager.flush();
+
         Player player = new Player();
         player.setUsername("ThePlayer");
         player.setUserId(1L);
+        player.setGameId(testGame.getId());
+
+        //Save player to the game
+        testGame.addPlayer(player);
+        entityManager.persist(testGame);
+        entityManager.flush();
 
         //save player
         player = playerRepository.saveAndFlush(player);
 
-        Game testGame = new Game();
-        testGame.setWithBots(false);
-        testGame.setName("TestGame");
-        testGame.addPlayer(player);
-        testGame.setCreatorId(1L);
-
-        //Save the game
-        entityManager.persist(testGame);
-        entityManager.flush();
 
         Game resultGame = gameRepository.findByName("TestGame");
         assertEquals(testGame.getPlayers().size(), resultGame.getPlayers().size(),
@@ -181,7 +187,7 @@ public class GameRepositoryIntegrationTest {
         Player resultPlayer = resultGame.getPlayers().get(0);
 
         //Check if the user still has all fields
-        assertEquals(player.getId(), resultPlayer.getId(), "The id does not match!");
+        assertEquals(player.getUserId(), resultPlayer.getUserId(), "The id does not match!");
         assertEquals(player.getUsername(), resultPlayer.getUsername(), "The username does not match");
     }
 }

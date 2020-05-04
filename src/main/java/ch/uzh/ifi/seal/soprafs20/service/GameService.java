@@ -97,20 +97,23 @@ public class GameService {
             return null;
         }
 
+        //save game to give it an id
+        Game savedGame = gameRepository.saveAndFlush(gameInput);
+
         // creator of game is creatorPlayer
-        Player creatorPlayer = playerService.createPlayerFromUserId(gameInput.getCreatorId());
+        Player creatorPlayer = playerService.createPlayer(savedGame.getCreatorId(), savedGame.getId());
 
         // add creator to players list and set as current player
-        gameInput.addPlayer(creatorPlayer);
-        gameInput.setCurrentPlayer(creatorPlayer);
+        savedGame.addPlayer(creatorPlayer);
+        savedGame.setCurrentPlayer(creatorPlayer);
+
 
         //Add a Board
-        Board newBoard = boardService.createBoard();
-        gameInput.setBoard(newBoard);
+        Board newBoard = boardService.createBoard(savedGame.getId());
+        savedGame.setBoard(newBoard);
 
-
-        //Save the game to give it an Id
-        Game savedGame = gameRepository.saveAndFlush(gameInput);
+        //Save the game to persist with board
+        savedGame = gameRepository.saveAndFlush(savedGame);
 
 
         //Create Player queue and add the player to it

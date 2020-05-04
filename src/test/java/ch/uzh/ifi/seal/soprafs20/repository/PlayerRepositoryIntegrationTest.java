@@ -21,6 +21,8 @@ public class PlayerRepositoryIntegrationTest {
     @Autowired
     private PlayerRepository playerRepository;
 
+    private final Long testGameId = 123L;
+
     @AfterEach
     public void teardown() {
         playerRepository.deleteAll();
@@ -32,6 +34,7 @@ public class PlayerRepositoryIntegrationTest {
         Player player = new Player();
         player.setUserId(1L);
         player.setUsername("TheUsername");
+        player.setGameId(testGameId);
 
         entityManager.persistAndFlush(player);
 
@@ -49,6 +52,7 @@ public class PlayerRepositoryIntegrationTest {
         Player player = new Player();
         player.setUserId(1L);
         player.setUsername("TheUsername");
+        player.setGameId(testGameId);
 
         entityManager.persistAndFlush(player);
 

@@ -23,7 +23,7 @@ public class GameTest {
         testGame.setWithBots(false);
 
         testPlayer = new Player();
-        testPlayer.setId(12L);
+        testPlayer.setUserId(12L);
         testPlayer.setUserId(11L);
         testPlayer.setUsername("TestUser");
     }
@@ -52,7 +52,7 @@ public class GameTest {
         assertEquals(1, onePlayer, "The player array should hold one player!");
 
         Player foundPlayer = testGame.getPlayers().get(0);
-        assertEquals(testPlayer.getId(), foundPlayer.getId(),
+        assertEquals(testPlayer.getUserId(), foundPlayer.getUserId(),
                 "The player that was added does not match the player found!");
     }
 

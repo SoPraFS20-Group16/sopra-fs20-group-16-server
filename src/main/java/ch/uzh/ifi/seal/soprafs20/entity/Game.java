@@ -45,7 +45,7 @@ public class Game implements Serializable {
     @Column
     private boolean withBots;
 
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private Long creatorId;     //Id of the user that created the game
 
     @Column
@@ -166,7 +166,7 @@ public class Game implements Serializable {
             return false;
         }
         for (Player candidatePlayer : this.players) {
-            if (player.getId().equals(candidatePlayer.getId())) {
+            if (player.getUserId().equals(candidatePlayer.getUserId())) {
                 return true;
             }
         }

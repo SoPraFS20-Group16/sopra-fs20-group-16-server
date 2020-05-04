@@ -28,6 +28,8 @@ public class TileServiceTest {
     //TestObjects
     private Coordinate testCoordinate;
 
+    private Long testGameId;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -42,7 +44,7 @@ public class TileServiceTest {
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
         when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
-        Tile created = tileService.createTileWithTopCoordinate(testCoordinate);
+        Tile created = tileService.createTile(testCoordinate, testGameId);
 
         assertNotNull(created, "The created tile should not be null!");
         assertNotNull(created.getCoordinates(), "There should be a list of coordinates!");

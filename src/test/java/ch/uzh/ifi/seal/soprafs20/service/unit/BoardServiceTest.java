@@ -44,6 +44,8 @@ public class BoardServiceTest {
     @Mock
     private CoordinateRepository coordinateRepository;
 
+    private final Long testGameId = 123L;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -60,7 +62,7 @@ public class BoardServiceTest {
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
         when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
-        Board createdBoard = boardService.createBoard();
+        Board createdBoard = boardService.createBoard(testGameId);
 
         List<Tile> tiles = createdBoard.getTiles();
 
@@ -91,7 +93,7 @@ public class BoardServiceTest {
         when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 
         //Setup
-        Tile tile = tileService.createTileWithTopCoordinate(new Coordinate(1, 0));
+        Tile tile = tileService.createTile(new Coordinate(1, 0), testGameId);
 
         Long userId = 112233L;
         Long enemyId = 332211L;

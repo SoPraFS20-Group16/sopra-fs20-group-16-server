@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -50,7 +49,7 @@ public class PlayerService {
      * @param userId the userId to find the user
      * @return the player
      */
-    public Player createPlayerFromUserId(@NotNull Long userId) {
+    public Player createPlayer(Long userId, Long gameId) {
 
         User user = userRepository.findUserById(userId);
         if (user == null) {
@@ -59,6 +58,7 @@ public class PlayerService {
         Player player = new Player();
         player.setUsername(user.getUsername());
         player.setUserId(user.getId());
+        player.setGameId(gameId);
 
         return playerRepository.saveAndFlush(player);
     }

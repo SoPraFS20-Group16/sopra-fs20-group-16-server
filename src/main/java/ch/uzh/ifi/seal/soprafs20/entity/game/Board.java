@@ -19,8 +19,8 @@ public class Board implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @Column(nullable = false, updatable = false, unique = true)
+    private Long gameId;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Tile> tiles;
@@ -42,12 +42,12 @@ public class Board implements Serializable {
         roads = new ArrayList<>();
     }
 
-    public Long getId() {
-        return id;
+    public Long getGameId() {
+        return gameId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGameId(Long id) {
+        this.gameId = id;
     }
 
     public List<Tile> getTiles() {

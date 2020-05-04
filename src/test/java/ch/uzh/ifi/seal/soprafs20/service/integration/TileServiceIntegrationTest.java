@@ -29,6 +29,8 @@ public class TileServiceIntegrationTest {
     @Autowired
     EntityManager entityManager;
 
+    private Long testGameId = 123L;
+
     @BeforeEach
     public void setup() {
         entityManager.clear();
@@ -45,13 +47,13 @@ public class TileServiceIntegrationTest {
 
         Coordinate topCoordinate = new Coordinate(1, 0);
 
-        Tile created = tileService.createTileWithTopCoordinate(topCoordinate);
+        Tile created = tileService.createTile(topCoordinate, testGameId);
 
         assertNotNull(created, "The created tile should not be null!");
         assertEquals(6, created.getCoordinates().size(), "There should be 6 coordinates in the array!");
 
         //Add another tile
-        Tile another = tileService.createTileWithTopCoordinate(new Coordinate(1, 3));
+        Tile another = tileService.createTile(new Coordinate(1, 3), testGameId);
 
         assertNotNull(another, "The created tile should not be null!");
         assertEquals(6, another.getCoordinates().size(), "There should be 6 coordinates in the array!");

@@ -70,7 +70,7 @@ public class PlayerServiceTest {
         given(userRepository.findUserById(Mockito.any())).willReturn(testUser);
         given(playerRepository.saveAndFlush(Mockito.any())).willReturn(testPlayer);
 
-        Player createdPlayer = playerService.createPlayerFromUserId(testUserId);
+        Player createdPlayer = playerService.createPlayer(testUserId, testGameId);
 
         assertNotNull(createdPlayer, "The created player should not be null!");
         assertEquals(testUser.getId(), createdPlayer.getUserId(), "The userId and the users id should match!");
@@ -81,7 +81,7 @@ public class PlayerServiceTest {
     public void testCreatePlayerFromUser_noUserWithThisId() {
         when(userRepository.findUserById(Mockito.any())).thenReturn(null);
 
-        assertThrows(NullPointerException.class, () -> playerService.createPlayerFromUserId(1L),
+        assertThrows(NullPointerException.class, () -> playerService.createPlayer(1L, testGameId),
                 "If the user does not exist an exception should be thrown!");
     }
 

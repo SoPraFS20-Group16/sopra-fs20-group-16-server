@@ -257,7 +257,7 @@ public class GameController {
         }
 
         //Create a new player form requesting user
-        Player createdPlayer = playerService.createPlayerFromUserId(requestingUser.getId());
+        Player createdPlayer = playerService.createPlayer(requestingUser.getId(), gameId);
 
         String message = String.format("POST /games/%d /players called. Player: %d", gameId, requestingUser.getId());
         log.info(message);

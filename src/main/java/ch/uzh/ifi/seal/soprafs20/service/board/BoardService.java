@@ -59,10 +59,11 @@ public class BoardService {
      *
      * @return the board
      */
-    public Board createBoard() {
+    public Board createBoard(Long gameId) {
 
         //The empty board
         Board board = new Board();
+        board.setGameId(gameId);
 
         //The list of tiles
         List<Tile> tiles = new ArrayList<>();
@@ -71,46 +72,46 @@ public class BoardService {
         List<TileType> necessaryTiles = getTileTypeListRandom();
 
         //The new tiles
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 0), 6));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 0), 6, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(5, 0), 3));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(5, 0), 3, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 0), 8));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 0), 8, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(2, 2), 2));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(2, 2), 2, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(4, 2), 4));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(4, 2), 4, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(6, 2), 5));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(6, 2), 5, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(8, 2), 10));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(8, 2), 10, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(1, 4), 5));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(1, 4), 5, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 4), 11));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 4), 11, gameId));
 
         //The desert tile
-        Tile newTile = createNewTile(TileType.DESERT, new Coordinate(5, 4), 0);
+        Tile newTile = createNewTile(TileType.DESERT, new Coordinate(5, 4), 0, gameId);
         newTile.setHasRobber(true);
         tiles.add(newTile);
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 4), 9));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 4), 9, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(9, 4), 6));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(9, 4), 6, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(2, 6), 9));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(2, 6), 9, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(4, 6), 10));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(4, 6), 10, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(6, 6), 3));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(6, 6), 3, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(8, 6), 12));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(8, 6), 12, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 8), 8));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(3, 8), 8, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(5, 8), 4));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(5, 8), 4, gameId));
 
-        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 8), 11));
+        tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 8), 11, gameId));
 
         board.setTiles(tiles);
 
@@ -119,9 +120,9 @@ public class BoardService {
         return boardRepository.saveAndFlush(board);
     }
 
-    private Tile createNewTile(TileType tileType, Coordinate coordinate, int tileNumber) {
+    private Tile createNewTile(TileType tileType, Coordinate topCoordinate, int tileNumber, Long gameId) {
         Tile newTile;
-        newTile = tileService.createTileWithTopCoordinate(coordinate);
+        newTile = tileService.createTile(topCoordinate, gameId);
         newTile.setTileNumber(tileNumber);
         newTile.setType(tileType);
         return newTile;

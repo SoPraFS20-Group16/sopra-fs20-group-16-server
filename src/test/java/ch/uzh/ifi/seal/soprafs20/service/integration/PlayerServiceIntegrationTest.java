@@ -66,6 +66,7 @@ public class PlayerServiceIntegrationTest {
     //Test Objects
     private User testUser;
     private Long testUserId;
+    private final Long testGameId = 321L;
 
 
     @BeforeEach
@@ -116,7 +117,7 @@ public class PlayerServiceIntegrationTest {
     public void testCreatePlayerFromUserId() {
 
         playerRepository.deleteAll();
-        Player createdPlayer = playerService.createPlayerFromUserId(testUserId);
+        Player createdPlayer = playerService.createPlayer(testUserId, testGameId);
 
         assertNotNull(createdPlayer, "The created player should not be null!");
         assertEquals(testUser.getId(), createdPlayer.getUserId(), "The userId and the users id should match!");

@@ -56,6 +56,8 @@ public class BoardServiceIntegrationTest {
     @Autowired
     EntityManager entityManager;
 
+    private final Long testGameId = 123L;
+
     @BeforeEach
     public void setup() {
         gameRepository.deleteAll();
@@ -79,7 +81,7 @@ public class BoardServiceIntegrationTest {
     @Test
     public void testCreateBoard() {
 
-        Board result = boardService.createBoard();
+        Board result = boardService.createBoard(testGameId);
 
         assertNotNull(result, "The result should not be null!");
 

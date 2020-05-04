@@ -111,8 +111,8 @@ public class GameServiceTest {
         //setup
         given(gameRepository.saveAndFlush(testGame)).willReturn(testGame);
         given(gameRepository.findByName(testGame.getName())).willReturn(null);
-        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(testPlayer);
-        given(boardService.createBoard()).willReturn(testBoard);
+        given(playerService.createPlayer(Mockito.any(), Mockito.any())).willReturn(testPlayer);
+        given(boardService.createBoard(Mockito.any())).willReturn(testBoard);
 
         Game createdGame = gameService.createGame(testGame);
 
@@ -178,7 +178,7 @@ public class GameServiceTest {
 
         Player testPlayer = new Player();
         testPlayer.setUserId(1L);
-        testPlayer.setId(12L);
+        testPlayer.setUserId(12L);
         testPlayer.setUsername("TestName");
 
         testGame.setPlayers(Collections.singletonList(testPlayer));

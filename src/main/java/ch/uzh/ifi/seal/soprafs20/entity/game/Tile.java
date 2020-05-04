@@ -19,6 +19,9 @@ public class Tile implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
+    private Long gameId;
+
     @Column
     private int tileNumber;
 
@@ -84,5 +87,13 @@ public class Tile implements Serializable {
 
     public boolean hasRobber() {
         return hasRobber;
+    }
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 }

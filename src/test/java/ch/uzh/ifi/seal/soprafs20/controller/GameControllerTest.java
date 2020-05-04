@@ -973,7 +973,7 @@ public class GameControllerTest {
 
         Player player = new Player();
         player.setUserId(user.getId());
-        player.setId(1234L);
+        player.setUserId(1234L);
         player.setUsername(user.getUsername());
 
         Move move = new BuildMove();
@@ -998,7 +998,7 @@ public class GameControllerTest {
         given(gameService.findGame(Mockito.any())).willReturn(game);
 
         //this mocks the player service
-        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+        given(playerService.createPlayer(Mockito.any(), Mockito.any())).willReturn(player);
 
 
         // when
@@ -1029,7 +1029,7 @@ public class GameControllerTest {
 
         Player player = new Player();
         player.setUserId(user.getId());
-        player.setId(1234L);
+        player.setUserId(1234L);
         player.setUsername(user.getUsername());
 
         Move move = new BuildMove();
@@ -1055,7 +1055,7 @@ public class GameControllerTest {
         given(gameService.findGame(Mockito.any())).willReturn(game);
 
         //this mocks the player service
-        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+        given(playerService.createPlayer(Mockito.any(), Mockito.any())).willReturn(player);
 
 
         // when
@@ -1086,7 +1086,7 @@ public class GameControllerTest {
 
         Player player = new Player();
         player.setUserId(user.getId());
-        player.setId(1234L);
+        player.setUserId(1234L);
         player.setUsername(user.getUsername());
 
         Move move = new BuildMove();
@@ -1111,7 +1111,7 @@ public class GameControllerTest {
         given(gameService.findGame(Mockito.any())).willReturn(game);
 
         //this mocks the player service
-        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+        given(playerService.createPlayer(Mockito.any(), Mockito.any())).willReturn(player);
 
 
         // when
@@ -1142,7 +1142,7 @@ public class GameControllerTest {
 
         Player player = new Player();
         player.setUserId(user.getId());
-        player.setId(1234L);
+        player.setUserId(1234L);
         player.setUsername(user.getUsername());
 
         Move move = new BuildMove();
@@ -1167,7 +1167,7 @@ public class GameControllerTest {
         given(gameService.findGame(Mockito.any())).willReturn(null);
 
         //this mocks the player service
-        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+        given(playerService.createPlayer(Mockito.any(), Mockito.any())).willReturn(player);
 
 
         // when
@@ -1198,7 +1198,7 @@ public class GameControllerTest {
 
         Player player = new Player();
         player.setUserId(user.getId());
-        player.setId(1234L);
+        player.setUserId(1234L);
         player.setUsername(user.getUsername());
 
         Move move = new BuildMove();
@@ -1223,7 +1223,7 @@ public class GameControllerTest {
         given(gameService.findGame(Mockito.any())).willReturn(game);
 
         //this mocks the player service
-        given(playerService.createPlayerFromUserId(Mockito.any())).willReturn(player);
+        given(playerService.createPlayer(Mockito.any(), Mockito.any())).willReturn(player);
         given(playerService.findPlayerByUserId(Mockito.any())).willReturn(player);
 
 
