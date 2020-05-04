@@ -268,7 +268,7 @@ public class MoveService {
         game.setLastDiceRoll(diceRoll);
         gameService.save(game);
 
-        // update wallet of every player with buildings on tile
+        // update wallet of every player with buildings on tile, skipped when empty (7)
         for (Tile tile : tiles) {
             if (!tile.hasRobber()) {
                 ResourceType type = tileService.convertToResource(tile.getType());

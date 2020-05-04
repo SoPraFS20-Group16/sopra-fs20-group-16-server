@@ -27,18 +27,15 @@ public class DiceMoveHandler implements MoveHandler {
 
         int diceRoll = getDiceRoll();
 
-        if (diceRoll != 7) {
-
-            // cast move
-            DiceMove diceMove = (DiceMove) move;
-
-            // pass back to the moveService
-            moveService.performDiceMove(diceMove, diceRoll);
-
-        }
-        else {
+        if (diceRoll == 7) {
             robberRoutine = true;
         }
+
+        // cast move
+        DiceMove diceMove = (DiceMove) move;
+
+        // pass back to the moveService
+        moveService.performDiceMove(diceMove, diceRoll);
     }
 
     @Override
