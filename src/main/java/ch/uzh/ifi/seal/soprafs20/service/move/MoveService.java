@@ -424,4 +424,8 @@ public class MoveService {
         // deduct a random resource from victim and add it to player wallet
         playerService.stealResource(stealMove);
     }
+
+    public List<Move> findMovesForGameId(Long gameId) {
+        return moveRepository.findAllByGameId(gameId);
+    }
 }

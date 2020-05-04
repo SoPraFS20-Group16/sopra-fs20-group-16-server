@@ -121,9 +121,7 @@ public class GameService {
 
 
         //Calculate the first moves
-
         moveService.makeSetupRecalculations(savedGame);
-
 
         //Return the saved game
         return savedGame;
