@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
 
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -1044,8 +1045,11 @@ public class GameControllerTest {
         game.setId(1L);
         game.setName("GameName");
         game.setWithBots(false);
-        game.setPlayerMaximum(0);
 
+        //Make game full
+        for (int i = 0; i < GameConstants.DEFAULT_PLAYER_MAX; i++) {
+            game.addPlayer(player);
+        }
 
         //this mocks the UserService
         given(userService.findUser(Mockito.any())).willReturn(user);

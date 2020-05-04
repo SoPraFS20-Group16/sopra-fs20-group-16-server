@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -189,7 +190,7 @@ class GameControllerHelper {
     }
 
     public static void checkPlayerMax(Game game) {
-        if (game.getPlayers().size() >= game.getPlayerMaximum()) {
+        if (game.getPlayers().size() >= GameConstants.DEFAULT_PLAYER_MAX) {
             throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.GAME_IS_FULL);
         }
     }

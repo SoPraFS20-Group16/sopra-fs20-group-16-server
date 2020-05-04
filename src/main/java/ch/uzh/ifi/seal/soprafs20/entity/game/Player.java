@@ -30,6 +30,9 @@ public class Player implements Serializable {
     private List<DevelopmentCard> developmentCards;
 
     @Column
+    private boolean bot = false;
+
+    @Column
     private int victoryPoints;
 
 
@@ -92,5 +95,13 @@ public class Player implements Serializable {
 
     public void setGameId(Long gameId) {
         this.gameId = gameId;
+    }
+
+    public boolean isBot() {
+        return bot;
+    }
+
+    public void setBot(boolean bot) {
+        this.bot = bot;
     }
 }

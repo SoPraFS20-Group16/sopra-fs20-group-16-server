@@ -19,10 +19,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.MoveRepository;
-import ch.uzh.ifi.seal.soprafs20.service.FirstStackService;
-import ch.uzh.ifi.seal.soprafs20.service.GameService;
-import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
-import ch.uzh.ifi.seal.soprafs20.service.QueueService;
+import ch.uzh.ifi.seal.soprafs20.service.*;
 import ch.uzh.ifi.seal.soprafs20.service.board.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.board.TileService;
 import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
@@ -52,6 +49,7 @@ public class MoveService {
     private BoardService boardService;
     private QueueService queueService;
     private FirstStackService firstStackService;
+    private BotService botService;
 
     @Autowired
     public MoveService(@Qualifier("moveRepository") MoveRepository moveRepository) {
@@ -88,6 +86,10 @@ public class MoveService {
         this.queueService = queueService;
     }
 
+    @Autowired
+    public void setBotService(BotService botService) {
+        this.botService = botService;
+    }
 
     /**
      * Gets the correct move handler form the move
@@ -134,6 +136,9 @@ public class MoveService {
 
         moveRepository.saveAll(nextMoves);
         moveRepository.flush();
+
+        //Game awaits new put request or bot is notified
+        notifyBotIfNeeded(game);
     }
 
     private Player updateVictoryPoints(Game game) {
@@ -202,6 +207,12 @@ public class MoveService {
 
         firstStackService.createStackForGameWithId(startMove.getGameId());
         Game startedGame = gameService.findGameById(startMove.getGameId());
+
+        //Add bots if needed
+        if (startedGame.isWithBots()) {
+            gameService.fillWithBots(startedGame);
+        }
+
         startedGame.setStarted(true);
         gameService.save(startedGame);
     }
@@ -427,5 +438,14 @@ public class MoveService {
 
     public List<Move> findMovesForGameId(Long gameId) {
         return moveRepository.findAllByGameId(gameId);
+    }
+
+    private void notifyBotIfNeeded(Game game) {
+
+        Player currentPlayer = game.getCurrentPlayer();
+
+        if (currentPlayer.isBot()) {
+            botService.performBotMove(game.getId(), currentPlayer.getUserId());
+        }
     }
 }

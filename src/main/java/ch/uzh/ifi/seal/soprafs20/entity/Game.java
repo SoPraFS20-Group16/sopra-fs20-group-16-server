@@ -28,9 +28,6 @@ public class Game implements Serializable {
     private int lastDiceRoll;
 
     @Column
-    private int playerMaximum = GameConstants.DEFAULT_PLAYER_MAX;
-
-    @Column
     private int playerMinimum = GameConstants.DEFAULT_PLAYER_MINIMUM;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -110,14 +107,6 @@ public class Game implements Serializable {
 
     public void setPlayerMinimum(int playerMinimum) {
         this.playerMinimum = playerMinimum;
-    }
-
-    public int getPlayerMaximum() {
-        return playerMaximum;
-    }
-
-    public void setPlayerMaximum(int playerMaximum) {
-        this.playerMaximum = playerMaximum;
     }
 
     public int getLastDiceRoll() {

@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service;
 
 
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
@@ -31,6 +32,7 @@ public class GameService {
     private QueueService queueService;
     private MoveService moveService;
     private FirstStackService firstStackService;
+    private BotService botService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
@@ -63,6 +65,11 @@ public class GameService {
     @Autowired
     public void setPlayerService(PlayerService playerService) {
         this.playerService = playerService;
+    }
+
+    @Autowired
+    public void setBotService(BotService botService) {
+        this.botService = botService;
     }
 
     /**
@@ -224,6 +231,16 @@ public class GameService {
         if (game.isPresent()) {
             gameRepository.delete(game.get());
             gameRepository.flush();
+        }
+    }
+
+    public void fillWithBots(Game game) {
+
+        int playerCount = game.getPlayers().size();
+
+        for (int i = playerCount; i < GameConstants.DEFAULT_PLAYER_MAX; i++) {
+
+            botService.createBot(game.getId());
         }
     }
 }
