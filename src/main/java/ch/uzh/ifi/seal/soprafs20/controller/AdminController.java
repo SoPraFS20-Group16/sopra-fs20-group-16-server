@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
+import ch.uzh.ifi.seal.soprafs20.constant.ApplicationConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.exceptions.RestException;
@@ -34,10 +35,10 @@ public class AdminController {
     @GetMapping("/admin")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String admin(@RequestParam(name = "admin") String adminPassword,
+    public String admin(@RequestParam(name = "password") String adminPassword,
                         @RequestParam(name = "game") Long gameId) {
 
-        if (!adminPassword.equals("admin")) {
+        if (!adminPassword.equals(ApplicationConstants.ADMIN_PASSWORD)) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "Wrong admin password");
         }
 
