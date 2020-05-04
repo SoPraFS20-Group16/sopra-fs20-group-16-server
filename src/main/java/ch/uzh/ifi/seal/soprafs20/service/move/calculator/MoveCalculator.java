@@ -378,7 +378,7 @@ public class MoveCalculator {
             KnightMove move = new KnightMove();
             move.setTileId(tile.getId());
             move.setGameId(game.getId());
-            move.setUserId(player.getId());
+            move.setUserId(player.getUserId());
 
             knightMoves.add(move);
         }
