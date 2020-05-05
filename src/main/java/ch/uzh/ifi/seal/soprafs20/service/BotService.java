@@ -5,6 +5,8 @@ import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 @Transactional
 public class BotService {
+
+    private static final Logger log = LoggerFactory.getLogger(BotService.class);
 
     private MoveService moveService;
     private PlayerService playerService;
@@ -74,6 +78,7 @@ public class BotService {
         Move picked = chooseMove(moves);
 
         moveService.performMove(picked);
+        log.info("Bot performed move");
 
         List<Move> followUpMoves = moveService.findMovesForGameAndPlayer(gameId, botId);
 
