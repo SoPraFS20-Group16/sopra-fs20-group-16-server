@@ -205,7 +205,6 @@ public class MoveService {
 
     public void performStartMove(StartMove startMove) {
 
-        firstStackService.createStackForGameWithId(startMove.getGameId());
         Game startedGame = gameService.findGameById(startMove.getGameId());
 
         //Add bots if needed
@@ -213,6 +212,10 @@ public class MoveService {
             gameService.fillWithBots(startedGame);
         }
 
+        // create stack
+        firstStackService.createStackForGameWithId(startMove.getGameId());
+
+        // start and save started game
         startedGame.setStarted(true);
         gameService.save(startedGame);
     }
