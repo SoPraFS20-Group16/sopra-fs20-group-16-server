@@ -32,6 +32,7 @@ public class ErrorMsg {
     public static final String GAME_IS_FULL = "The game reached the maximum player count!";
     public static final String NO_USER_LOGOUT = "User for logout not found";
     public static final String THE_GAME_HAS_STARTED = "The game has already started!";
+    public static final String COORDINATE_ONLY_ONE_NEIGHBOR = "The coordinate should have at least two neighbors";
 
     private ErrorMsg() {
         throw new IllegalStateException("ErrorMsg class should not be initialized");

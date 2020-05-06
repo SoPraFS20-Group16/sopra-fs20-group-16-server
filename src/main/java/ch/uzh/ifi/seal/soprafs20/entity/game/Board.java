@@ -131,14 +131,28 @@ public class Board implements Serializable {
 
         for (Road road : roads) {
 
-            // check if road has first coordinate
-            if ( (road.getCoordinate1().equals(coordinate) && road.getCoordinate2().equals(neighbor))
-                    // if road has first coordinate, check if it also has second
-                    || (road.getCoordinate1().equals(neighbor) && road.getCoordinate2().equals(coordinate)) ) {
+            // check first configuration
+            if ((road.getCoordinate1().equals(coordinate) && road.getCoordinate2().equals(neighbor))
+                    // check second configuration
+                    || (road.getCoordinate1().equals(neighbor) && road.getCoordinate2().equals(coordinate))) {
                 return true;
             }
         }
         return false;
     }
 
+    public Road getRoadWithCoordinates(Coordinate coordinate, Coordinate neighbor) {
+
+        for (Road road : roads) {
+
+            // check first configuration
+            if ((road.getCoordinate1().equals(coordinate) && road.getCoordinate2().equals(neighbor))
+                    // check second configuration
+                    || (road.getCoordinate1().equals(neighbor) && road.getCoordinate2().equals(coordinate))) {
+
+                return road;
+            }
+        }
+        return null;
+    }
 }

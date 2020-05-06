@@ -13,7 +13,6 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
 
-import javax.servlet.http.Cookie;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,89 +137,101 @@ public class MoveLandRegistry {
         // check if road is between buildings / other roads
         for (Road road : roads) {
 
-
-
-
-            if ()
-
-            Coordinate coordinate1 = road.getCoordinate1();
-            Coordinate coordinate2 = road.getCoordinate2();
-
-            Coordinate neighbour = null;
-            Coordinate secondNeighbour = null;
-
-            for (Coordinate candidate: coordinate1.getNeighbors()) {
-                if (!candidate.equals(coordinate2)) {
-                    neighbour = candidate;
-                    break;
-                }
-            }
-
-            for (Coordinate candidate: coordinate1.getNeighbors()) {
-                if (!candidate.equals(coordinate1) && !candidate.equals(neighbour)) {
-                    secondNeighbour = candidate;
-                    break;
-                }
-            }
-
-            if (board.hasRoadWithCoordinates(coordinate1, neighbour)) {
-                // check if road belongs to player
-                continue;
-            }
-
-            if (secondNeighbour != null &&
-                    board.hasRoadWithCoordinates(coordinate1, secondNeighbour)) {
-                // check if road belongs to player
-                continue;
-            }
-
-            validEndPoints.add(coordinate1);
+            //Check the road and get an array of endpoints (0, 1 or 2 coords)
+            validEndPoints.addAll(getValidRoadEndPointsForRoad(road, player.getUserId(), board));
         }
 
         return validEndPoints;
     }
 
-            for (Coordinate neighbour: coordinate1.getNeighbors()) {
+    /**
+     * Calculates the endpoints of a road. Will return an array with 0, 1 or 2 coordinates
+     *
+     * @param road the road that is inspected for endpoints
+     * @return a list that contains valid road end points
+     */
+    private static List<Coordinate> getValidRoadEndPointsForRoad(Road road, Long userId, Board board) {
 
+        List<Coordinate> endPoints = new ArrayList<>();
 
-                if (neighbour.equals(coordinate2)) {
-                    continue;
-                }
+        //Check first end (coordinate 1)
+        if (isValidRoadEndPoint(road.getCoordinate1(), road.getCoordinate2(), userId, board)) {
+            endPoints.add(road.getCoordinate1());
+        }
 
-                if (board.hasRoadWithCoordinates(coordinate1, neighbour)) {
+        if (isValidRoadEndPoint(road.getCoordinate2(), road.getCoordinate1(), userId, board)) {
+            endPoints.add(road.getCoordinate2());
+        }
 
-                    if (board.getRoadWithCoordinates(coordinate1, neighbour).getUserId()
-                            .equals(player.getUserId())) {
-                        break;
+        return endPoints;
+    }
 
-                    } else if (board.hasRoadWithCoordinates(coordinate1)) {
+    /**
+     * @param coordinate1 the candidate coordinate that is looked at
+     * @param coordinate2 the roads other coordinate
+     * @return the boolean indicating if coordinate1 is a valid road end point
+     */
+    private static boolean isValidRoadEndPoint(Coordinate coordinate1, Coordinate coordinate2,
+                                               Long userId, Board board) {
 
+        Coordinate neighbour = null;
+        Coordinate secondNeighbour = null;
 
-                    }
-                }
+        //Find the first neighbor coordinate that is not part of the road
+        for (Coordinate candidate : coordinate1.getNeighbors()) {
+            if (!candidate.equals(coordinate2)) {
+                neighbour = candidate;
+                break;
             }
         }
 
-
-        List<Coordinate> coordinates = getRoadCoordinates(roads);
-
-        int currentSize = coordinates.size();
-        for (int i = 0; i < currentSize; i++) {
-            Coordinate currentCoordinate = coordinates.get(i);
-            int count = 0;
-            for (Coordinate coordinate : coordinates) {
-                if (currentCoordinate.equals(coordinate)) {
-                    count++;
-                }
-                if (count > 1) {
-                    break;
-                }
-            }
-            coordinates.removeIf(o -> o.equals(currentCoordinate));
-            currentSize = coordinates.size();
+        //There has to be at least one neighbor that is not coordinate2
+        if (neighbour == null) {
+            throw new IllegalStateException(ErrorMsg.COORDINATE_ONLY_ONE_NEIGHBOR);
         }
 
-        return coordinates;
+        //Check if there is already a player owned road
+        if (board.hasRoadWithCoordinates(coordinate1, neighbour)) {
+
+            // check if road belongs to player
+            if (hasRoadWithCoordinatesForPlayer(coordinate1, neighbour, userId, board)) {
+                return false;
+            }
+        }
+
+        //Find the second neighbor that is not coordinate 2 (if exists)
+        for (Coordinate candidate : coordinate1.getNeighbors()) {
+            if (!candidate.equals(coordinate1) && !candidate.equals(neighbour)) {
+                secondNeighbour = candidate;
+                break;
+            }
+        }
+
+        //Check if second neighbor is null and if not, check if there is already a player owned street
+        if (secondNeighbour != null &&
+                board.hasRoadWithCoordinates(coordinate1, secondNeighbour)) {
+
+            // check if road belongs to player
+            return !hasRoadWithCoordinatesForPlayer(coordinate1, secondNeighbour, userId, board);
+        }
+
+        //If there is no counter reason
+        return true;
+    }
+
+    private static boolean hasRoadWithCoordinatesForPlayer(Coordinate coordinate1, Coordinate coordinate2,
+                                                           Long userId, Board board) {
+
+        //Find the road
+        Road foundRoad = board.getRoadWithCoordinates(coordinate1, coordinate2);
+
+        //If there is no road return false
+        if (foundRoad == null) {
+            return false;
+        }
+
+        //if the found road belongs to player return true else false
+        return foundRoad.getUserId().equals(userId);
     }
 
     static void calculateRoadBuildingMovesConnectingToBuilding(Game game, List<BuildMove> possibleMoves, Player player, Board board) {
