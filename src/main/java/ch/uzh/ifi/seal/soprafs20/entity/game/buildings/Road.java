@@ -42,8 +42,8 @@ public class Road extends Building {
     public ResourceWallet getPrice() {
 
         // establish amount of resources
-        int brickRequired = 2;
-        int lumberRequired = 3;
+        int brickRequired = 1;
+        int lumberRequired = 1;
 
         //Create new wallet
         ResourceWallet price = new ResourceWallet();

@@ -188,7 +188,7 @@ public class MoveService {
     public void makeSetupRecalculations(Game game) {
 
         //Calculate the first move
-        if (game.getPlayers().size() >= game.getPlayerMinimum()) {
+        if (game.getPlayers().size() >= game.getPlayerMinimum() || game.isWithBots()) {
             List<Move> startMoves = MoveCalculator.calculateStartMove(game);
             moveRepository.saveAll(startMoves);
             moveRepository.flush();
