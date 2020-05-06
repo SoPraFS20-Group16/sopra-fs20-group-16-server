@@ -447,27 +447,14 @@ public class MoveCalculator {
         }
 
         // - calculate all possible road building moves connecting to another road -
-
-        // get road end points
-        List<Coordinate> roadEndPoints = MoveLandRegistry.getRoadEndPoints(player, board);
-
-        // get all valid building coordinates and create moves
-        if (!roadEndPoints.isEmpty()) {
-            for (Coordinate coordinate : roadEndPoints) {
-                for (Coordinate neighbor : coordinate.getNeighbors())
-                    if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                        RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player,
-                                coordinate, neighbor, previousRoadProgressMoves);
-                        possibleMoves.add(move);
-                    }
-            }
-        }
+        MoveLandRegistry.calculateRoadProgressMovesConnectingToRoad(game, previousRoadProgressMoves, possibleMoves, player, board);
 
         // - calculate all possible road building moves connecting to settlement/city -
-
         MoveLandRegistry.calculateRoadProgressMovesConnectingToBuilding(game, possibleMoves,
                 player, board, previousRoadProgressMoves);
 
         return new ArrayList<>(possibleMoves);
     }
+
+
 }

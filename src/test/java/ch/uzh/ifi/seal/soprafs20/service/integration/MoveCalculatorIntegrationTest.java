@@ -24,6 +24,8 @@ import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -44,6 +46,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @AutoConfigureTestDatabase
 public class MoveCalculatorIntegrationTest {
+
+    private static final Logger log = LoggerFactory.getLogger(MoveCalculatorIntegrationTest.class);
 
 
     @Autowired
@@ -429,7 +433,7 @@ public class MoveCalculatorIntegrationTest {
         testPlayer.setWallet(new Road().getPrice());
         playerService.save(testPlayer);
 
-        // add settlement on board with one adjacent road
+        // add settlement on board in the middle
         Coordinate coordinate = null;
         for (Tile tile: testBoard.getTiles()) {
             if (tile.getType() == TileType.DESERT) {
@@ -438,13 +442,14 @@ public class MoveCalculatorIntegrationTest {
             }
         }
 
+        //Add a settlement in the middle
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
         settlement.setUserId(testPlayer.getUserId());
-
         testBoard.addSettlement(settlement);
 
-        for (Coordinate neighbour: coordinate.getNeighbors()) {
+        //Add roads around the settlement
+        for (Coordinate neighbour : coordinate.getNeighbors()) {
 
             Road road = new Road();
             road.setCoordinate1(coordinate);
@@ -452,8 +457,9 @@ public class MoveCalculatorIntegrationTest {
             road.setUserId(testPlayer.getUserId());
 
             testBoard.addRoad(road);
-
         }
+
+        testGame = gameService.save(testGame);
 
         // perform
         List<BuildMove> moves = MoveCalculator.calculateRoadMoves(testGame);
@@ -466,15 +472,23 @@ public class MoveCalculatorIntegrationTest {
         // a road already adjacent to building provides an extra road building option
         assertEquals(6, moves.size(),
                 "a road provides one additional road building option");
-        assertEquals(3, testBoard.getRoads());
+        assertEquals(3, testBoard.getRoads().size(), "There should be 3 roads");
+
+        //The coordinates of the roads on the board
+        List<Coordinate> roadEndpoints = new ArrayList<>();
+        for (Road road : testBoard.getRoads()) {
+            roadEndpoints.addAll(road.getCoordinates());
+        }
+
         for (Move move : moves) {
             assertEquals(BuildMove.class, move.getClass(),
                     "the move must be a build move");
             assertEquals(Road.class, ((BuildMove) move).getBuilding().getClass(),
                     "the building of the move must be a road");
-            // every possible road should shares a coordinate with either the settlement or the adjacent road
-            assertTrue(((BuildMove) move).getBuilding().getCoordinates().contains(coordinate) ||
-                    ((BuildMove) move).getBuilding().getCoordinates().contains(coordinate.getNeighbors().get(0)));
+            // every possible road should share a coordinate with a road
+            assertTrue(roadEndpoints.contains(((BuildMove) move).getBuilding().getCoordinates().get(0))
+                    || roadEndpoints.contains(((BuildMove) move).getBuilding().getCoordinates().get(1)));
+
         }
     }
 
