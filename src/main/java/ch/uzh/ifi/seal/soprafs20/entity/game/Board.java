@@ -132,9 +132,9 @@ public class Board implements Serializable {
         for (Road road : roads) {
 
             // check if road has first coordinate
-            if ( (road.getCoordinate1().equals(coordinate) || road.getCoordinate2().equals(coordinate))
+            if ( (road.getCoordinate1().equals(coordinate) && road.getCoordinate2().equals(neighbor))
                     // if road has first coordinate, check if it also has second
-                    && (road.getCoordinate1().equals(neighbor) || road.getCoordinate2().equals(neighbor)) ) {
+                    || (road.getCoordinate1().equals(neighbor) && road.getCoordinate2().equals(coordinate)) ) {
                 return true;
             }
         }

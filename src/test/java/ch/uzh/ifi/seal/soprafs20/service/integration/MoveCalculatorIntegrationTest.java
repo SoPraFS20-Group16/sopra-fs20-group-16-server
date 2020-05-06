@@ -1,14 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.service.integration;
 
-import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
-import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
-import ch.uzh.ifi.seal.soprafs20.constant.PlayerConstants;
-import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.constant.*;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
-import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
-import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
-import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
+import ch.uzh.ifi.seal.soprafs20.entity.game.*;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Road;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
@@ -436,7 +430,13 @@ public class MoveCalculatorIntegrationTest {
         playerService.save(testPlayer);
 
         // add settlement on board with one adjacent road
-        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(5);
+        Coordinate coordinate = null;
+        for (Tile tile: testBoard.getTiles()) {
+            if (tile.getType() == TileType.DESERT) {
+                coordinate = tile.getCoordinates().get(1);
+                break;
+            }
+        }
 
         Settlement settlement = new Settlement();
         settlement.setCoordinate(coordinate);
@@ -444,12 +444,16 @@ public class MoveCalculatorIntegrationTest {
 
         testBoard.addSettlement(settlement);
 
-        Road road = new Road();
-        road.setCoordinate1(coordinate);
-        road.setCoordinate2(coordinate.getNeighbors().get(0));
-        road.setUserId(testPlayer.getUserId());
+        for (Coordinate neighbour: coordinate.getNeighbors()) {
 
-        testBoard.addRoad(road);
+            Road road = new Road();
+            road.setCoordinate1(coordinate);
+            road.setCoordinate2(neighbour);
+            road.setUserId(testPlayer.getUserId());
+
+            testBoard.addRoad(road);
+
+        }
 
         // perform
         List<BuildMove> moves = MoveCalculator.calculateRoadMoves(testGame);
@@ -460,8 +464,9 @@ public class MoveCalculatorIntegrationTest {
 
         // a building has three adjacent road options, if not build at edge of board
         // a road already adjacent to building provides an extra road building option
-        assertEquals(4, moves.size(),
+        assertEquals(6, moves.size(),
                 "a road provides one additional road building option");
+        assertEquals(3, testBoard.getRoads());
         for (Move move : moves) {
             assertEquals(BuildMove.class, move.getClass(),
                     "the move must be a build move");

@@ -13,6 +13,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.RoadProgressMove;
 
+import javax.servlet.http.Cookie;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,7 +131,77 @@ public class MoveLandRegistry {
 
     static List<Coordinate> getRoadEndPoints(Player player, Board board) {
 
+        List<Coordinate> validEndPoints = new ArrayList<>();
+
         List<Road> roads = getRoadsOfPlayer(player, board);
+
+        // check if road is between buildings / other roads
+        for (Road road : roads) {
+
+
+
+
+            if ()
+
+            Coordinate coordinate1 = road.getCoordinate1();
+            Coordinate coordinate2 = road.getCoordinate2();
+
+            Coordinate neighbour = null;
+            Coordinate secondNeighbour = null;
+
+            for (Coordinate candidate: coordinate1.getNeighbors()) {
+                if (!candidate.equals(coordinate2)) {
+                    neighbour = candidate;
+                    break;
+                }
+            }
+
+            for (Coordinate candidate: coordinate1.getNeighbors()) {
+                if (!candidate.equals(coordinate1) && !candidate.equals(neighbour)) {
+                    secondNeighbour = candidate;
+                    break;
+                }
+            }
+
+            if (board.hasRoadWithCoordinates(coordinate1, neighbour)) {
+                // check if road belongs to player
+                continue;
+            }
+
+            if (secondNeighbour != null &&
+                    board.hasRoadWithCoordinates(coordinate1, secondNeighbour)) {
+                // check if road belongs to player
+                continue;
+            }
+
+            validEndPoints.add(coordinate1);
+        }
+
+        return validEndPoints;
+    }
+
+            for (Coordinate neighbour: coordinate1.getNeighbors()) {
+
+
+                if (neighbour.equals(coordinate2)) {
+                    continue;
+                }
+
+                if (board.hasRoadWithCoordinates(coordinate1, neighbour)) {
+
+                    if (board.getRoadWithCoordinates(coordinate1, neighbour).getUserId()
+                            .equals(player.getUserId())) {
+                        break;
+
+                    } else if (board.hasRoadWithCoordinates(coordinate1)) {
+
+
+                    }
+                }
+            }
+        }
+
+
         List<Coordinate> coordinates = getRoadCoordinates(roads);
 
         int currentSize = coordinates.size();
