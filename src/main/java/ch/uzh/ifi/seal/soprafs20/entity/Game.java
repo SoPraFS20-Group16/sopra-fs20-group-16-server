@@ -48,7 +48,6 @@ public class Game implements Serializable {
     @Column
     private boolean started = false;
 
-
     public Game() {
         players = new ArrayList<>();
     }

@@ -60,6 +60,12 @@ public class DiceMoveHandler implements MoveHandler {
         dice1 = ThreadLocalRandom.current().nextInt(min, max);
         dice2 = ThreadLocalRandom.current().nextInt(min, max);
 
+
+        // TODO: remove if knightmove is implemented in frontend
+        if (dice1 + dice2 == 7) {
+            return getDiceRoll();
+        }
+
         return dice1 + dice2;
     }
 }

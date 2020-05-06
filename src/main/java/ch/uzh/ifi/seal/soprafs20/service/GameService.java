@@ -3,11 +3,13 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.GameSummaryRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
 import ch.uzh.ifi.seal.soprafs20.service.board.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +29,7 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
+    private final GameSummaryRepository gameSummaryRepository;
 
     private BoardService boardService;
     private PlayerService playerService;
@@ -36,10 +40,12 @@ public class GameService {
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
-                       @Qualifier("playerRepository") PlayerRepository playerRepository) {
+                       @Qualifier("playerRepository") PlayerRepository playerRepository,
+                       @Qualifier("gameSummaryRepository") GameSummaryRepository gameSummaryRepository) {
 
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
+        this.gameSummaryRepository = gameSummaryRepository;
     }
 
     @Autowired
@@ -213,6 +219,9 @@ public class GameService {
 
     public void teardownGameWithId(Long gameId) {
 
+        // create game summary
+        createGameSummary(gameId);
+
         //delete moves
         moveService.deleteAllMovesForGame(gameId);
 
@@ -224,6 +233,33 @@ public class GameService {
 
         //delete game
         this.deleteGameWithId(gameId);
+    }
+
+    private void createGameSummary(Long gameId) {
+
+        Game game = findGameById(gameId);
+
+        GameSummary summary = new GameSummary();
+
+        summary.setGameId(gameId);
+
+        // set winner
+        summary.setWinner("WINNER: " + game.getCurrentPlayer().getUsername() + ": " +
+                game.getCurrentPlayer().getVictoryPoints() + " points");
+
+        // set all
+        List<String> players = new ArrayList<>();
+        game.getPlayers().forEach(player -> players.add(player.getUsername() + ": " +
+                player.getVictoryPoints() + " points"));
+        summary.setPlayers(players);
+
+        // save summary
+        gameSummaryRepository.saveAndFlush(summary);
+    }
+
+    public GameSummary findGameSummary(Long gameId) {
+
+        return gameSummaryRepository.findByGameId(gameId);
     }
 
     private void deleteGameWithId(Long gameId) {

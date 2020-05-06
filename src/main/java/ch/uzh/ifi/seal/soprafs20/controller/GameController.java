@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
@@ -146,11 +147,19 @@ public class GameController {
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameDTO getGameWithId(@RequestHeader(name = "Token") String token,
+    public Object getGameWithId(@RequestHeader(name = "Token") String token,
                                  @PathVariable Long gameId) {
 
         //Check token for validity
         GameControllerHelper.checkToken(userService, token);
+
+        // check for gameSummary (e.g. game has been finished)
+        GameSummary summary = gameService.findGameSummary(gameId);
+
+        // return summary if provided
+        if (summary != null) {
+            return DTOMapper.INSTANCE.convertGameSummaryToGameSummaryDTO(summary);
+        }
 
         //find game else throw 404
         Game foundGame = GameControllerHelper.checkIfGameExists(gameService, gameId);

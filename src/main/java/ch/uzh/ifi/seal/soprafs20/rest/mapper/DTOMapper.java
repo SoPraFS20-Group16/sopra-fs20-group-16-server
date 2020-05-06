@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
@@ -15,10 +16,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.PlayerDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
@@ -89,6 +87,11 @@ public interface DTOMapper {
     @Mapping(source = "x", target = "x")
     @Mapping(source = "y", target = "y")
     CoordinateDTO convertCoordinateToCoordinateDTO(Coordinate coordinate);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "winner", target = "winner")
+    @Mapping(source = "players", target = "players")
+    GameSummaryDTO convertGameSummaryToGameSummaryDTO(GameSummary summary);
 
 
     //Moves and cards are added separately according to requesting user
