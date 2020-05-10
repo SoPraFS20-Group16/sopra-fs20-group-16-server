@@ -120,14 +120,14 @@ public class TileService {
 
         // remove robber from previous tile
         for (Tile tile : board.getTiles()) {
-            if (tile.hasRobber()) {
-                tile.setHasRobber(false);
+            if (tile.isRobber()) {
+                tile.setRobber(false);
                 break;
             }
         }
 
         // add robber
         Tile tile = tileRepository.findById(tileId).orElseThrow();
-        tile.setHasRobber(true);
+        tile.setRobber(true);
     }
 }

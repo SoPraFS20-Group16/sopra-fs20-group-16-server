@@ -91,7 +91,7 @@ public class MoveLandRegistry {
 
         for (Tile tile : board.getTiles()) {
 
-            if (tile.hasRobber()) {
+            if (tile.isRobber()) {
 
                 getSettlementsFromTile(buildings, board, tile);
 

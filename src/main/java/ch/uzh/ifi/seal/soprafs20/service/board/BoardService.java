@@ -92,7 +92,7 @@ public class BoardService {
 
         //The desert tile
         Tile newTile = createNewTile(TileType.DESERT, new Coordinate(5, 4), 0, gameId);
-        newTile.setHasRobber(true);
+        newTile.setRobber(true);
         tiles.add(newTile);
 
         tiles.add(createNewTile(necessaryTiles.remove(0), new Coordinate(7, 4), 9, gameId));

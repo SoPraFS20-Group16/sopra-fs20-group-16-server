@@ -284,7 +284,7 @@ public class MoveService {
 
         // update wallet of every player with buildings on tile, skipped when empty (7)
         for (Tile tile : tiles) {
-            if (!tile.hasRobber()) {
+            if (!tile.isRobber()) {
                 ResourceType type = tileService.convertToResource(tile.getType());
                 for (Player player : game.getPlayers()) {
                     List<Building> buildings = boardService.getBuildingsFromTileForPlayer(game, tile, player);

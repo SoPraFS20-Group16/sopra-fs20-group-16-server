@@ -843,14 +843,14 @@ public class MoveServiceIntegrationTest {
         setupTestMove(knightMove, testPlayer, testGame);
         knightMove.setTileId(testBoard.getTiles().get(0).getId());
 
-        testBoard.getTiles().get(1).setHasRobber(true);
+        testBoard.getTiles().get(1).setRobber(true);
 
         // perform
         moveService.performMove(knightMove);
 
-        assertTrue(testBoard.getTiles().get(0).hasRobber(),
+        assertTrue(testBoard.getTiles().get(0).isRobber(),
                 "robber must be placed on this tile");
-        assertFalse(testBoard.getTiles().get(1).hasRobber(),
+        assertFalse(testBoard.getTiles().get(1).isRobber(),
                 "robber must be removed from tile");
 
         List<Move> moves = moveRepository.findAllByGameId(testGame.getId());

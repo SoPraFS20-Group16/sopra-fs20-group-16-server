@@ -133,6 +133,7 @@ public interface DTOMapper {
     @Mapping(source = "moveName", target = "moveName")
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "tileId", target = "tileId")
+    @Mapping(source = "robber", target = "robber")
     KnightMoveDTO convertKnightMoveToKnightMoveDTO(KnightMove knightMove);
 
     @Mapping(source = "id", target = "moveId")

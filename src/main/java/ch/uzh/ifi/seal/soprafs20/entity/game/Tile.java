@@ -26,7 +26,7 @@ public class Tile implements Serializable {
     private int tileNumber;
 
     @Column
-    private boolean hasRobber = false;
+    private boolean robber = false;
 
     @Column
     private TileType type;
@@ -81,12 +81,12 @@ public class Tile implements Serializable {
         return id;
     }
 
-    public void setHasRobber(boolean hasRobber) {
-        this.hasRobber = hasRobber;
+    public boolean isRobber() {
+        return robber;
     }
 
-    public boolean hasRobber() {
-        return hasRobber;
+    public void setRobber(boolean hasRobber) {
+        this.robber = hasRobber;
     }
 
     public Long getGameId() {

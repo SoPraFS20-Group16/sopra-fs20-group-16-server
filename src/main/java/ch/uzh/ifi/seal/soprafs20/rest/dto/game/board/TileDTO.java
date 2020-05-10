@@ -12,6 +12,8 @@ public class TileDTO {
     private TileType type;
     private int tileNumber;
 
+    private boolean robber;
+
     public List<CoordinateDTO> getCoordinates() {
         return coordinates;
     }
@@ -34,5 +36,13 @@ public class TileDTO {
 
     public void setType(TileType type) {
         this.type = type;
+    }
+
+    public boolean isRobber() {
+        return robber;
+    }
+
+    public void setRobber(boolean robber) {
+        this.robber = robber;
     }
 }

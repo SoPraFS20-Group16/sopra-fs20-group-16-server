@@ -1074,7 +1074,7 @@ public class MoveCalculatorIntegrationTest {
     public void testCalculateAllStealMoves_valid() {
 
         // set robber on tile
-        testBoard.getTiles().get(0).setHasRobber(true);
+        testBoard.getTiles().get(0).setRobber(true);
 
         // set opponent buildings on tile
         Player opponent = setupSecondTestPlayer();
@@ -1119,7 +1119,7 @@ public class MoveCalculatorIntegrationTest {
     public void testCalculateAllStealMoves_noBuildingOnRobberTile() {
 
         // set robber on tile
-        testBoard.getTiles().get(0).setHasRobber(true);
+        testBoard.getTiles().get(0).setRobber(true);
 
         // set opponent buildings on tile with NO robber
         Player opponent = setupSecondTestPlayer();
