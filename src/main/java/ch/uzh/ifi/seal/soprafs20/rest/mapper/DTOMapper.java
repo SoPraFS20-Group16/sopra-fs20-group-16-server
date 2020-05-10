@@ -81,6 +81,7 @@ public interface DTOMapper {
     GameDTO convertGameToGameDTO(Game game);
 
     @Mapping(source = "coordinates", target = "coordinates")
+    @Mapping(source = "robber", target = "robber")
     TileDTO convertTileToTileDTO(Tile tile);
 
     @BeanMapping(ignoreByDefault = true)
@@ -133,7 +134,6 @@ public interface DTOMapper {
     @Mapping(source = "moveName", target = "moveName")
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "tileId", target = "tileId")
-    @Mapping(source = "robber", target = "robber")
     KnightMoveDTO convertKnightMoveToKnightMoveDTO(KnightMove knightMove);
 
     @Mapping(source = "id", target = "moveId")
