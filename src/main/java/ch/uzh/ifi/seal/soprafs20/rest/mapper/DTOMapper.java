@@ -82,6 +82,7 @@ public interface DTOMapper {
 
     @Mapping(source = "coordinates", target = "coordinates")
     @Mapping(source = "robber", target = "robber")
+    @Mapping(source = "type", target = "type")
     TileDTO convertTileToTileDTO(Tile tile);
 
     @BeanMapping(ignoreByDefault = true)
