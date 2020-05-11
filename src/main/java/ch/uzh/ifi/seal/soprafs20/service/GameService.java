@@ -257,6 +257,7 @@ public class GameService {
             playerSummary.setUserId(player.getUserId());
             playerSummary.setUsername(player.getUsername());
             playerSummaryRepository.saveAndFlush(playerSummary);
+            players.add(playerSummary);
         }
 
         summary.setPlayers(players);

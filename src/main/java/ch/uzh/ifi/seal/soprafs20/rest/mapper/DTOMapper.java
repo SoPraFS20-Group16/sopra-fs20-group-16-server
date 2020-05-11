@@ -91,6 +91,7 @@ public interface DTOMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "players", target = "players")
+    @Mapping(source = "gameId", target = "gameId")
     GameSummaryDTO convertGameSummaryToGameSummaryDTO(GameSummary summary);
 
 
@@ -102,6 +103,7 @@ public interface DTOMapper {
 
     @Mapping(target = "points", source = "points")
     @Mapping(target = "username", source = "username")
+    @Mapping(target = "userId", source = "userId")
     PlayerSummaryDTO convertPlayerSummaryToPLayerSummaryDTO(PlayerSummary summary);
 
     @Mapping(source = "userId", target = "userId")
