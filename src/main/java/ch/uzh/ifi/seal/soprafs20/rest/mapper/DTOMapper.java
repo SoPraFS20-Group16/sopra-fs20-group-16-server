@@ -1,8 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
-import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
-import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.*;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
@@ -21,6 +19,7 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserLocationDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -91,7 +90,6 @@ public interface DTOMapper {
     CoordinateDTO convertCoordinateToCoordinateDTO(Coordinate coordinate);
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "winner", target = "winner")
     @Mapping(source = "players", target = "players")
     GameSummaryDTO convertGameSummaryToGameSummaryDTO(GameSummary summary);
 
@@ -101,6 +99,10 @@ public interface DTOMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "userId", target = "userId")
     PlayerDTO convertPlayerToPlayerDTO(Player player);
+
+    @Mapping(target = "points", source = "points")
+    @Mapping(target = "username", source = "username")
+    PlayerSummaryDTO convertPlayerSummaryToPLayerSummaryDTO(PlayerSummary summary);
 
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "id", target = "moveId")
@@ -155,4 +157,11 @@ public interface DTOMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "victimId", target = "victimId")
     StealMoveDTO convertStealMoveToStealMove(StealMove stealMove);
+
+    @Mapping(source = "countryName", target = "countryName")
+    @Mapping(source = "city", target = "city")
+    @Mapping(source = "zipCode", target = "zipCode")
+    @Mapping(source = "longitude", target = "longitude")
+    @Mapping(source = "latitude", target = "latitude")
+    UserLocationDTO convertUserLocationToUserLocationDTO(UserLocation userLocation);
 }

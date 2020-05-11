@@ -62,49 +62,75 @@ public class IpStackRequest {
 
             ObjectMapper mapper = new ObjectMapper();
 
-            this.mappedBody = mapper.readValue(body, new TypeReference<Map<String, Object>>() {});
+            this.mappedBody = mapper.readValue(body, new TypeReference<>() {
+            });
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error(e.getMessage());
         }
 
-    }
-
-    public String getZipCode() {
-
-        Object result = this.mappedBody.get("zip");
-
-        if (result != null) {
-            return result.toString();
-        } else {
-            return null;
-        }
-    }
-
-    public String getCity() {
-
-        Object result = this.mappedBody.get("city");
-
-        if (result != null) {
-            return result.toString();
-        } else {
-            return null;
-        }
-    }
-
-    public String getCountry() {
-
-        Object result = this.mappedBody.get("country_name");
-
-        if (result != null) {
-            return result.toString();
-        } else {
-            return null;
-        }
     }
 
     public boolean isSuccess() {
         return success;
     }
 
+    public Integer getZipCode() {
+
+        Object result = this.mappedBody.get("zip");
+
+        if (result != null) {
+            try {
+                return Integer.parseInt(result.toString());
+            }
+            catch (Exception e) {
+                log.error("Parsing zip code from ipStack API failed", e);
+            }
+        }
+        return null;
+    }
+
+    public String getCity() {
+
+        Object result = this.mappedBody.get("city");
+
+        return result != null ? result.toString() : null;
+    }
+
+    public String getCountry() {
+
+        Object result = this.mappedBody.get("country_name");
+
+        return result != null ? result.toString() : null;
+    }
+
+    public Float getLongitude() {
+        Object longitude = this.mappedBody.get("longitude");
+
+        if (longitude != null) {
+            try {
+                return Float.parseFloat(longitude.toString());
+            }
+            catch (Exception e) {
+                log.error("Parsing longitude from ipStack API failed", e);
+            }
+        }
+        return null;
+    }
+
+    public Float getLatitude() {
+
+        Object latitude = this.mappedBody.get("latitude");
+
+        if (latitude != null) {
+            try {
+                return Float.parseFloat(latitude.toString());
+            }
+            catch (Exception e) {
+                log.error("Parsing latitude from ipStack API failed", e);
+            }
+        }
+        return null;
+    }
 }

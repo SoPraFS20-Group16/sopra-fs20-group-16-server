@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
-import ch.uzh.ifi.seal.soprafs20.api.IpStackRequest;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
@@ -10,6 +9,7 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.UserLocationService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +34,19 @@ public class UserController {
 
     private final GameService gameService;
     private final UserService userService;
+    private final UserLocationService userLocationService;
 
     /**
      * Instantiates a new User controller.
      *
-     * @param gameService the game service
-     * @param userService the user service
+     * @param gameService         the game service
+     * @param userService         the user service
+     * @param userLocationService
      */
-    UserController(GameService gameService, UserService userService) {
+    UserController(GameService gameService, UserService userService, UserLocationService userLocationService) {
         this.gameService = gameService;
         this.userService = userService;
+        this.userLocationService = userLocationService;
     }
 
     /**
@@ -88,14 +91,14 @@ public class UserController {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
-        // get location of user if allowed
-        if (userInput.isTracking()) {
-            String location = getLocation(request.getRemoteAddr());
-            userInput.setLocation(location);
-        }
-
         // create user
         User createdUser = userService.createUser(userInput);
+
+        // get location of user if allowed
+        createdUser.setLocation(userLocationService.createUserLocation(createdUser.getId(),
+                userPostDTO.isTracking(), request.getRemoteAddr()));
+        createdUser = userService.save(createdUser);
+
 
         // add user location to header
         HttpHeaders headers = new HttpHeaders();
@@ -105,32 +108,6 @@ public class UserController {
         log.info("POST /users called");
         // Compose Response
         return new ResponseEntity<>(new TokenDTO(createdUser.getToken()), headers, HttpStatus.CREATED);
-    }
-
-    private String getLocation(String ipAddress) {
-
-        // test ip address "2a02:1206:4544:3000:994:4ed3:5028:ae1f"
-
-        // get geolocation information from external API, based on IP address
-        IpStackRequest ipStackRequest = new IpStackRequest(ipAddress);
-
-        ipStackRequest.makeRequest();
-
-        if (!ipStackRequest.isSuccess()) {
-            return "n/a";
-        }
-
-        // transform into location parameters
-        String zipCode = ipStackRequest.getZipCode();
-        String city = ipStackRequest.getCity();
-        String country = ipStackRequest.getCountry();
-
-        if (zipCode == null || city == null || country == null) {
-            return "n/a";
-        }
-
-        return zipCode + ", " + city + ", " + country;
-
     }
 
     /**

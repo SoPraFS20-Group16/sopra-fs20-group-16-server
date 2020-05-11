@@ -160,4 +160,8 @@ public class UserService {
     public User findUserWithToken(String token) {
         return userRepository.findByToken(token);
     }
+
+    public User save(User user) {
+        return userRepository.saveAndFlush(user);
+    }
 }

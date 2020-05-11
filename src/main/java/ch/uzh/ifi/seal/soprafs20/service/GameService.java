@@ -4,6 +4,7 @@ package ch.uzh.ifi.seal.soprafs20.service;
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
+import ch.uzh.ifi.seal.soprafs20.entity.PlayerSummary;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -11,6 +12,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.GameSummaryRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
+import ch.uzh.ifi.seal.soprafs20.repository.PlayerSummaryRepository;
 import ch.uzh.ifi.seal.soprafs20.service.board.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class GameService {
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
     private final GameSummaryRepository gameSummaryRepository;
+    private final PlayerSummaryRepository playerSummaryRepository;
 
     private BoardService boardService;
     private PlayerService playerService;
@@ -41,11 +44,13 @@ public class GameService {
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
                        @Qualifier("playerRepository") PlayerRepository playerRepository,
-                       @Qualifier("gameSummaryRepository") GameSummaryRepository gameSummaryRepository) {
+                       @Qualifier("gameSummaryRepository") GameSummaryRepository gameSummaryRepository,
+                       @Qualifier("playerSummaryRepository") PlayerSummaryRepository playerSummaryRepository) {
 
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.gameSummaryRepository = gameSummaryRepository;
+        this.playerSummaryRepository = playerSummaryRepository;
     }
 
     @Autowired
@@ -243,14 +248,17 @@ public class GameService {
 
         summary.setGameId(gameId);
 
-        // set winner
-        summary.setWinner("WINNER: " + game.getCurrentPlayer().getUsername() + ": " +
-                game.getCurrentPlayer().getVictoryPoints() + " points");
-
         // set all
-        List<String> players = new ArrayList<>();
-        game.getPlayers().forEach(player -> players.add(player.getUsername() + ": " +
-                player.getVictoryPoints() + " points"));
+        List<PlayerSummary> players = new ArrayList<>();
+
+        for (Player player : game.getPlayers()) {
+            PlayerSummary playerSummary = new PlayerSummary();
+            playerSummary.setPoints(player.getVictoryPoints());
+            playerSummary.setUserId(player.getUserId());
+            playerSummary.setUsername(player.getUsername());
+            playerSummaryRepository.saveAndFlush(playerSummary);
+        }
+
         summary.setPlayers(players);
 
         // save summary

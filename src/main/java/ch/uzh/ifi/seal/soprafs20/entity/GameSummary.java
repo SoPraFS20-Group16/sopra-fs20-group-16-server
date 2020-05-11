@@ -11,11 +11,8 @@ public class GameSummary {
     @Column
     private Long gameId;
 
-    @Column
-    private String winner;
-
-    @ElementCollection
-    private List<String> players;
+    @OneToMany
+    private List<PlayerSummary> players;
 
     public Long getGameId() {
         return gameId;
@@ -25,19 +22,11 @@ public class GameSummary {
         this.gameId = gameId;
     }
 
-    public String getWinner() {
-        return winner;
-    }
-
-    public void setWinner(String winner) {
-        this.winner = winner;
-    }
-
-    public List<String> getPlayers() {
+    public List<PlayerSummary> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<String> players) {
+    public void setPlayers(List<PlayerSummary> players) {
         this.players = players;
     }
 }

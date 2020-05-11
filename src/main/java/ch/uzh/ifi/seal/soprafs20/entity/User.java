@@ -38,8 +38,8 @@ public class User implements Serializable {
     @Column(nullable = false)
     private boolean tracking = false;
 
-    @Column
-    private String location;
+    @OneToOne
+    private UserLocation location;
 
     public Long getId() {
         return id;
@@ -89,11 +89,11 @@ public class User implements Serializable {
         this.tracking = tracking;
     }
 
-    public String getLocation() {
+    public UserLocation getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(UserLocation location) {
         this.location = location;
     }
 }

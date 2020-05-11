@@ -9,7 +9,7 @@ public class UserGetDTO {
     private UserStatus status;
 
     private Boolean tracking;
-    private String location;
+    private UserLocationDTO location;
 
     public Long getUserId() {
         return userId;
@@ -35,11 +35,11 @@ public class UserGetDTO {
         this.status = status;
     }
 
-    public String getLocation() {
+    public UserLocationDTO getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(UserLocationDTO location) {
         this.location = location;
     }
 
