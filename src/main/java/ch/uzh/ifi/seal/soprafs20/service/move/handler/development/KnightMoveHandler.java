@@ -10,6 +10,7 @@ import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import ch.uzh.ifi.seal.soprafs20.service.move.calculator.MoveCalculator;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class KnightMoveHandler implements MoveHandler {
@@ -30,7 +31,14 @@ public class KnightMoveHandler implements MoveHandler {
 
     @Override
     public List<Move> calculateNextMoves(Game game, Move move) {
-        return MoveCalculator.calculateAllStealMoves(game);
+
+        List<Move> possibleStealMoves = MoveCalculator.calculateAllStealMoves(game);
+        if (!possibleStealMoves.isEmpty()) {
+            return possibleStealMoves;
+        } else {
+            return MoveCalculator.calculateAllStandardMoves(game);
+        }
+
     }
 
     @Override
