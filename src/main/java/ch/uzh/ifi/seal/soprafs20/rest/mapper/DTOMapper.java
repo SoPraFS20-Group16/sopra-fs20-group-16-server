@@ -154,13 +154,13 @@ public interface DTOMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "plentyType1", target = "plentyType1")
     @Mapping(source = "plentyType2", target = "plentyType2")
-    PlentyMoveDTO convertPlentyMoveToPlentyMove(PlentyMove plentyMove);
+    PlentyMoveDTO convertPlentyMoveToPlentyMoveDTO(PlentyMove plentyMove);
 
     @Mapping(source = "id", target = "moveId")
     @Mapping(source = "moveName", target = "moveName")
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "victimId", target = "victimId")
-    StealMoveDTO convertStealMoveToStealMove(StealMove stealMove);
+    StealMoveDTO convertStealMoveToStealMoveDTO(StealMove stealMove);
 
     @Mapping(source = "countryName", target = "countryName")
     @Mapping(source = "city", target = "city")

@@ -30,6 +30,6 @@ public class StealMoveHandler implements MoveHandler {
         // cast move
         StealMove stealMove = (StealMove) move;
 
-        return DTOMapper.INSTANCE.convertStealMoveToStealMove(stealMove);
+        return DTOMapper.INSTANCE.convertStealMoveToStealMoveDTO(stealMove);
     }
 }

@@ -34,7 +34,7 @@ public class PlentyMoveHandler implements MoveHandler {
         // cast move
         PlentyMove plentyMove = (PlentyMove) move;
 
-        return DTOMapper.INSTANCE.convertPlentyMoveToPlentyMove(plentyMove);
+        return DTOMapper.INSTANCE.convertPlentyMoveToPlentyMoveDTO(plentyMove);
 
     }
 }

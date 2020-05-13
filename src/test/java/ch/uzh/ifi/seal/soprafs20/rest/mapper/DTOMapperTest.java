@@ -1,15 +1,28 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
+import ch.uzh.ifi.seal.soprafs20.entity.PlayerSummary;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
+import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameLinkDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
+import ch.uzh.ifi.seal.soprafs20.repository.PlayerSummaryRepository;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.BuildMoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.CardMoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
 import ch.uzh.ifi.seal.soprafs20.service.board.TileService;
@@ -17,8 +30,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import javax.transaction.Transactional;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * DTOMapperTest
@@ -31,6 +48,10 @@ public class DTOMapperTest {
     private TileService tileService;
 
     private Long testGameId = 123L;
+    private final String testUsername = "testUsername";
+    private final Long testUserId = 12L;
+    private final Long testMoveId = 1234L;
+    private final Coordinate testCoordinate = new Coordinate(1, 2);
 
 
     @Test
@@ -125,6 +146,8 @@ public class DTOMapperTest {
                 "The name is not mapped correctly");
         assertEquals(expected.isWithBots(), result.isWithBots(),
                 "the withBot property is not mapped correctly");
+
+        //TODO: Is this test case still up to date?
     }
 
     @Test
@@ -150,4 +173,174 @@ public class DTOMapperTest {
         assertEquals(tile.getTileNumber(), result.getTileNumber(), "The tile number does not match!");
         assertEquals(tile.getType(), result.getType(), "The TileType should match!");
     }
+
+    @Test
+    public void testConvertGameSummaryToGameSummaryDTO() {
+
+        PlayerSummary playerSummary = new PlayerSummary();
+        playerSummary.setUsername(testUsername);
+        playerSummary.setUserId(testUserId);
+        playerSummary.setPoints(3);
+
+        GameSummary summary = new GameSummary();
+        summary.setGameId(testGameId);
+        summary.setPlayers(Collections.singletonList(playerSummary));
+
+        GameSummaryDTO gameSummaryDTO = DTOMapper.INSTANCE.convertGameSummaryToGameSummaryDTO(summary);
+
+        assertEquals(summary.getPlayers().size(), gameSummaryDTO.getPlayers().size(),
+                "There should be one player mapped to the dto");
+        assertEquals(testGameId, gameSummaryDTO.getGameId(), "The gameId should be mapped correctly");
+    }
+
+    @Test
+    public void testConvertPlayerToPlayerDTO() {
+        Player player = new Player();
+        player.setUserId(testUserId);
+        player.setUsername(testUsername);
+
+        PlayerDTO playerDTO = DTOMapper.INSTANCE.convertPlayerToPlayerDTO(player);
+
+        assertEquals(player.getUsername(), playerDTO.getUsername(), "Username not mapped correctly");
+        assertEquals(player.getUserId(), playerDTO.getUserId(), "UserId not mapped correctly");
+    }
+
+    @Test
+    public void testConvertPlayerSummaryToPlayerSummaryDTO() {
+        final int testPoints = 3;
+        PlayerSummary summary = new PlayerSummary();
+        summary.setPoints(testPoints);
+        summary.setUserId(testUserId);
+        summary.setUsername(testUsername);
+
+        PlayerSummaryDTO summaryDTO = DTOMapper.INSTANCE.convertPlayerSummaryToPLayerSummaryDTO(summary);
+
+        assertEquals(summary.getUsername(), summaryDTO.getUsername(), "The username is not mapped correctly");
+        assertEquals(summary.getPoints(), summaryDTO.getPoints(), "The points are not mapped correctly");
+        assertEquals(summary.getUserId(), summaryDTO.getUserId(), "The userId is not mapped correctly");
+    }
+
+    @Test
+    public void testConvertMoveToMoveDTO() {
+        //The passMove is a standard move with no additional field without its own mapper
+        PassMove move = new PassMove();
+        move.setUserId(testUserId);
+        move.setId(testMoveId);
+
+        MoveDTO moveDTO = DTOMapper.INSTANCE.convertMoveToMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+    }
+
+
+    @Test
+    public void testConvertBuildMoveToBuildMoveDTO() {
+        Settlement building = new Settlement();
+        building.setCoordinate(testCoordinate);
+
+        BuildMove move = new BuildMove();
+        move.setUserId(testUserId);
+        move.setId(testMoveId);
+        move.setBuilding(building);
+
+        BuildMoveDTO moveDTO = DTOMapper.INSTANCE.convertBuildMoveToBuildMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+        assertEquals(building.getType(), moveDTO.getBuilding().getBuildingType(),
+                "Building type does not match");
+    }
+
+
+    @Test
+    public void testConvertBuildingToBuildingDTO() {
+        Settlement building = new Settlement();
+        building.setCoordinate(testCoordinate);
+        building.setUserId(testUserId);
+
+        BuildingDTO buildingDTO = DTOMapper.INSTANCE.convertBuildingToBuildingDTO(building);
+
+        assertEquals(building.getType(), buildingDTO.getBuildingType());
+        int xCoord = buildingDTO.getCoordinates().get(0).getX();
+        int yCoord = buildingDTO.getCoordinates().get(0).getY();
+
+        assertEquals(testCoordinate.getX(), xCoord, "THe x coordinate does not match");
+        assertEquals(testCoordinate.getY(), yCoord, "The y coordinate does not match");
+
+        assertEquals(building.getUserId(), buildingDTO.getUserId(), "The userId does not match!");
+    }
+
+
+    @Test
+    public void testConvertCardMoveToCardMoveDTO() {
+        final DevelopmentType testDevelopmentType = DevelopmentType.ROADPROGRESS;
+        CardMove move = new CardMove();
+        move.setId(testMoveId);
+        move.setUserId(testUserId);
+        move.setDevelopmentCard(new DevelopmentCard(testDevelopmentType));
+
+        CardMoveDTO moveDTO = DTOMapper.INSTANCE.convertCardMoveToCardMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+
+        assertEquals(testDevelopmentType, moveDTO.getDevelopmentCard().getDevelopmentType(),
+                "The development type is not mapped correctly");
+    }
+
+
+    @Test
+    public void testConvertTradeMoveToTradeMoveDTO() {
+        //TODO: Implement this test
+    }
+
+
+    @Test
+    public void testConvertKnightMoveToKnightMoveDTO() {
+        //TODO: Implement this test
+    }
+
+
+    @Test
+    public void testConvertMonopolyMoveToMonopolyMoveDTO() {
+        //TODO: Implement this test
+    }
+
+
+    @Test
+    public void testConvertPlentyMoveToPlentyMoveDTO() {
+        //TODO: Implement this test
+    }
+
+
+    @Test
+    public void testConvertStealMoveToStealMoveDTO() {
+        //TODO: Implement this test
+    }
+
+
+    @Test
+    public void testConvertUserLocationToUserLocationDTO() {
+        //TODO: Implement this test
+    }
+
+
+    @Test
+    public void testConvertMoveHistoryToMoveHistoryDTO() {
+        //TODO: Implement this test
+    }
+
+
+    @Test
+    public void testConvertGameHistoryToGameHistoryDTO() {
+        //TODO: Implement this test
+    }
+
 }
