@@ -1,30 +1,30 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
+import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
-import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
-import ch.uzh.ifi.seal.soprafs20.entity.PlayerSummary;
-import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.*;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerSummaryRepository;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.move.BuildMoveDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.move.CardMoveDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserLocationDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.history.GameHistoryDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.history.MoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.service.board.TileService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -298,49 +298,162 @@ public class DTOMapperTest {
 
     @Test
     public void testConvertTradeMoveToTradeMoveDTO() {
-        //TODO: Implement this test
+        ResourceType needed = ResourceType.GRAIN;
+        ResourceType offered = ResourceType.BRICK;
+        TradeMove move = new TradeMove();
+        move.setId(testMoveId);
+        move.setUserId(testUserId);
+        move.setNeededType(needed);
+        move.setOfferedType(offered);
+
+        TradeMoveDTO moveDTO = DTOMapper.INSTANCE.convertTradeMovetoTradeMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+
+        assertEquals(needed, moveDTO.getNeededType(), "The needed type is not mapped correctly");
+        assertEquals(offered, moveDTO.getOfferedType(), "The offered type is not mapped correctly");
     }
 
 
     @Test
     public void testConvertKnightMoveToKnightMoveDTO() {
-        //TODO: Implement this test
+        final Long testTileId = 1234L;
+        KnightMove move = new KnightMove();
+        move.setId(testMoveId);
+        move.setUserId(testUserId);
+        move.setTileId(testTileId);
+
+        KnightMoveDTO moveDTO = DTOMapper.INSTANCE.convertKnightMoveToKnightMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+
+        assertEquals(testTileId, moveDTO.getTileId(), "The tileId is not mapped correctly");
     }
 
 
     @Test
     public void testConvertMonopolyMoveToMonopolyMoveDTO() {
-        //TODO: Implement this test
+        final ResourceType monopolyType = ResourceType.BRICK;
+        MonopolyMove move = new MonopolyMove();
+        move.setId(testMoveId);
+        move.setUserId(testUserId);
+        move.setMonopolyType(monopolyType);
+
+        MonopolyMoveDTO moveDTO = DTOMapper.INSTANCE.convertMonopolyMoveToMonopolyMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+
+        assertEquals(monopolyType, moveDTO.getMonopolyType(), "The monopoly move is not mapped correctly");
     }
 
 
     @Test
     public void testConvertPlentyMoveToPlentyMoveDTO() {
-        //TODO: Implement this test
+        final ResourceType plenty1 = ResourceType.BRICK;
+        final ResourceType plenty2 = ResourceType.GRAIN;
+
+        PlentyMove move = new PlentyMove();
+        move.setId(testMoveId);
+        move.setUserId(testUserId);
+        move.setPlentyType1(plenty1);
+        move.setPlentyType2(plenty2);
+
+        PlentyMoveDTO moveDTO = DTOMapper.INSTANCE.convertPlentyMoveToPlentyMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+
+        assertEquals(plenty1, moveDTO.getPlentyType1(), "Plenty1 is not mapped correctly");
+        assertEquals(plenty2, moveDTO.getPlentyType2(), "Plenty2 is not mapped correctly");
     }
 
 
     @Test
     public void testConvertStealMoveToStealMoveDTO() {
-        //TODO: Implement this test
+        final Long testVictimId = 321L;
+
+        StealMove move = new StealMove();
+        move.setId(testMoveId);
+        move.setUserId(testUserId);
+        move.setVictimId(testVictimId);
+
+        StealMoveDTO moveDTO = DTOMapper.INSTANCE.convertStealMoveToStealMoveDTO(move);
+
+        assertEquals(move.getUserId(), moveDTO.getUserId(), "UserId not mapped correctly");
+        assertEquals(move.getId(), moveDTO.getMoveId(), "MoveId not mapped correctly");
+        assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
+                "The move name is not mapped correctly");
+
+        assertEquals(testVictimId, moveDTO.getVictimId(), "The victim id is not mapped correctly");
     }
 
 
     @Test
     public void testConvertUserLocationToUserLocationDTO() {
-        //TODO: Implement this test
+        String testCountryName = "TestCountryName";
+        String testCity = "TestCity";
+        Integer testZip = 1212;
+        Float testLongitude = 123.45f;
+        Float testLatitude = 321.32f;
+
+        UserLocation location = new UserLocation();
+        location.setCountryName(testCountryName);
+        location.setZipCode(testZip);
+        location.setCity(testCity);
+        location.setLatitude(testLatitude);
+        location.setLongitude(testLongitude);
+
+        UserLocationDTO locationDTO = DTOMapper.INSTANCE.convertUserLocationToUserLocationDTO(location);
+
+        assertEquals(testCountryName, locationDTO.getCountryName(),
+                "The country name is not mapped correctly");
+        assertEquals(testCity, locationDTO.getCity(), "The city is not mapped correctly");
+        assertEquals(testZip, locationDTO.getZipCode(), "The zip code is not mapped correctly");
+        assertEquals(testLatitude, locationDTO.getLatitude(), "The latitude is not mapped correctly");
+        assertEquals(testLongitude, locationDTO.getLongitude(), "The longitude is not mapped correctly");
     }
 
 
     @Test
     public void testConvertMoveHistoryToMoveHistoryDTO() {
-        //TODO: Implement this test
+        final String testMoveName = BuildMove.class.getSimpleName();
+        MoveHistory history = new MoveHistory();
+        history.setUserId(testUserId);
+        history.setUsername(testUsername);
+        history.setMoveName(testMoveName);
+
+        MoveHistoryDTO historyDTO = DTOMapper.INSTANCE.convertMoveHistoryToMoveHistoryDTO(history);
+
+        assertEquals(testUserId, historyDTO.getUserId(), "the userId is not mapped correctly");
+        assertEquals(testUsername, historyDTO.getUsername(), "The username is not mapped correctly");
+        assertEquals(testMoveName, historyDTO.getMoveName(), "The moveName is not mapped correctly");
     }
 
 
     @Test
     public void testConvertGameHistoryToGameHistoryDTO() {
-        //TODO: Implement this test
+        MoveHistory moveHistory = new MoveHistory();
+        moveHistory.setUserId(testUserId);
+
+        GameHistory history = new GameHistory();
+        history.setMoves(Collections.singletonList(moveHistory));
+
+        GameHistoryDTO historyDTO = DTOMapper.INSTANCE.convertGameHistoryToGameHistoryDTO(history);
+
+        assertEquals(1, historyDTO.getMoves().size(), "The moves are not mapped correctly");
+        assertEquals(testUserId, historyDTO.getMoves().get(0).getUserId(),
+                "The mapping of the array elements does not work");
     }
 
 }
