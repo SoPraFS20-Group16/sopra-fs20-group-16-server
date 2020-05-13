@@ -847,6 +847,14 @@ public class MoveServiceIntegrationTest {
 
         testBoard.getTiles().get(1).setRobber(true);
 
+        // place settlement of victim on tile with newly assigned robber
+        Player victim = setupSecondTestPlayer();
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
+        Settlement settlement = new Settlement();
+        settlement.setCoordinate(coordinate);
+        settlement.setUserId(victim.getUserId());
+        testBoard.addSettlement(settlement);
+
         // perform
         moveService.performMove(knightMove);
 
