@@ -6,7 +6,7 @@ import ch.uzh.ifi.seal.soprafs20.rest.history.GameHistoryDTO;
 
 import java.util.List;
 
-public class GameDTO {
+public class GameDTO extends AbstractGameDTO {
 
     private Long gameId;
     private String name;
@@ -17,6 +17,10 @@ public class GameDTO {
     private boolean started;
     private int lastDiceRoll;
     private GameHistoryDTO history;
+
+    public GameDTO() {
+        super(GameDTO.class);
+    }
 
     public Long getGameId() {
         return gameId;

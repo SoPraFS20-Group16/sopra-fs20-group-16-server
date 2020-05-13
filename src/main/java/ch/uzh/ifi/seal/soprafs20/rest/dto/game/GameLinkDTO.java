@@ -8,7 +8,7 @@ import java.util.List;
  * The GameLinkDTO represents an element in the array when a GET request is sent to /games
  * <p>
  */
-public class GameLinkDTO {
+public class GameLinkDTO extends AbstractGameDTO {
 
     private Long gameId;
 
@@ -23,6 +23,10 @@ public class GameLinkDTO {
     private boolean withBots;
 
     private boolean started;
+
+    public GameLinkDTO() {
+        super(GameLinkDTO.class);
+    }
 
     public boolean isStarted() {
         return started;
