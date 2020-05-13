@@ -11,6 +11,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MovePutDTO;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.HistoryService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
@@ -55,6 +56,9 @@ public class GameControllerTest {
 
     @MockBean
     private PlayerService playerService;
+
+    @MockBean
+    private HistoryService historyService;
 
 
     /**

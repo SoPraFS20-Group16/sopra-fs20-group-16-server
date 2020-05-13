@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,6 +13,10 @@ public class GameHistory {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<MoveHistory> moves;
+
+    public GameHistory(){
+        this.moves = new ArrayList<>();
+    }
 
     public Long getGameId() {
         return gameId;

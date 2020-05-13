@@ -17,10 +17,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstPassMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstRoadMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.initial.FirstSettlementMove;
 import ch.uzh.ifi.seal.soprafs20.repository.*;
-import ch.uzh.ifi.seal.soprafs20.service.FirstStackService;
-import ch.uzh.ifi.seal.soprafs20.service.GameService;
-import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
-import ch.uzh.ifi.seal.soprafs20.service.QueueService;
+import ch.uzh.ifi.seal.soprafs20.service.*;
 import ch.uzh.ifi.seal.soprafs20.service.board.BoardService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
@@ -60,6 +57,9 @@ public class MoveServiceIntegrationTest {
 
     @Autowired
     BoardService boardService;
+
+    @Autowired
+    HistoryService historyService;
 
     @Qualifier("boardRepository")
     @Autowired
@@ -144,6 +144,8 @@ public class MoveServiceIntegrationTest {
         testQueue.addUserId(testPlayer.getUserId());
         testQueue = queueService.save(testQueue);
 
+        //Create a history for the game
+        historyService.createGameHistory(testGame.getId());
 
         testMove = new PassMove();
         testMove.setUserId(testPlayer.getUserId());
