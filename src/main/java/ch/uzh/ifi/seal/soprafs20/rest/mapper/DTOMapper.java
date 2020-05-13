@@ -174,7 +174,6 @@ public interface DTOMapper {
     @Mapping(source = "moveName", target = "moveName")
     MoveHistoryDTO convertMoveHistoryToMoveHistoryDTO(MoveHistory moveHistory);
 
-    @Mapping(source = "gameId", target = "gameId")
     @Mapping(source = "moves", target = "moves")
     GameHistoryDTO convertGameHistoryToGameHistoryDTO(GameHistory gameHistory);
 }
