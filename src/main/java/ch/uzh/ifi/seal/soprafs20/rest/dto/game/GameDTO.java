@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.BoardDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.history.GameHistoryDTO;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class GameDTO {
     private List<MoveDTO> moves;
     private boolean started;
     private int lastDiceRoll;
+    private GameHistoryDTO history;
 
     public Long getGameId() {
         return gameId;
@@ -78,5 +80,13 @@ public class GameDTO {
 
     public void setLastDiceRoll(int lastDiceRoll) {
         this.lastDiceRoll = lastDiceRoll;
+    }
+
+    public GameHistoryDTO getHistory() {
+        return history;
+    }
+
+    public void setHistory(GameHistoryDTO history) {
+        this.history = history;
     }
 }

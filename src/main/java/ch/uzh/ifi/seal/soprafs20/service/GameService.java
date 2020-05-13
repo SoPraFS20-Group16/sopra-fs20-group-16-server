@@ -40,6 +40,7 @@ public class GameService {
     private MoveService moveService;
     private FirstStackService firstStackService;
     private BotService botService;
+    private HistoryService historyService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
@@ -83,6 +84,11 @@ public class GameService {
         this.botService = botService;
     }
 
+    @Autowired
+    public void setHistoryService(HistoryService historyService) {
+        this.historyService = historyService;
+    }
+
     /**
      * Returns all the games currently in the database
      *
@@ -117,6 +123,9 @@ public class GameService {
 
         //save game to give it an id
         Game savedGame = gameRepository.saveAndFlush(gameInput);
+
+        //Create a gameHistory
+        historyService.createGameHistory(savedGame.getId());
 
         // creator of game is creatorPlayer
         Player creatorPlayer = playerService.createPlayer(savedGame.getCreatorId(), savedGame.getId());

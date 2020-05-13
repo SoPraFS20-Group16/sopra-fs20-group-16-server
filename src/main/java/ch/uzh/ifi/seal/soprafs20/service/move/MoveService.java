@@ -50,6 +50,7 @@ public class MoveService {
     private QueueService queueService;
     private FirstStackService firstStackService;
     private BotService botService;
+    private HistoryService historyService;
 
     @Autowired
     public MoveService(@Qualifier("moveRepository") MoveRepository moveRepository) {
@@ -91,6 +92,11 @@ public class MoveService {
         this.botService = botService;
     }
 
+    @Autowired
+    public void setHistoryService(HistoryService historyService) {
+        this.historyService = historyService;
+    }
+
     /**
      * Gets the correct move handler form the move
      * passes the move an the MoveService (this) to the handler
@@ -103,6 +109,9 @@ public class MoveService {
         handler.perform(move, this);
 
         log.debug("passed handler");
+
+        //add move to history
+        historyService.addMoveToHistory(move);
 
         // delete all recent moves of the game
         deleteAllMovesForGame(move.getGameId());

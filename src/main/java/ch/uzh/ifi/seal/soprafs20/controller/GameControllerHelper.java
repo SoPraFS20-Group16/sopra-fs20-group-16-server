@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.controller;
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.GameHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
@@ -12,7 +13,10 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GameDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.PlayerDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.ResourceDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.history.GameHistoryDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.HistoryService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
@@ -193,5 +197,11 @@ class GameControllerHelper {
         if (game.getPlayers().size() >= GameConstants.DEFAULT_PLAYER_MAX) {
             throw new RestException(HttpStatus.FORBIDDEN, ErrorMsg.GAME_IS_FULL);
         }
+    }
+
+    public static void addGameHistory(HistoryService historyService, GameDTO gameDTO) {
+        GameHistory history = historyService.findGameHistory(gameDTO.getGameId());
+        GameHistoryDTO historyDTO = DTOMapper.INSTANCE.convertGameHistoryToGameHistoryDTO(history);
+        gameDTO.setHistory(historyDTO);
     }
 }

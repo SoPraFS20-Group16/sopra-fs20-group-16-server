@@ -13,6 +13,7 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.game.GamePostDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MovePutDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
 import ch.uzh.ifi.seal.soprafs20.service.GameService;
+import ch.uzh.ifi.seal.soprafs20.service.HistoryService;
 import ch.uzh.ifi.seal.soprafs20.service.PlayerService;
 import ch.uzh.ifi.seal.soprafs20.service.UserService;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
@@ -35,16 +36,19 @@ public class GameController {
     private final UserService userService;
     private final MoveService moveService;
     private final PlayerService playerService;
+    private final HistoryService historyService;
 
     GameController(GameService gameService,
                    UserService userService,
                    MoveService moveService,
-                   PlayerService playerService) {
+                   PlayerService playerService,
+                   HistoryService historyService) {
 
         this.gameService = gameService;
         this.userService = userService;
         this.moveService = moveService;
         this.playerService = playerService;
+        this.historyService = historyService;
     }
 
 
@@ -173,6 +177,9 @@ public class GameController {
 
         //Add cards and moves to player
         GameControllerHelper.addCardsAndMoves(moveService, playerService, requestingUser, gameDTO);
+
+        //Add the game History
+        GameControllerHelper.addGameHistory(historyService, gameDTO);
 
         String message = String.format("GET /games/%d called", gameId);
         log.info(message);

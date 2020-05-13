@@ -21,6 +21,8 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserLocationDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.history.GameHistoryDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.history.MoveHistoryDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -166,4 +168,13 @@ public interface DTOMapper {
     @Mapping(source = "longitude", target = "longitude")
     @Mapping(source = "latitude", target = "latitude")
     UserLocationDTO convertUserLocationToUserLocationDTO(UserLocation userLocation);
+
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "moveName", target = "moveName")
+    MoveHistoryDTO convertMoveHistoryToMoveHistoryDTO(MoveHistory moveHistory);
+
+    @Mapping(source = "gameId", target = "gameId")
+    @Mapping(source = "moves", target = "moves")
+    GameHistoryDTO convertGameHistoryToGameHistoryDTO(GameHistory gameHistory);
 }
