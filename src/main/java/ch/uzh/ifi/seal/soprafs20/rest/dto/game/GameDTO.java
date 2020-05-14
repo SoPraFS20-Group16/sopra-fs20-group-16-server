@@ -18,6 +18,8 @@ public class GameDTO extends AbstractGameDTO {
     private int lastDiceRoll;
     private GameHistoryDTO history;
 
+    private PlayerDTO currentPlayer;
+
     public GameDTO() {
         super(GameDTO.class);
     }
@@ -92,5 +94,13 @@ public class GameDTO extends AbstractGameDTO {
 
     public void setHistory(GameHistoryDTO history) {
         this.history = history;
+    }
+
+    public PlayerDTO getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(PlayerDTO currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }
