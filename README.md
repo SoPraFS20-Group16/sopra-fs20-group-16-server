@@ -1,3 +1,33 @@
+# The Settlers of Toucan
+
+#### SoPra FS20 Group 16 - Backend
+
+## Introduction
+
+Welcome! With "The Settlers of Toucan" we aim to create a fun strategy boardgame for everyone. This online collaborative game allows you to play with friends, strangers and even bots. It is designed for up to four people in one game.
+Collect resources and use them to build roads, settlements and cities. Expand your empire, use development cards and trading options in order to conquer the island of Toucan. Since every move affects every player, it will surely keep you on your toes. It gives you some time to establish your strategies - but watch out for the thief!
+Based on simple concepts, this game does not fail to provide a diverting experience.
+
+## Technolgies
+
+This backend part of the project is build on the spring boot project-template provided for SoPra FS20. For more information about spring boot, visit www.springboot.io. It is responsible for the core game logic, providing the game state to the client via a REST API. The game state includes the board, the players as well as all possible moves that can be made. Moves can be made using the REST API.
+
+## High-level components
+
+- GameController: The GameController provides the API endpoints that enable the gameplay. 
+- GameService
+- MoveCalculator
+- MoveService
+- UserController
+
+## Launch & Deployment
+
+## Roadmap
+
+## Authors and acknowledgement
+
+## License
+
 # SoPra RESTful Service Template FS20
 
 ## Getting started with Spring Boot
