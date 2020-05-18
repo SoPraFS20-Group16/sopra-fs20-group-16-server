@@ -17,7 +17,8 @@ Based on simple concepts, this game does not fail to provide a diverting experie
 ## Technolgies
 
 This backend part of the project is build on the spring boot project-template provided for SoPra FS20. For more
- information about spring boot, visit the [official Spring website](https://spring.io/projects/spring-boot). It is responsible for the core game logic, providing the
+ information about spring boot, visit the [official Spring website](https://spring.io/projects/spring-boot). It is 
+ responsible for the core game logic, providing the
   game state to the client via a REST API. The game state includes the board, the players as well as all possible
    moves that can be made. Moves can be made using the REST API.
 
@@ -32,11 +33,13 @@ creating, reading, updating and deleting the game instances.
  MoveCalculator is responsible to generate all legal alterations of a given game instance.
 It delegates sub-tasks to its helpers in order to reduce the classes complexity. The generated moves are then again
 exposed via the API endpoints defined in the GameController.
-- [MoveService](src/main/java/ch/uzh/ifi/seal/soprafs20/service/move/MoveService.java): The MoveService is responsible for the alterations that a given move requires. With the help of the
+- [MoveService](src/main/java/ch/uzh/ifi/seal/soprafs20/service/move/MoveService.java): The MoveService is responsible 
+for the alterations that a given move requires. With the help of the
 move specific handler it routes to the appropriate methods to be executed in the gameService and others. It finally
 alerts the MoveCalculator to recalculate the next available moves. For this it again relies on the move specific
 handlers. This is due to the nature of some moves that require specific follow up moves.
-- [UserController](src/main/java/ch/uzh/ifi/seal/soprafs20/controller/UserController.java): The UserController is the entry point for any client. It handles user registration and
+- [UserController](src/main/java/ch/uzh/ifi/seal/soprafs20/controller/UserController.java): The UserController is the 
+entry point for any client. It handles user registration and
 authentication. It also provides a list uf all users and their location data, if they chose to share it.
 
 ## Launch & Deployment
@@ -140,94 +143,15 @@ They could form alliances against other groups and try to conquer the land colla
 
 ## Authors and acknowledgement
 
+We firstly want to thank our Teaching Assistant Moritz Eck for his continued and unwavering support for the duration
+of this project.
+For the SoPra FS20 we split the Group into a Frontend and Backend team. This required an early on specification of the
+API endpoints. We thank everyone from the Frontend team for their continued input in the API development process.
+
+
+The SoPra FS20 Group 16 Backend Team
+
+
 ## License
 
-# SoPra RESTful Service Template FS20
-
-## Getting started with Spring Boot
-
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: http://spring.io/guides/tutorials/bookmarks/
-
-## Setup this Template with your IDE of choice
-
-Download your IDE of choice: (e.g., [Eclipse](http://www.eclipse.org/downloads/), [IntelliJ](https://www.jetbrains.com/idea/download/)) and make sure Java 13 is installed on your system.
-
-1. File -> Open... -> SoPra Server Template
-2. Accept to import the project as a `gradle project`
-
-To build right click the `build.gradle` file and choose `Run Build`
-
-## Building with Gradle
-
-You can use the local Gradle Wrapper to build the application.
-
-Plattform-Prefix:
-
--   MAC OS X: `./gradlew`
--   Linux: `./gradlew`
--   Windows: `./gradlew.bat`
-
-More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
-
-### Build
-
-```bash
-./gradlew build
-```
-
-### Run
-
-```bash
-./gradlew bootRun
-```
-
-### Test
-
-```bash
-./gradlew test
-```
-
-### Development Mode
-
-You can start the backend in development mode, this will automatically trigger a new build and reload the application
-once the content of a file has been changed and you save the file.
-
-Start two terminal windows and run:
-
-`./gradlew build --continuous`
-
-and in the other one:
-
-`./gradlew bootRun`
-
-If you want to avoid running all tests with every change, use the following command instead:
-
-`./gradlew build --continuous -xtest`
-
-## API Endpoint Testing
-
-### Postman
-
--   We highly recommend to use [Postman](https://www.getpostman.com) in order to test your API Endpoints.
-
-## Debugging
-
-If something is not working and/or you don't know what is going on. We highly recommend that you use a debugger and step
-through the process step-by-step.
-
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command),
-do the following:
-
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug"Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
-
-## Testing
-
-Have a look here: https://www.baeldung.com/spring-boot-testing
+Distributed under the Apache 2.0 License. See LICENSE for more information.
