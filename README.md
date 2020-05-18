@@ -23,17 +23,22 @@ This backend part of the project is build on the spring boot project-template pr
 
 ## High-level components
 
-- [GameController](): The GameController provides the API endpoints that enable the game play. It delegates the 
+- [GameController](src/main/java/ch/uzh/ifi/seal/soprafs20/controller/GameController.java): 
+The GameController provides the API endpoints that enable the game play. It delegates the 
 execution tasks to the corresponding services.
-- [GameService](): The GameService is responsible for creating, reading, updating and deleting the game instances.
-- [MoveCalculator](): The MoveCalculator is responsible to generate all legal alterations of a given game instance.
+- [GameService](src/main/java/ch/uzh/ifi/seal/soprafs20/service/GameService.java): 
+The GameService is responsible for creating, reading, updating and deleting the game instances.
+- [MoveCalculator](src/main/java/ch/uzh/ifi/seal/soprafs20/service/move/calculator/MoveCalculator.java): 
+The MoveCalculator is responsible to generate all legal alterations of a given game instance.
 It delegates sub-tasks to its helpers in order to reduce the classes complexity. The generated moves are then again
 exposed via the API endpoints defined in the GameController.
-- [MoveService](): The MoveService is responsible for the alterations that a given move requires. With the help of the
+- [MoveService](src/main/java/ch/uzh/ifi/seal/soprafs20/service/move/MoveService.java): 
+The MoveService is responsible for the alterations that a given move requires. With the help of the
 move specific handler it routes to the appropriate methods to be executed in the gameService and others. It finally
 alerts the MoveCalculator to recalculate the next available moves. For this it again relies on the move specific
 handlers. This is due to the nature of some moves that require specific follow up moves.
-- [UserController](): The UserController is the entry point for any client. It handles user registration and
+- [UserController](src/main/java/ch/uzh/ifi/seal/soprafs20/controller/UserController.java): 
+The UserController is the entry point for any client. It handles user registration and
 authentication. It also provides a list uf all users and their location data, if they chose to share it.
 
 ## Launch & Deployment
