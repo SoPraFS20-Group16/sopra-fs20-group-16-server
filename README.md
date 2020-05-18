@@ -17,7 +17,7 @@ Based on simple concepts, this game does not fail to provide a diverting experie
 ## Technolgies
 
 This backend part of the project is build on the spring boot project-template provided for SoPra FS20. For more
- information about spring boot, visit www.springboot.io. It is responsible for the core game logic, providing the
+ information about spring boot, visit the [official Spring website](https://spring.io/projects/spring-boot). It is responsible for the core game logic, providing the
   game state to the client via a REST API. The game state includes the board, the players as well as all possible
    moves that can be made. Moves can be made using the REST API.
 
