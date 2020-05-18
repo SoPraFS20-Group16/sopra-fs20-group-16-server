@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.rest.history;
+package ch.uzh.ifi.seal.soprafs20.rest.dto.history;
 
 import java.util.List;
 

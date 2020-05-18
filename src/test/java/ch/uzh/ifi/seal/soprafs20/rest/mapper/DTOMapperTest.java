@@ -9,33 +9,33 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
-import ch.uzh.ifi.seal.soprafs20.repository.PlayerSummaryRepository;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.GameHistoryDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.MoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserGetDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserLocationDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.user.UserPostDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.history.GameHistoryDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.history.MoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.service.board.TileService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
-
 import java.util.Collections;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * DTOMapperTest

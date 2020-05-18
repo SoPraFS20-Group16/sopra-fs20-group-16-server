@@ -1,8 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.game;
 
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.BoardDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.GameHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
-import ch.uzh.ifi.seal.soprafs20.rest.history.GameHistoryDTO;
 
 import java.util.List;
 
