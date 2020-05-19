@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class UserServiceIntegrationTest {
+class UserServiceIntegrationTest {
 
     @Qualifier("userRepository")
     @Autowired
@@ -41,19 +41,19 @@ public class UserServiceIntegrationTest {
     private EntityManager entityManager;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         userRepository.deleteAll();
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
 
         userRepository.deleteAll();
         entityManager.clear();
     }
 
     @Test
-    public void createUser_validInputs_success() {
+    void createUser_validInputs_success() {
         // given
         assertNull(userRepository.findByUsername("testUsername"));
 
@@ -73,7 +73,7 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void createUser_duplicateUsername_throwsException() {
+    void createUser_duplicateUsername_throwsException() {
         assertNull(userRepository.findByUsername("testUsername"));
 
         User testUser = new User();

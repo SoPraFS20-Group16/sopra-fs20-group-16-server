@@ -18,7 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-public class BuildingRepositoryIntegrationTest {
+class BuildingRepositoryIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -28,12 +28,12 @@ public class BuildingRepositoryIntegrationTest {
     private BuildingRepository buildingRepository;
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         buildingRepository.deleteAll();
     }
 
     @Test
-    public void testFindAllByType_success() {
+    void testFindAllByType_success() {
 
         //given
         Coordinate coord = new Coordinate(1, 1);

@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Tests if the mapping between the internal and the external/API representation works.
  */
 @SpringBootTest
-public class DTOMapperTest {
+class DTOMapperTest {
 
     @Autowired
     private TileService tileService;
@@ -55,7 +55,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testCreateUser_fromUserPostDTO_toUser_success() {
+    void testCreateUser_fromUserPostDTO_toUser_success() {
         // create UserPostDTO
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("username");
@@ -68,7 +68,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testGetUser_fromUser_toUserGetDTO_success() {
+    void testGetUser_fromUser_toUserGetDTO_success() {
         // create User
         User user = new User();
         user.setUsername("firstname@lastname");
@@ -85,7 +85,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testGameToGameLinkDTO() {
+    void testGameToGameLinkDTO() {
 
         //Game instance
         Game game = new Game();
@@ -105,7 +105,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testGamePostDTOtoEntity() {
+    void testGamePostDTOtoEntity() {
         //GamePostDTO instance
         GamePostDTO gamePostDTO = new GamePostDTO();
         gamePostDTO.setName("GameName");
@@ -125,7 +125,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testGameToGameDTO() {
+    void testGameToGameDTO() {
         //Game instance
         Game game = new Game();
         game.setId(1L);
@@ -151,7 +151,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testCoordinateToCoordinateDTO() {
+    void testCoordinateToCoordinateDTO() {
 
         Coordinate coordinate = new Coordinate(1, 2);
 
@@ -163,7 +163,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testTileToTileDTO() {
+    void testTileToTileDTO() {
         Tile tile = tileService.createTile(new Coordinate(1, 2), testGameId);
 
         TileDTO result = DTOMapper.INSTANCE.convertTileToTileDTO(tile);
@@ -175,7 +175,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testConvertGameSummaryToGameSummaryDTO() {
+    void testConvertGameSummaryToGameSummaryDTO() {
 
         PlayerSummary playerSummary = new PlayerSummary();
         playerSummary.setUsername(testUsername);
@@ -194,7 +194,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testConvertPlayerToPlayerDTO() {
+    void testConvertPlayerToPlayerDTO() {
         Player player = new Player();
         player.setUserId(testUserId);
         player.setUsername(testUsername);
@@ -206,7 +206,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testConvertPlayerSummaryToPlayerSummaryDTO() {
+    void testConvertPlayerSummaryToPlayerSummaryDTO() {
         final int testPoints = 3;
         PlayerSummary summary = new PlayerSummary();
         summary.setPoints(testPoints);
@@ -221,7 +221,7 @@ public class DTOMapperTest {
     }
 
     @Test
-    public void testConvertMoveToMoveDTO() {
+    void testConvertMoveToMoveDTO() {
         //The passMove is a standard move with no additional field without its own mapper
         PassMove move = new PassMove();
         move.setUserId(testUserId);
@@ -237,7 +237,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertBuildMoveToBuildMoveDTO() {
+    void testConvertBuildMoveToBuildMoveDTO() {
         Settlement building = new Settlement();
         building.setCoordinate(testCoordinate);
 
@@ -258,7 +258,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertBuildingToBuildingDTO() {
+    void testConvertBuildingToBuildingDTO() {
         Settlement building = new Settlement();
         building.setCoordinate(testCoordinate);
         building.setUserId(testUserId);
@@ -277,7 +277,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertCardMoveToCardMoveDTO() {
+    void testConvertCardMoveToCardMoveDTO() {
         final DevelopmentType testDevelopmentType = DevelopmentType.ROADPROGRESS;
         CardMove move = new CardMove();
         move.setId(testMoveId);
@@ -297,7 +297,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertTradeMoveToTradeMoveDTO() {
+    void testConvertTradeMoveToTradeMoveDTO() {
         ResourceType needed = ResourceType.GRAIN;
         ResourceType offered = ResourceType.BRICK;
         TradeMove move = new TradeMove();
@@ -319,7 +319,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertKnightMoveToKnightMoveDTO() {
+    void testConvertKnightMoveToKnightMoveDTO() {
         final Long testTileId = 1234L;
         KnightMove move = new KnightMove();
         move.setId(testMoveId);
@@ -338,7 +338,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertMonopolyMoveToMonopolyMoveDTO() {
+    void testConvertMonopolyMoveToMonopolyMoveDTO() {
         final ResourceType monopolyType = ResourceType.BRICK;
         MonopolyMove move = new MonopolyMove();
         move.setId(testMoveId);
@@ -357,7 +357,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertPlentyMoveToPlentyMoveDTO() {
+    void testConvertPlentyMoveToPlentyMoveDTO() {
         final ResourceType plenty1 = ResourceType.BRICK;
         final ResourceType plenty2 = ResourceType.GRAIN;
 
@@ -380,7 +380,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertStealMoveToStealMoveDTO() {
+    void testConvertStealMoveToStealMoveDTO() {
         final Long testVictimId = 321L;
 
         StealMove move = new StealMove();
@@ -400,7 +400,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertUserLocationToUserLocationDTO() {
+    void testConvertUserLocationToUserLocationDTO() {
         String testCountryName = "TestCountryName";
         String testCity = "TestCity";
         Integer testZip = 1212;
@@ -426,7 +426,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertMoveHistoryToMoveHistoryDTO() {
+    void testConvertMoveHistoryToMoveHistoryDTO() {
         final String testMoveName = BuildMove.class.getSimpleName();
         MoveHistory history = new MoveHistory();
         history.setUserId(testUserId);
@@ -442,7 +442,7 @@ public class DTOMapperTest {
 
 
     @Test
-    public void testConvertGameHistoryToGameHistoryDTO() {
+    void testConvertGameHistoryToGameHistoryDTO() {
         MoveHistory moveHistory = new MoveHistory();
         moveHistory.setUserId(testUserId);
 

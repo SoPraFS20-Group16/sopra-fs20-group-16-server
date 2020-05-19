@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PlayerQueueTest {
+class PlayerQueueTest {
 
     private PlayerQueue queue;
 
@@ -22,7 +22,7 @@ public class PlayerQueueTest {
     private List<Player> allPlayerObjects;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         queue = new PlayerQueue();
 
@@ -55,7 +55,7 @@ public class PlayerQueueTest {
     }
 
     @Test
-    public void testGetNext() {
+    void testGetNext() {
 
         Long first = queue.getNext();
         Long second = queue.getNext();

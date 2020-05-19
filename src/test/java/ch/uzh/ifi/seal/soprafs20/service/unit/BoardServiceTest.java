@@ -27,7 +27,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class BoardServiceTest {
+class BoardServiceTest {
 
     @InjectMocks
     TileService tileService;
@@ -47,7 +47,7 @@ public class BoardServiceTest {
     private final Long testGameId = 123L;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(boardService, "coordinateService", coordinateService);
         ReflectionTestUtils.setField(tileService, "coordinateRepository", coordinateRepository);
@@ -57,7 +57,7 @@ public class BoardServiceTest {
     }
 
     @Test
-    public void testCreateBoard() {
+    void testCreateBoard() {
         when(boardRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
         when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
@@ -87,7 +87,7 @@ public class BoardServiceTest {
     }
 
     @Test
-    public void testGetBuildingsForTileForPlayer() {
+    void testGetBuildingsForTileForPlayer() {
         when(boardRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
         when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());

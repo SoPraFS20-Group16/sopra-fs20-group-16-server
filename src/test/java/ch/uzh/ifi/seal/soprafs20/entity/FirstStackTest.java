@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FirstStackTest {
+class FirstStackTest {
 
     private FirstStack stack;
     private Long player1;
@@ -21,7 +21,7 @@ public class FirstStackTest {
     private List<Player> allPlayerObjects;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         this.stack = new FirstStack();
 
         this.player1 = 111L;
@@ -52,7 +52,7 @@ public class FirstStackTest {
 
 
     @Test
-    public void testGetUserIdForPlayerAfter() {
+    void testGetUserIdForPlayerAfter() {
         Long first = stack.getFirstPlayersUserId();
         Long second = stack.getNext();
         Long third = stack.getNext();

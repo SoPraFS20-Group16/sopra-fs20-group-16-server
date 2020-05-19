@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class BoardServiceIntegrationTest {
+class BoardServiceIntegrationTest {
 
     @Qualifier("coordinateRepository")
     @Autowired
@@ -59,7 +59,7 @@ public class BoardServiceIntegrationTest {
     private final Long testGameId = 123L;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         gameRepository.deleteAll();
         boardRepository.deleteAll();
         tileRepository.deleteAll();
@@ -69,7 +69,7 @@ public class BoardServiceIntegrationTest {
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         gameRepository.deleteAll();
         boardRepository.deleteAll();
         tileRepository.deleteAll();
@@ -79,7 +79,7 @@ public class BoardServiceIntegrationTest {
     }
 
     @Test
-    public void testCreateBoard() {
+    void testCreateBoard() {
 
         Board result = boardService.createBoard(testGameId);
 

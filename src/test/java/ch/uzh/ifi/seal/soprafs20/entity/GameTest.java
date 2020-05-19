@@ -9,13 +9,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameTest {
+class GameTest {
 
     private Game testGame;
     private Player testPlayer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         testGame = new Game();
         testGame.setId(1L);
@@ -29,20 +29,20 @@ public class GameTest {
     }
 
     @Test
-    public void testIsPlayer_isTrue() {
+    void testIsPlayer_isTrue() {
         testGame.addPlayer(testPlayer);
 
         assertTrue(testGame.isPlayer(testPlayer), "The player should be a player of the game!");
     }
 
     @Test
-    public void testIsPlayer_isFalse() {
+    void testIsPlayer_isFalse() {
 
         assertFalse(testGame.isPlayer(testPlayer), "The player should not be in the game!");
     }
 
     @Test
-    public void testAddPlayer_success() {
+    void testAddPlayer_success() {
         int empty = testGame.getPlayers().size();
         assertEquals(0, empty, "Initially the player array should be empty!");
 
@@ -60,7 +60,7 @@ public class GameTest {
      * Tests that if null is passed a NullPointerException is thrown.
      */
     @Test
-    public void testAddPlayer_passedNull() {
+    void testAddPlayer_passedNull() {
 
         Exception exception = assertThrows(NullPointerException.class, () -> testGame.addPlayer(null));
 
@@ -72,7 +72,7 @@ public class GameTest {
     }
 
     @Test
-    public void testAddPlayer_alreadyAdded() {
+    void testAddPlayer_alreadyAdded() {
         testGame.addPlayer(testPlayer);
         assertEquals(1, testGame.getPlayers().size(), "Game should only have one player!");
 
@@ -81,7 +81,7 @@ public class GameTest {
     }
 
     @Test
-    public void testGetPlayers_containsPlayer() {
+    void testGetPlayers_containsPlayer() {
 
         testGame.addPlayer(testPlayer);
 
@@ -95,7 +95,7 @@ public class GameTest {
     }
 
     @Test
-    public void testGetPlayers_isEmpty() {
+    void testGetPlayers_isEmpty() {
 
         List<Player> result = testGame.getPlayers();
 

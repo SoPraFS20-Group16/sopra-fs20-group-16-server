@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class GamesServiceIntegrationTest {
+class GamesServiceIntegrationTest {
 
     @Autowired
     GameService gameService;
@@ -61,7 +61,7 @@ public class GamesServiceIntegrationTest {
     private User testUser;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         //delete from all repositories
         userRepository.deleteAll();
@@ -87,7 +87,7 @@ public class GamesServiceIntegrationTest {
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         userRepository.deleteAll();
         gameRepository.deleteAll();
         boardRepository.deleteAll();
@@ -97,7 +97,7 @@ public class GamesServiceIntegrationTest {
     }
 
     @Test
-    public void testCreateGame() {
+    void testCreateGame() {
 
         gameRepository.deleteAll();
 
@@ -114,7 +114,7 @@ public class GamesServiceIntegrationTest {
     }
 
     @Test
-    public void testFindGame() {
+    void testFindGame() {
 
         gameRepository.deleteAll();
 
@@ -139,7 +139,7 @@ public class GamesServiceIntegrationTest {
     }
 
     @Test
-    public void testGetGames() {
+    void testGetGames() {
 
         gameRepository.deleteAll();
 
@@ -155,7 +155,7 @@ public class GamesServiceIntegrationTest {
     }
 
     @Test
-    public void testTeardownGame() {
+    void testTeardownGame() {
         gameRepository.deleteAll();
 
         Game createdGame = gameService.createGame(testGame);

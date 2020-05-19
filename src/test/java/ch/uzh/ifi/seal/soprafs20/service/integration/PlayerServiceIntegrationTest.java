@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class PlayerServiceIntegrationTest {
+class PlayerServiceIntegrationTest {
 
     @Qualifier("userRepository")
     @Autowired
@@ -70,7 +70,7 @@ public class PlayerServiceIntegrationTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         gameRepository.deleteAll();
 
@@ -99,7 +99,7 @@ public class PlayerServiceIntegrationTest {
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         gameRepository.deleteAll();
 
         moveRepository.deleteAll();
@@ -114,7 +114,7 @@ public class PlayerServiceIntegrationTest {
     }
 
     @Test
-    public void testCreatePlayerFromUserId() {
+    void testCreatePlayerFromUserId() {
 
         playerRepository.deleteAll();
         Player createdPlayer = playerService.createPlayer(testUserId, testGameId);

@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class MoveRepositoryIntegrationTest {
+class MoveRepositoryIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -25,12 +25,12 @@ public class MoveRepositoryIntegrationTest {
     private MoveRepository moveRepository;
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         moveRepository.deleteAll();
     }
 
     @Test
-    public void findById_success() {
+    void findById_success() {
         // given
         Move move = new BuildMove();
         move.setUserId(12L);

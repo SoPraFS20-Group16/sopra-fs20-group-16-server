@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-public class TileServiceTest {
+class TileServiceTest {
 
     @Mock
     private TileRepository tileRepository;
@@ -31,7 +31,7 @@ public class TileServiceTest {
     private Long testGameId;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
 
         testCoordinate = new Coordinate();
@@ -40,7 +40,7 @@ public class TileServiceTest {
     }
 
     @Test
-    public void testCreateTileWithTopCoordinate() {
+    void testCreateTileWithTopCoordinate() {
         when(tileRepository.saveAndFlush(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
         when(coordinateRepository.save(Mockito.any())).then(AdditionalAnswers.returnsFirstArg());
 

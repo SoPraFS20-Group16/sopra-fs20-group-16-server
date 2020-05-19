@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
-public class QueueServiceTest {
+class QueueServiceTest {
 
     @Mock
     QueueRepository queueRepository;
@@ -35,7 +35,7 @@ public class QueueServiceTest {
     private List<Player> allPlayerObjects;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
 
         queue = new PlayerQueue();
@@ -69,7 +69,7 @@ public class QueueServiceTest {
     }
 
     @Test
-    public void testGetNextForGame() {
+    void testGetNextForGame() {
 
         //mock the repo
         given(queueRepository.findByGameId(Mockito.any())).willReturn(queue);

@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-public class PlayerRepositoryIntegrationTest {
+class PlayerRepositoryIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -24,12 +24,12 @@ public class PlayerRepositoryIntegrationTest {
     private final Long testGameId = 123L;
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         playerRepository.deleteAll();
     }
 
     @Test
-    public void findByUsername_success() {
+    void findByUsername_success() {
 
         Player player = new Player();
         player.setUserId(1L);
@@ -47,7 +47,7 @@ public class PlayerRepositoryIntegrationTest {
     }
 
     @Test
-    public void findByUserId() {
+    void findByUserId() {
 
         Player player = new Player();
         player.setUserId(1L);

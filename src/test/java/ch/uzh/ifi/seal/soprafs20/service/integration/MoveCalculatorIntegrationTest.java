@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class MoveCalculatorIntegrationTest {
+class MoveCalculatorIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(MoveCalculatorIntegrationTest.class);
 
@@ -99,7 +99,7 @@ public class MoveCalculatorIntegrationTest {
     private Board testBoard;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         //Delete Wallets before players
         resourceWalletRepository.deleteAll();
@@ -155,7 +155,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         resourceWalletRepository.deleteAll();
         tileRepository.deleteAll();
         boardRepository.deleteAll();
@@ -187,7 +187,7 @@ public class MoveCalculatorIntegrationTest {
     // -- start move(s) --
 
     @Test
-    public void testCalculateStartMove() {
+    void testCalculateStartMove() {
 
         // no additional preconditions
 
@@ -210,7 +210,7 @@ public class MoveCalculatorIntegrationTest {
     // -- initial moves --
 
     @Test
-    public void testCalculateFirstPassMove() {
+    void testCalculateFirstPassMove() {
 
         // no additional preconditions
         // perform
@@ -227,7 +227,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateFirstSettlementMoves_emptyBoard() {
+    void testCalculateFirstSettlementMoves_emptyBoard() {
 
         // no additional preconditions
 
@@ -249,7 +249,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateFirstSettlementMoves_nonEmptyBoard() {
+    void testCalculateFirstSettlementMoves_nonEmptyBoard() {
 
         // set buildings on testBoard
         Coordinate coordinate = testBoard.getAllCoordinates().get(0);
@@ -274,7 +274,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateFirstRoadMoves_valid() {
+    void testCalculateFirstRoadMoves_valid() {
 
         // set buildings on testBoard and create firstSettlementMove
         Coordinate coordinate = testBoard.getAllCoordinates().get(0);
@@ -317,7 +317,7 @@ public class MoveCalculatorIntegrationTest {
     // - default moves -
 
     @Test
-    public void testCalculatePassMove() {
+    void testCalculatePassMove() {
 
         // no additional preconditions
         // perform
@@ -335,7 +335,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateDiceMove() {
+    void testCalculateDiceMove() {
 
         // no additional preconditions
         // perform
@@ -355,7 +355,7 @@ public class MoveCalculatorIntegrationTest {
     // - build moves -
 
     @Test
-    public void testCalculateRoadMoves_connectingToSettlement_valid() {
+    void testCalculateRoadMoves_connectingToSettlement_valid() {
 
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());
@@ -392,7 +392,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateRoadMoves_connectingToCity_valid() {
+    void testCalculateRoadMoves_connectingToCity_valid() {
 
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());
@@ -427,7 +427,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateRoadMoves_connectingToRoad_valid() {
+    void testCalculateRoadMoves_connectingToRoad_valid() {
 
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());
@@ -435,7 +435,7 @@ public class MoveCalculatorIntegrationTest {
 
         // add settlement on board in the middle
         Coordinate coordinate = null;
-        for (Tile tile: testBoard.getTiles()) {
+        for (Tile tile : testBoard.getTiles()) {
             if (tile.getType() == TileType.DESERT) {
                 coordinate = tile.getCoordinates().get(1);
                 break;
@@ -449,6 +449,7 @@ public class MoveCalculatorIntegrationTest {
         testBoard.addSettlement(settlement);
 
         //Add roads around the settlement
+        assert coordinate != null;
         for (Coordinate neighbour : coordinate.getNeighbors()) {
 
             Road road = new Road();
@@ -493,7 +494,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateRoadMoves_notEnoughResources() {
+    void testCalculateRoadMoves_notEnoughResources() {
 
         // player has empty resources
         testPlayer.setWallet(new ResourceWallet());
@@ -521,7 +522,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateRoadMoves_maxNumberOfRoadsReached() {
+    void testCalculateRoadMoves_maxNumberOfRoadsReached() {
 
         // player has empty resources
         testPlayer.setWallet(new Road().getPrice());
@@ -556,7 +557,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateRoadMoves_noValidBuildingsToConnect() {
+    void testCalculateRoadMoves_noValidBuildingsToConnect() {
 
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());
@@ -584,7 +585,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateSettlementMoves_valid() {
+    void testCalculateSettlementMoves_valid() {
 
         // player can afford settlement
         testPlayer.setWallet(new Settlement().getPrice());
@@ -629,7 +630,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateSettlementMoves_notEnoughResources() {
+    void testCalculateSettlementMoves_notEnoughResources() {
 
         // empty resource wallet
         testPlayer.setWallet(new ResourceWallet());
@@ -664,7 +665,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateSettlementMoves_maxNumberOfSettlementsReached() {
+    void testCalculateSettlementMoves_maxNumberOfSettlementsReached() {
 
         // player can afford settlement
         testPlayer.setWallet(new City().getPrice());
@@ -700,7 +701,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateCityMoves_valid() {
+    void testCalculateCityMoves_valid() {
 
         // player can afford city
         testPlayer.setWallet(new City().getPrice());
@@ -733,7 +734,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateCityMoves_notEnoughResources() {
+    void testCalculateCityMoves_notEnoughResources() {
 
         // empty resource wallet
         testPlayer.setWallet(new ResourceWallet());
@@ -762,7 +763,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateCityMoves_maxNumberOfCitiesReached() {
+    void testCalculateCityMoves_maxNumberOfCitiesReached() {
 
         // player can afford city
         testPlayer.setWallet(new City().getPrice());
@@ -798,7 +799,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateCityMoves_noSettlementsToBuildOn() {
+    void testCalculateCityMoves_noSettlementsToBuildOn() {
 
         // player can afford city
         testPlayer.setWallet(new City().getPrice());
@@ -827,7 +828,7 @@ public class MoveCalculatorIntegrationTest {
     // - card moves -
 
     @Test
-    public void testCalculateCardMoves_valid() {
+    void testCalculateCardMoves_valid() {
 
         // player has development card
         DevelopmentCard developmentCard = new DevelopmentCard();
@@ -850,7 +851,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateCardMoves_VictoryPointCard_resultsInNoMove() {
+    void testCalculateCardMoves_VictoryPointCard_resultsInNoMove() {
 
         // player has development card
         DevelopmentCard developmentCard = new DevelopmentCard();
@@ -871,7 +872,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateCardMoves_noCard() {
+    void testCalculateCardMoves_noCard() {
 
         // player has no development card
         testPlayer.setDevelopmentCards(new ArrayList<>());
@@ -891,7 +892,7 @@ public class MoveCalculatorIntegrationTest {
     // - other moves -
 
     @Test
-    public void testCalculateTradeMoves_oneTrade_valid() {
+    void testCalculateTradeMoves_oneTrade_valid() {
 
         // player has enough funds for one trade
         ResourceWallet resourceWallet = new ResourceWallet();
@@ -920,7 +921,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateTradeMoves_twoTrades_valid() {
+    void testCalculateTradeMoves_twoTrades_valid() {
 
         // player has enough funds for one trade
         ResourceWallet resourceWallet = new ResourceWallet();
@@ -949,7 +950,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateTradeMoves_notEnoughResources() {
+    void testCalculateTradeMoves_notEnoughResources() {
 
         // player has NOT enough funds for one trade
         ResourceWallet resourceWallet = new ResourceWallet();
@@ -971,7 +972,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculatePurchaseMoves_valid() {
+    void testCalculatePurchaseMoves_valid() {
 
         // player can afford purchase
         testPlayer.setWallet(new DevelopmentCard().getPrice());
@@ -991,7 +992,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculatePurchaseMoves_notEnoughResources() {
+    void testCalculatePurchaseMoves_notEnoughResources() {
 
         // player can NOT afford purchase
         testPlayer.setWallet(new ResourceWallet());
@@ -1011,7 +1012,7 @@ public class MoveCalculatorIntegrationTest {
     // -- development card moves --
 
     @Test
-    public void testCalculateAllKnightMoves_valid() {
+    void testCalculateAllKnightMoves_valid() {
 
         // no preconditions
 
@@ -1031,7 +1032,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllMonopolyMoves_valid() {
+    void testCalculateAllMonopolyMoves_valid() {
 
         // no preconditions
 
@@ -1051,7 +1052,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllPlentyMoves_valid() {
+    void testCalculateAllPlentyMoves_valid() {
 
         // no preconditions
 
@@ -1071,7 +1072,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllStealMoves_valid() {
+    void testCalculateAllStealMoves_valid() {
 
         // set robber on tile
         testBoard.getTiles().get(0).setRobber(true);
@@ -1116,7 +1117,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllStealMoves_noBuildingOnRobberTile() {
+    void testCalculateAllStealMoves_noBuildingOnRobberTile() {
 
         // set robber on tile
         testBoard.getTiles().get(0).setRobber(true);
@@ -1139,7 +1140,6 @@ public class MoveCalculatorIntegrationTest {
 
         // save entities
         testPlayer = playerService.save(testPlayer);
-        opponent = playerService.save(opponent);
 
         boardRepository.save(testBoard);
         gameRepository.save(testGame);
@@ -1156,7 +1156,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllRoadProgressMoves_maxNumberOfRoadsReached() {
+    void testCalculateAllRoadProgressMoves_maxNumberOfRoadsReached() {
 
         // find random coordinate
         Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(0);
@@ -1188,7 +1188,7 @@ public class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    public void testCalculateAllRoadProgressMoves_valid() {
+    void testCalculateAllRoadProgressMoves_valid() {
 
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());

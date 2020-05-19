@@ -29,7 +29,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
-public class GameServiceTest {
+class GameServiceTest {
 
     @Mock
     private GameRepository gameRepository;
@@ -58,7 +58,7 @@ public class GameServiceTest {
     private Game testGame;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
 
         // given
@@ -80,7 +80,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testGetGames_success() {
+    void testGetGames_success() {
 
         //gameRepository returns list
         List<Game> expectedList = Collections.singletonList(testGame);
@@ -93,7 +93,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testGetGames_gameEmpty() {
+    void testGetGames_gameEmpty() {
 
         //gameRepository returns list
         List<Game> expectedList = new ArrayList<>();
@@ -106,7 +106,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testCreateGame_success() {
+    void testCreateGame_success() {
 
         Player testPlayer = new Player();
         testPlayer.setUserId(1L);
@@ -127,7 +127,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testCreateGame_conflict() {
+    void testCreateGame_conflict() {
 
         //setup
         given(gameRepository.findByName(testGame.getName())).willReturn(testGame);
@@ -138,7 +138,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testFindGame_findById() {
+    void testFindGame_findById() {
 
         given(gameRepository.findById(Mockito.any())).willReturn(Optional.of(testGame));
 
@@ -151,7 +151,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testFindGame_findByName() {
+    void testFindGame_findByName() {
 
         given(gameRepository.findByName(testGame.getName())).willReturn(testGame);
         testGame.setId(null);
@@ -164,7 +164,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testFindGame_noMatch() {
+    void testFindGame_noMatch() {
 
         given(gameRepository.findByName(testGame.getName())).willReturn(testGame);
         testGame.setId(null);
@@ -177,7 +177,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testUserCanAccessGame_canAccess() {
+    void testUserCanAccessGame_canAccess() {
         User testUser = new User();
         testUser.setToken("TestToken");
         testUser.setId(1L);
@@ -198,7 +198,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testUserCanAccessGame_canNotAccess() {
+    void testUserCanAccessGame_canNotAccess() {
         User testUser = new User();
         testUser.setToken("TestToken");
         testUser.setId(1L);

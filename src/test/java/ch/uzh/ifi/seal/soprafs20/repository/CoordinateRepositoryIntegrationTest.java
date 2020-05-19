@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-public class CoordinateRepositoryIntegrationTest {
+class CoordinateRepositoryIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -28,14 +28,14 @@ public class CoordinateRepositoryIntegrationTest {
     private Coordinate testCoordinate;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         testCoordinate = new Coordinate();
         testCoordinate.setX(1);
         testCoordinate.setY(1);
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         coordinateRepository.deleteAll();
     }
 
@@ -44,7 +44,7 @@ public class CoordinateRepositoryIntegrationTest {
      * there should not be multiple instances of the same coordinate
      */
     @Test
-    public void testSaveNoDuplicates() {
+    void testSaveNoDuplicates() {
 
 
         Coordinate duplicate = new Coordinate();

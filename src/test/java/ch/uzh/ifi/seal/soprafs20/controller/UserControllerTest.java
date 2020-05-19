@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * This tests if the UserController works.
  */
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,7 +55,7 @@ public class UserControllerTest {
      * @throws Exception -> An exception can be thrown by the perform method of mockMvc
      */
     @Test
-    public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
+    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
         // given
         User user = new User();
         user.setUsername("firstname@lastname");
@@ -85,7 +85,7 @@ public class UserControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void createUser_validInput_userCreated() throws Exception {
+    void createUser_validInput_userCreated() throws Exception {
         // given
         User user = new User();
         user.setId(1L);
@@ -109,8 +109,27 @@ public class UserControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
-                .andExpect(header().stringValues("Location","/users/1"))
+                .andExpect(header().stringValues("Location", "/users/1"))
                 .andExpect(jsonPath("$.token", is(user.getToken())));
+    }
+
+    /**
+     * Helper Method to convert userPostDTO into a JSON string such that the input can be processed
+     * Input will look like this: {"name": "Test User", "username": "testUsername"}
+     *
+     * @param object the object converted into json
+     * @return string
+     */
+    private String asJsonString(final Object object) {
+        try {
+            return new ObjectMapper().writeValueAsString(object);
+        }
+        catch (JsonProcessingException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    String.format("The request body could not be created.%s", e.toString())
+            );
+        }
     }
 
     /**
@@ -119,7 +138,7 @@ public class UserControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void createUser_userAlreadyExists() throws Exception {
+    void createUser_userAlreadyExists() throws Exception {
 
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("testUsername");
@@ -139,14 +158,13 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.error", not("")));
     }
 
-
     /**
      * Tests the GET /users/:userId endpoint which has to return a UserGetDTO
      *
      * @throws Exception -> An exception can be thrown by the perform method of mockMvc
      */
     @Test
-    public void getUsers_givenUserId_userExists() throws Exception {
+    void getUsers_givenUserId_userExists() throws Exception {
         // given
         User user = new User();
         user.setUsername("firstname@lastname");
@@ -173,7 +191,7 @@ public class UserControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void getUsers_givenUserId_userDoesNotExists() throws Exception {
+    void getUsers_givenUserId_userDoesNotExists() throws Exception {
 
         // this mocks the UserService -> we define above what the userService should return when getUsers() is called
         given(userService.findUser(Mockito.any())).willThrow(new RestException(HttpStatus.NOT_FOUND, "The Mocked Exception Reason"));
@@ -188,7 +206,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUser_emptyInput() throws Exception {
+    void createUser_emptyInput() throws Exception {
 
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("user_1");
@@ -212,7 +230,7 @@ public class UserControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void loginUser_credentialsCorrect() throws Exception {
+    void loginUser_credentialsCorrect() throws Exception {
         //given
         User user = new User();
         user.setUsername("firstname@lastname");
@@ -245,7 +263,7 @@ public class UserControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void loginUser_credentialsIncorrect() throws Exception {
+    void loginUser_credentialsIncorrect() throws Exception {
         User user = new User();
         user.setUsername("firstname@lastname");
         user.setPassword("password");
@@ -269,7 +287,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void logoutUser_success() throws Exception {
+    void logoutUser_success() throws Exception {
 
         String testToken = "TestToken";
 
@@ -290,7 +308,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void logoutUser_userNotFound() throws Exception {
+    void logoutUser_userNotFound() throws Exception {
 
         String testToken = "TestToken";
 
@@ -303,24 +321,5 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorMessage", is(ErrorMsg.NO_USER_LOGOUT)));
-    }
-
-    /**
-     * Helper Method to convert userPostDTO into a JSON string such that the input can be processed
-     * Input will look like this: {"name": "Test User", "username": "testUsername"}
-     *
-     * @param object
-     * @return string
-     */
-    private String asJsonString(final Object object) {
-        try {
-            return new ObjectMapper().writeValueAsString(object);
-        }
-        catch (JsonProcessingException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    String.format("The request body could not be created.%s", e.toString())
-            );
-        }
     }
 }

@@ -11,13 +11,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TileTest {
+class TileTest {
 
     private Tile testTile;
     private Coordinate testCoordinate;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         testTile = new Tile();
 
@@ -27,7 +27,7 @@ public class TileTest {
     }
 
     @Test
-    public void testHasCoordinate_isTrue() {
+    void testHasCoordinate_isTrue() {
 
         List<Coordinate> coordinateList = Collections.singletonList(testCoordinate);
 
@@ -41,7 +41,7 @@ public class TileTest {
     }
 
     @Test
-    public void testHasCoordinate_isFalse() {
+    void testHasCoordinate_isFalse() {
 
         List<Coordinate> coordinateList = Collections.singletonList(testCoordinate);
 

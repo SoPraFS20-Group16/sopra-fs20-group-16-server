@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class TileServiceIntegrationTest {
+class TileServiceIntegrationTest {
 
     @Autowired
     TileService tileService;
@@ -32,18 +32,18 @@ public class TileServiceIntegrationTest {
     private Long testGameId = 123L;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         entityManager.clear();
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
 
         entityManager.clear();
     }
 
     @Test
-    public void testCreateTile() {
+    void testCreateTile() {
 
         Coordinate topCoordinate = new Coordinate(1, 0);
 

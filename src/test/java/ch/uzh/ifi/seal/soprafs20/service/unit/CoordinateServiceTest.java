@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
-public class CoordinateServiceTest {
+class CoordinateServiceTest {
 
     @Mock
     private CoordinateRepository coordinateRepository;
@@ -37,7 +37,7 @@ public class CoordinateServiceTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
 
         coordinates = new ArrayList<>();
@@ -64,7 +64,7 @@ public class CoordinateServiceTest {
      * The given grid covers a wider range of possible neighbor constellations.
      */
     @Test
-    public void testFindNeighborsForCoordinate() {
+    void testFindNeighborsForCoordinate() {
 
         //Given
         given(coordinateRepository.findAll()).willReturn(coordinates);

@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(GameController.class)
-public class GameControllerTest {
+class GameControllerTest {
 
 
     @Autowired
@@ -67,7 +67,7 @@ public class GameControllerTest {
      * @throws Exception the perform method can throw exceptions
      */
     @Test
-    public void testGetGames_noGamesAvailable() throws Exception {
+    void testGetGames_noGamesAvailable() throws Exception {
         // given
         List<Game> allGames = new ArrayList<>();
 
@@ -98,7 +98,7 @@ public class GameControllerTest {
      * @throws Exception the perform method can throw exceptions
      */
     @Test
-    public void testGetGames_gamesAvailable() throws Exception {
+    void testGetGames_gamesAvailable() throws Exception {
         // given
         Game game = new Game();
         game.setId(1L);
@@ -132,7 +132,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGames_tokenIncorrect() throws Exception {
+    void testGetGames_tokenIncorrect() throws Exception {
         // given
         Game game = new Game();
         game.setId(1L);
@@ -163,7 +163,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPostGames_tokenValid_creationSuccessful() throws Exception {
+    void testPostGames_tokenValid_creationSuccessful() throws Exception {
 
         // given
         Game game = new Game();
@@ -201,7 +201,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPostGames_tokenValid_userIsPlayerInAnotherGame() throws Exception {
+    void testPostGames_tokenValid_userIsPlayerInAnotherGame() throws Exception {
 
         // given
         Game game = new Game();
@@ -246,7 +246,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPostGames_tokenInvalid() throws Exception {
+    void testPostGames_tokenInvalid() throws Exception {
 
         // given
         Game game = new Game();
@@ -284,7 +284,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPostGames_gameCreationFails() throws Exception {
+    void testPostGames_gameCreationFails() throws Exception {
 
         // given
         Game game = new Game();
@@ -323,7 +323,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGameById_tokenValid_gameExists_userPermitted() throws Exception {
+    void testGetGameById_tokenValid_gameExists_userPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -362,7 +362,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGameById_tokenValid_gameExists_userForbidden() throws Exception {
+    void testGetGameById_tokenValid_gameExists_userForbidden() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -399,7 +399,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGameById_tokenValid_gameNotExists() throws Exception {
+    void testGetGameById_tokenValid_gameNotExists() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -436,7 +436,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGameById_tokenNotValid() throws Exception {
+    void testGetGameById_tokenNotValid() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -473,7 +473,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGameById_tokenValid_gameExists_userPermitted_userHasNoMoves() throws Exception {
+    void testGetGameById_tokenValid_gameExists_userPermitted_userHasNoMoves() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -515,7 +515,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGameById_tokenValid_gameExists_userPermitted_userOneNoMove() throws Exception {
+    void testGetGameById_tokenValid_gameExists_userPermitted_userOneNoMove() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -565,7 +565,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testGetGameById_tokenValid_gameExists_userPermitted_gameHasOnePlayer() throws Exception {
+    void testGetGameById_tokenValid_gameExists_userPermitted_gameHasOnePlayer() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -620,7 +620,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPutGameById_tokenValid_gameExists_moveExists_moveMatchesGame_userPermitted() throws Exception {
+    void testPutGameById_tokenValid_gameExists_moveExists_moveMatchesGame_userPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -669,7 +669,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPutGameById_tokenNotValid_gameExists_moveExists_moveMatchesGame() throws Exception {
+    void testPutGameById_tokenNotValid_gameExists_moveExists_moveMatchesGame() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -719,7 +719,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPutGameById_tokenValid_gameNotExists_moveExists_userPermitted() throws Exception {
+    void testPutGameById_tokenValid_gameNotExists_moveExists_userPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -768,7 +768,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPutGameById_tokenValid_gameExists_moveNotExists_userPermitted() throws Exception {
+    void testPutGameById_tokenValid_gameExists_moveNotExists_userPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -818,7 +818,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPutGameById_tokenValid_gameExists_moveExists_userNotPermitted() throws Exception {
+    void testPutGameById_tokenValid_gameExists_moveExists_userNotPermitted() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -868,7 +868,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPutGameById__gameIdDoesntMatchMoveGameId() throws Exception {
+    void testPutGameById__gameIdDoesntMatchMoveGameId() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -918,7 +918,7 @@ public class GameControllerTest {
      * @throws Exception the exception
      */
     @Test
-    public void testPutGameById__playerIdDoesntMatchMovesPlayerId() throws Exception {
+    void testPutGameById__playerIdDoesntMatchMovesPlayerId() throws Exception {
 
         // given
         String testToken = "ThisIsTheUserToken";
@@ -963,12 +963,12 @@ public class GameControllerTest {
 
     /**
      * Tests the POST /games/gameId/players endpoint
-     *
-     *Assumes input is correct
+     * <p>
+     * Assumes input is correct
      * Should return 202
      */
     @Test
-    public void testPostNewPlayerToGame_success() throws Exception {
+    void testPostNewPlayerToGame_success() throws Exception {
 
         //given
         String testToken = "ThisIsTheUserToken";
@@ -1024,7 +1024,7 @@ public class GameControllerTest {
      * Should return 403
      */
     @Test
-    public void testPostNewPlayerToGame_playerMaxReached() throws Exception {
+    void testPostNewPlayerToGame_playerMaxReached() throws Exception {
 
         //given
         String testToken = "ThisIsTheUserToken";
@@ -1084,7 +1084,7 @@ public class GameControllerTest {
      * Should return 401
      */
     @Test
-    public void testPostNewPlayerToGame_wrongToken() throws Exception {
+    void testPostNewPlayerToGame_wrongToken() throws Exception {
 
         //given
         String testToken = "ThisIsTheUserToken";
@@ -1135,12 +1135,12 @@ public class GameControllerTest {
 
     /**
      * Tests the POST /games/gameId/players endpoint
-     *
-     *Assumes input is correct
+     * <p>
+     * Assumes input is correct
      * Should return 404
      */
     @Test
-    public void testPostNewPlayerToGame_gameNotFound() throws Exception {
+    void testPostNewPlayerToGame_gameNotFound() throws Exception {
 
         //given
         String testToken = "ThisIsTheUserToken";
@@ -1191,12 +1191,12 @@ public class GameControllerTest {
 
     /**
      * Tests the POST /games/gameId/players endpoint
-     *
-     *Assumes input is correct
+     * <p>
+     * Assumes input is correct
      * Should return 403
      */
     @Test
-    public void testPostNewPlayerToGame_playerAlreadyPartOfAnotherGame() throws Exception {
+    void testPostNewPlayerToGame_playerAlreadyPartOfAnotherGame() throws Exception {
 
         //given
         String testToken = "ThisIsTheUserToken";

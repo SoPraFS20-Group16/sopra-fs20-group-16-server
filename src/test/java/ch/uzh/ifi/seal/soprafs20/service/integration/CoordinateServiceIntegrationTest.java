@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class CoordinateServiceIntegrationTest {
+class CoordinateServiceIntegrationTest {
 
     @Qualifier("coordinateRepository")
     @Autowired
@@ -47,7 +47,7 @@ public class CoordinateServiceIntegrationTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         //Ensure clean repo
         coordinateRepository.deleteAll();
@@ -76,7 +76,7 @@ public class CoordinateServiceIntegrationTest {
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         coordinateRepository.deleteAll();
     }
 
@@ -85,7 +85,7 @@ public class CoordinateServiceIntegrationTest {
      * after calculation
      */
     @Test
-    public void testCalculateNeighbors() {
+    void testCalculateNeighbors() {
 
         coordinateService.calculateNeighbors();
 

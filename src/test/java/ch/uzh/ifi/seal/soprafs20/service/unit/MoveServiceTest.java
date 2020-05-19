@@ -26,7 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
-public class MoveServiceTest {
+class MoveServiceTest {
 
     @InjectMocks
     private MoveService moveService;
@@ -56,7 +56,7 @@ public class MoveServiceTest {
     private Player testPlayer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
 
         ReflectionTestUtils.setField(moveService, "playerService", playerService);
@@ -81,7 +81,7 @@ public class MoveServiceTest {
     }
 
     @Test
-    public void testFindMoveById() {
+    void testFindMoveById() {
 
         //setup
         Move move = new PassMove();
@@ -93,7 +93,7 @@ public class MoveServiceTest {
     }
 
     @Test
-    public void testMakeRecalculations_belowWin() {
+    void testMakeRecalculations_belowWin() {
 
         //Setup
 
@@ -113,7 +113,7 @@ public class MoveServiceTest {
     }
 
     @Test
-    public void testMakeRecalculations_aboveWin() {
+    void testMakeRecalculations_aboveWin() {
 
         //Setup
 

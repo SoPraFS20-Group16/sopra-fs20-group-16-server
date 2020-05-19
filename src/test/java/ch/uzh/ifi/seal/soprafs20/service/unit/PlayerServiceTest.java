@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-public class PlayerServiceTest {
+class PlayerServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -45,7 +45,7 @@ public class PlayerServiceTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         MockitoAnnotations.initMocks(this);
 
@@ -65,7 +65,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    public void testCreatePlayerFromUserId_success() {
+    void testCreatePlayerFromUserId_success() {
 
         given(userRepository.findUserById(Mockito.any())).willReturn(testUser);
         given(playerRepository.saveAndFlush(Mockito.any())).willReturn(testPlayer);
@@ -78,7 +78,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    public void testCreatePlayerFromUser_noUserWithThisId() {
+    void testCreatePlayerFromUser_noUserWithThisId() {
         when(userRepository.findUserById(Mockito.any())).thenReturn(null);
 
         assertThrows(NullPointerException.class, () -> playerService.createPlayer(1L, testGameId),
@@ -86,7 +86,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    public void testAddDevelopmentCard_playerNull() {
+    void testAddDevelopmentCard_playerNull() {
 
         PurchaseMove purchaseMove = new PurchaseMove();
         purchaseMove.setUserId(testUserId);
@@ -99,7 +99,7 @@ public class PlayerServiceTest {
     }
 
     @Test
-    public void testUpdateResources() {
+    void testUpdateResources() {
 
         testPlayer.setWallet(new ResourceWallet());
 

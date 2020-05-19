@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class CoordinateTest {
+class CoordinateTest {
 
     private Coordinate testCoordinate1;
     private Coordinate testCoordinate2;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         testCoordinate1 = new Coordinate();
         testCoordinate1.setX(1);
         testCoordinate1.setY(1);
@@ -22,7 +22,7 @@ public class CoordinateTest {
     }
 
     @Test
-    public void testEquals_true() {
+    void testEquals_true() {
         testCoordinate2.setX(1);
         testCoordinate2.setY(1);
 
@@ -31,7 +31,7 @@ public class CoordinateTest {
     }
 
     @Test
-    public void testEquals_false() {
+    void testEquals_false() {
         testCoordinate2.setX(2);
         testCoordinate2.setY(1);
 

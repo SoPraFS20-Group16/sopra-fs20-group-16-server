@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class MoveServiceIntegrationTest {
+class MoveServiceIntegrationTest {
 
     @Autowired
     FirstStackService firstStackService;
@@ -96,7 +96,7 @@ public class MoveServiceIntegrationTest {
     private Board testBoard;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         //Delete Wallets before players
         resourceWalletRepository.deleteAll();
@@ -153,7 +153,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         resourceWalletRepository.deleteAll();
         tileRepository.deleteAll();
         boardRepository.deleteAll();
@@ -166,7 +166,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testFindMoveById_moveFound() {
+    void testFindMoveById_moveFound() {
 
         testMove = moveRepository.saveAndFlush(testMove);
 
@@ -176,7 +176,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testFindMoveById_noMoveWithId() {
+    void testFindMoveById_noMoveWithId() {
 
         moveRepository.deleteAll();
 
@@ -187,7 +187,7 @@ public class MoveServiceIntegrationTest {
 
     //Exemplary for any move, individual perform functions tested separately
     @Test
-    public void testPerformPassMove() {
+    void testPerformPassMove() {
 
         //Setup
         Player nextPlayer = new Player();
@@ -207,7 +207,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testMakeRecalculations() {
+    void testMakeRecalculations() {
 
         //empty handler that does no move calculations, as they are tested separately
         MoveHandler testHandler = new MoveHandler() {
@@ -246,7 +246,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testMakeRecalculation_playerWins() {
+    void testMakeRecalculation_playerWins() {
         //empty handler that does no move calculations, as they are tested separately
         MoveHandler testHandler = new MoveHandler() {
             @Override
@@ -284,7 +284,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testMakeSetupRecalculations_minReached() {
+    void testMakeSetupRecalculations_minReached() {
 
         //Delete the added testMove
         moveRepository.deleteAll();
@@ -312,7 +312,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testMakeSetupRecalculations_notEnoughPlayers() {
+    void testMakeSetupRecalculations_notEnoughPlayers() {
         //Delete the testMove from setup
         moveRepository.deleteAll();
 
@@ -324,7 +324,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformDiceMove() {
+    void testPerformDiceMove() {
 
         DiceMove diceMove = new DiceMove();
         setupTestMove(diceMove, testPlayer, testGame);
@@ -358,7 +358,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformStartMove() {
+    void testPerformStartMove() {
 
         StartMove startMove = new StartMove();
         setupTestMove(startMove, testPlayer, testGame);
@@ -373,7 +373,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformFirstPassMove() {
+    void testPerformFirstPassMove() {
         Player secondPlayer = setupSecondTestPlayer();
 
         FirstPassMove firstPassMove = new FirstPassMove();
@@ -396,7 +396,7 @@ public class MoveServiceIntegrationTest {
      * Test for the execution of a FirstSettlementMove and the resulting game state
      */
     @Test
-    public void testPerformFirstSettlementMove_availableRoadMoves() {
+    void testPerformFirstSettlementMove_availableRoadMoves() {
         FirstSettlementMove firstSettlementMove = new FirstSettlementMove();
         setupTestMove(firstSettlementMove, testPlayer, testGame);
 
@@ -427,7 +427,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformFirstSettlementMove_receiveResources() {
+    void testPerformFirstSettlementMove_receiveResources() {
 
         // setup move
         FirstSettlementMove firstSettlementMove = new FirstSettlementMove();
@@ -463,7 +463,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformFirstRoadMove() {
+    void testPerformFirstRoadMove() {
         FirstRoadMove firstRoadMove = new FirstRoadMove();
         setupTestMove(firstRoadMove, testPlayer, testGame);
 
@@ -491,7 +491,7 @@ public class MoveServiceIntegrationTest {
 
 
     @Test
-    public void testPerformBuildMove_buildSettlement() {
+    void testPerformBuildMove_buildSettlement() {
         BuildMove buildMove = new BuildMove();
         setupTestMove(buildMove, testPlayer, testGame);
 
@@ -525,7 +525,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformBuildMove_buildCity() {
+    void testPerformBuildMove_buildCity() {
 
         //find random coordinate
         Coordinate coord = testBoard.getTiles().get(0).getCoordinates().get(0);
@@ -573,7 +573,7 @@ public class MoveServiceIntegrationTest {
 
 
     @Test
-    public void testPerformBuildMove_buildRoad() {
+    void testPerformBuildMove_buildRoad() {
 
         //Add funds
         testPlayer.setWallet(new Road().getPrice());
@@ -610,7 +610,7 @@ public class MoveServiceIntegrationTest {
 
 
     @Test
-    public void testPerformCardMove_KnightMove() {
+    void testPerformCardMove_KnightMove() {
         CardMove cardMove = new CardMove();
         setupTestMove(cardMove, testPlayer, testGame);
 
@@ -635,7 +635,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testCardMove_RoadProgress() {
+    void testCardMove_RoadProgress() {
         CardMove cardMove = new CardMove();
         setupTestMove(cardMove, testPlayer, testGame);
 
@@ -659,7 +659,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testCardMove_PlentyProgress() {
+    void testCardMove_PlentyProgress() {
         CardMove cardMove = new CardMove();
         setupTestMove(cardMove, testPlayer, testGame);
 
@@ -685,7 +685,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testCardMove_MonopolyProgress() {
+    void testCardMove_MonopolyProgress() {
         CardMove cardMove = new CardMove();
         setupTestMove(cardMove, testPlayer, testGame);
 
@@ -710,7 +710,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformTradeMove() {
+    void testPerformTradeMove() {
         TradeMove tradeMove = new TradeMove();
         setupTestMove(tradeMove, testPlayer, testGame);
         tradeMove.setNeededType(ResourceType.WOOL);
@@ -732,7 +732,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformPurchaseMove() {
+    void testPerformPurchaseMove() {
         PurchaseMove purchaseMove = new PurchaseMove();
         setupTestMove(purchaseMove, testPlayer, testGame);
 
@@ -756,7 +756,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformMonopolyMove() {
+    void testPerformMonopolyMove() {
         MonopolyMove monopolyMove = new MonopolyMove();
         setupTestMove(monopolyMove, testPlayer, testGame);
         monopolyMove.setMonopolyType(ResourceType.ORE);
@@ -792,7 +792,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformPlentyMove() {
+    void testPerformPlentyMove() {
         PlentyMove plentyMove = new PlentyMove();
         setupTestMove(plentyMove, testPlayer, testGame);
         plentyMove.setPlentyType1(ResourceType.BRICK);
@@ -814,7 +814,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformRoadProgressMove() {
+    void testPerformRoadProgressMove() {
         RoadProgressMove roadProgressMove = new RoadProgressMove();
         setupTestMove(roadProgressMove, testPlayer, testGame);
 
@@ -840,7 +840,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformKnightMove() {
+    void testPerformKnightMove() {
         KnightMove knightMove = new KnightMove();
         setupTestMove(knightMove, testPlayer, testGame);
         knightMove.setTileId(testBoard.getTiles().get(0).getId());
@@ -871,7 +871,7 @@ public class MoveServiceIntegrationTest {
     }
 
     @Test
-    public void testPerformStealMove() {
+    void testPerformStealMove() {
         StealMove stealMove = new StealMove();
         setupTestMove(stealMove, testPlayer, testGame);
         Player victim = setupSecondTestPlayer();

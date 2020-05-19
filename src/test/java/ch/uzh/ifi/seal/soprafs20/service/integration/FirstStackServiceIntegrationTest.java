@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class FirstStackServiceIntegrationTest {
+class FirstStackServiceIntegrationTest {
 
     @Qualifier("firstStackRepository")
     @Autowired
@@ -37,7 +37,7 @@ public class FirstStackServiceIntegrationTest {
     private Long second = 222L;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         firstStackRepository.deleteAll();
         firstStackRepository.flush();
 
@@ -49,7 +49,7 @@ public class FirstStackServiceIntegrationTest {
     }
 
     @Test
-    public void testGetNextForGame() {
+    void testGetNextForGame() {
         Player player1 = new Player();
         player1.setUserId(first);
 
@@ -80,7 +80,7 @@ public class FirstStackServiceIntegrationTest {
     }
 
     @Test
-    public void testTeardown() {
+    void testTeardown() {
         firstStackService.deleteStackForGame(stack.getGameId());
 
         List<FirstStack> stacks = firstStackRepository.findAll();

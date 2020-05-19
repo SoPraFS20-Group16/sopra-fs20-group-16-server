@@ -14,7 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -25,7 +25,7 @@ public class UserServiceTest {
     private User testUser;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
 
         // given
@@ -40,7 +40,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUser_validInputs_success() {
+    void createUser_validInputs_success() {
         // when -> any object is being save in the userRepository -> return the dummy testUser
         User createdUser = userService.createUser(testUser);
 
@@ -54,7 +54,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUser_duplicateName_throwsException() {
+    void createUser_duplicateName_throwsException() {
         // given -> a first user has already been created
         userService.createUser(testUser);
 
@@ -66,7 +66,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUser_duplicateInputs_throwsException() {
+    void createUser_duplicateInputs_throwsException() {
         // given -> a first user has already been created
         userService.createUser(testUser);
 
@@ -78,7 +78,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void logoutUser_success() {
+    void logoutUser_success() {
 
         userService.createUser(testUser);
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
@@ -88,7 +88,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loginUser_success() {
+    void loginUser_success() {
 
         userService.createUser(testUser);
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);

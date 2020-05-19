@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-public class FirstStackServiceTest {
+class FirstStackServiceTest {
 
     @Mock
     private FirstStackRepository stackRepository;
@@ -40,7 +40,7 @@ public class FirstStackServiceTest {
     private List<Player> players;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
 
         ReflectionTestUtils.setField(firstStackService, "gameService", gameService);
@@ -62,7 +62,7 @@ public class FirstStackServiceTest {
     }
 
     @Test
-    public void testGetNextForGame() {
+    void testGetNextForGame() {
 
         Player player1 = new Player();
         player1.setUserId(first);
@@ -99,7 +99,7 @@ public class FirstStackServiceTest {
     }
 
     @Test
-    public void testCreateStackForGame() {
+    void testCreateStackForGame() {
         Game game = new Game();
         game.setId(1L);
         game.setPlayers(players);

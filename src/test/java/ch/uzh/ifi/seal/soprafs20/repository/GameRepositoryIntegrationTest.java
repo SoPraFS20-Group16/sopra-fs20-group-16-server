@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class GameRepositoryIntegrationTest {
+class GameRepositoryIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -29,13 +29,13 @@ public class GameRepositoryIntegrationTest {
     private PlayerRepository playerRepository;
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         gameRepository.deleteAll();
         playerRepository.deleteAll();
     }
 
     @Test
-    public void findById_success() {
+    void findById_success() {
         // given
         Game game = new Game();
         game.setName("GameName");
@@ -57,7 +57,7 @@ public class GameRepositoryIntegrationTest {
     }
 
     @Test
-    public void findByName_success() {
+    void findByName_success() {
         // given
         Game game = new Game();
         game.setName("GameName");
@@ -76,7 +76,7 @@ public class GameRepositoryIntegrationTest {
     }
 
     @Test
-    public void findByName_noGameWithThatName() {
+    void findByName_noGameWithThatName() {
         // given
         Game game = new Game();
         game.setName("GameName");
@@ -95,7 +95,7 @@ public class GameRepositoryIntegrationTest {
     }
 
     @Test
-    public void findByName_nameNotSet() {
+    void findByName_nameNotSet() {
         // given
         Game game = new Game();
         game.setWithBots(false);
@@ -109,7 +109,7 @@ public class GameRepositoryIntegrationTest {
     }
 
     @Test
-    public void findByName_givenNull() {
+    void findByName_givenNull() {
         // given
         Game game = new Game();
         game.setWithBots(false);
@@ -129,7 +129,7 @@ public class GameRepositoryIntegrationTest {
 
 
     @Test
-    public void testGetAll_success() {
+    void testGetAll_success() {
         //given
         Game game = new Game();
         game.setName("TestGame");
@@ -145,7 +145,7 @@ public class GameRepositoryIntegrationTest {
     }
 
     @Test
-    public void testGetAll_empty() {
+    void testGetAll_empty() {
         //given
         List<Game> foundList = gameRepository.findAll();
 
@@ -155,7 +155,7 @@ public class GameRepositoryIntegrationTest {
     }
 
     @Test
-    public void persistGameWithPlayer_userAlreadyExists() {
+    void persistGameWithPlayer_userAlreadyExists() {
 
         Game testGame = new Game();
         testGame.setWithBots(false);
