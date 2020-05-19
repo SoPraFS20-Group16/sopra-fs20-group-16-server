@@ -1,9 +1,13 @@
 package ch.uzh.ifi.seal.soprafs20.entity;
 
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.MoveHistoryDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "MOVE_HISTORY")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class MoveHistory {
 
     @Id
@@ -40,5 +44,9 @@ public class MoveHistory {
 
     public void setMoveName(String moveName) {
         this.moveName = moveName;
+    }
+
+    public MoveHistoryDTO getDTO() {
+        return DTOMapper.INSTANCE.convertMoveHistoryToMoveHistoryDTO(this);
     }
 }

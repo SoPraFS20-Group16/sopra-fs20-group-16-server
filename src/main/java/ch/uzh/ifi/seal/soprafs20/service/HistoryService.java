@@ -5,6 +5,7 @@ import ch.uzh.ifi.seal.soprafs20.entity.MoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.repository.GameHistoryRepository;
+import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -39,11 +40,11 @@ public class HistoryService {
         return gameHistoryRepository.saveAndFlush(gameHistory);
     }
 
-    public void addMoveToHistory(Move move) {
+    public void addMoveToHistory(Move move, MoveHandler handler) {
 
         Player player = playerService.findPlayerByUserId(move.getUserId());
 
-        MoveHistory moveHistory = new MoveHistory();
+        MoveHistory moveHistory = handler.getHistory();
         moveHistory.setUserId(player.getUserId());
         moveHistory.setUsername(player.getUsername());
         moveHistory.setMoveName(move.getClass().getSimpleName());

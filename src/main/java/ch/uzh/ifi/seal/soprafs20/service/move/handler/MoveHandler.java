@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler;
 
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.MoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.MoveDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;
@@ -25,6 +26,10 @@ public interface MoveHandler {
 
     default MoveDTO mapToDTO(Move move) {
         return DTOMapper.INSTANCE.convertMoveToMoveDTO(move);
+    }
+
+    default MoveHistory getHistory() {
+        return new MoveHistory();
     }
 }
 

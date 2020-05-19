@@ -1,7 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler.standard;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.entity.DiceMoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.MoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.DiceMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;
@@ -17,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DiceMoveHandler implements MoveHandler {
 
     private boolean robberRoutine = false;
+    private int diceRoll;
 
     @Override
     public void perform(Move move, MoveService moveService) {
@@ -25,7 +28,7 @@ public class DiceMoveHandler implements MoveHandler {
             throw new IllegalStateException(ErrorMsg.WRONG_HANDLER_SETUP);
         }
 
-        int diceRoll = getDiceRoll();
+        diceRoll = getDiceRoll();
 
         if (diceRoll == 7) {
             robberRoutine = true;
@@ -47,6 +50,13 @@ public class DiceMoveHandler implements MoveHandler {
         else {
             return MoveCalculator.calculateAllStandardMoves(game);
         }
+    }
+
+    @Override
+    public MoveHistory getHistory() {
+        DiceMoveHistory history = new DiceMoveHistory();
+        history.setRoll(this.diceRoll);
+        return history;
     }
 
     private int getDiceRoll() {

@@ -111,7 +111,7 @@ public class MoveService {
         log.debug("passed handler");
 
         //add move to history
-        historyService.addMoveToHistory(move);
+        historyService.addMoveToHistory(move, handler);
 
         // delete all recent moves of the game
         deleteAllMovesForGame(move.getGameId());

@@ -17,6 +17,7 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.DiceMoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.GameHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.MoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
@@ -170,11 +171,17 @@ public interface DTOMapper {
     @Mapping(source = "latitude", target = "latitude")
     UserLocationDTO convertUserLocationToUserLocationDTO(UserLocation userLocation);
 
+    @Mapping(source = "moves", target = "moves")
+    GameHistoryDTO convertGameHistoryToGameHistoryDTO(GameHistory gameHistory);
+
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "moveName", target = "moveName")
     MoveHistoryDTO convertMoveHistoryToMoveHistoryDTO(MoveHistory moveHistory);
 
-    @Mapping(source = "moves", target = "moves")
-    GameHistoryDTO convertGameHistoryToGameHistoryDTO(GameHistory gameHistory);
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "moveName", target = "moveName")
+    @Mapping(source = "roll", target = "roll")
+    DiceMoveHistoryDTO convertDiceMoveHistoryToDiceMoveHistoryDTO(DiceMoveHistory diceMoveHistory);
 }
