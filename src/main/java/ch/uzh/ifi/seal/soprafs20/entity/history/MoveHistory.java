@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.entity;
+package ch.uzh.ifi.seal.soprafs20.entity.history;
 
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.MoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.mapper.DTOMapper;

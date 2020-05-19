@@ -1,9 +1,9 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.handler.standard;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-import ch.uzh.ifi.seal.soprafs20.entity.DiceMoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.MoveHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.DiceMoveHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.MoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.DiceMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.service.move.MoveService;

@@ -1,10 +1,16 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
-import ch.uzh.ifi.seal.soprafs20.entity.*;
+import ch.uzh.ifi.seal.soprafs20.entity.Game;
+import ch.uzh.ifi.seal.soprafs20.entity.User;
+import ch.uzh.ifi.seal.soprafs20.entity.UserLocation;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Building;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.history.BuildMoveHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.DiceMoveHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.GameHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.MoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
@@ -13,10 +19,13 @@ import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.StealMove;
+import ch.uzh.ifi.seal.soprafs20.entity.summary.GameSummary;
+import ch.uzh.ifi.seal.soprafs20.entity.summary.PlayerSummary;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.BuildMoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.DiceMoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.GameHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.MoveHistoryDTO;
@@ -184,4 +193,10 @@ public interface DTOMapper {
     @Mapping(source = "moveName", target = "moveName")
     @Mapping(source = "roll", target = "roll")
     DiceMoveHistoryDTO convertDiceMoveHistoryToDiceMoveHistoryDTO(DiceMoveHistory diceMoveHistory);
+
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "moveName", target = "moveName")
+    @Mapping(source = "buildingType", target = "buildingType")
+    BuildMoveHistoryDTO convertBuildMoveHistoryToBuildMoveHistoryDTO(BuildMoveHistory buildMoveHistory);
 }

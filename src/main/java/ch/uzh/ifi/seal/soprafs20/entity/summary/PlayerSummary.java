@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.entity;
+package ch.uzh.ifi.seal.soprafs20.entity.summary;
 
 import javax.persistence.*;
 

@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs20.entity;
+package ch.uzh.ifi.seal.soprafs20.entity.history;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.rest.dto.history;
 
-import ch.uzh.ifi.seal.soprafs20.entity.MoveHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.MoveHistory;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.service;
 
-import ch.uzh.ifi.seal.soprafs20.entity.GameHistory;
-import ch.uzh.ifi.seal.soprafs20.entity.MoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.history.GameHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.MoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.repository.GameHistoryRepository;
 import ch.uzh.ifi.seal.soprafs20.service.move.handler.MoveHandler;

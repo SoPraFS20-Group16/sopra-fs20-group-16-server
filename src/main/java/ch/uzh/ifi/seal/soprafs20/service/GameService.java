@@ -3,12 +3,12 @@ package ch.uzh.ifi.seal.soprafs20.service;
 
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
-import ch.uzh.ifi.seal.soprafs20.entity.GameSummary;
-import ch.uzh.ifi.seal.soprafs20.entity.PlayerSummary;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.PlayerQueue;
+import ch.uzh.ifi.seal.soprafs20.entity.summary.GameSummary;
+import ch.uzh.ifi.seal.soprafs20.entity.summary.PlayerSummary;
 import ch.uzh.ifi.seal.soprafs20.repository.GameRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.GameSummaryRepository;
 import ch.uzh.ifi.seal.soprafs20.repository.PlayerRepository;
