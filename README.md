@@ -116,24 +116,24 @@ whereas the last one should convey our vision about the future of Toucan.
 The bots in the game are at the moment rather limited in their game play strategies. This could
 be improved in different ways:
 
-    - The bots will build roads and settlements whenever they can, and also see that they use the minimum amount of
-    road to build new settlements.
-    - The bots take advantage of their resources and trade to the resource least possessed as soon as a threshold is 
-    reached. This will ensure that the
-    bots have an optimal resource distribution and therefore can build roads and settlements quicker.
-    - The bots actively seek out tiles that have a high probability of distributing resources and will build in a way
-    they have an equal resource distribution.
+- The bots will build roads and settlements whenever they can, and also see that they use the minimum amount of
+road to build new settlements.
+- The bots take advantage of their resources and trade to the resource least possessed as soon as a threshold is 
+reached. This will ensure that the
+bots have an optimal resource distribution and therefore can build roads and settlements quicker.
+- The bots actively seek out tiles that have a high probability of distributing resources and will build in a way
+they have an equal resource distribution.
     
 ### Trading 2.0
 
 Trading resources in the game currently is only possible with the *National Bank of Toucan*. This can be improved in the 
 following ways:
 
-    - Players can offer a resouce trades to all players. If a player chooses to accept the trade within a given time
-    then the trade is executed.
-    - Players can offer resource trades to specific players. The player can then accept or decline the offered trade
-    - Players that have a settlement at specific coordinates, for example Harbour coordinates at the edge of the board,
-    have acces to a more favorable trading ratio when trading with the *National Bank of Toucan*.
+- Players can offer a resouce trades to all players. If a player chooses to accept the trade within a given time
+then the trade is executed.
+- Players can offer resource trades to specific players. The player can then accept or decline the offered trade
+- Players that have a settlement at specific coordinates, for example Harbour coordinates at the edge of the board,
+have acces to a more favorable trading ratio when trading with the *National Bank of Toucan*.
     
     
 ### The Joint Empire

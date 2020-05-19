@@ -408,11 +408,12 @@ public class MoveService {
         Game game = gameService.findGameById(monopolyMove.getGameId());
 
         // get player that monopolizes and opponents
-        Player player = game.getCurrentPlayer();
-        List<Player> opponents = game.getPlayers();
-        opponents.remove(player);
+        Player tycoon = game.getCurrentPlayer();
 
-        playerService.monopolizeResources(monopolyMove, player, opponents);
+        // get all players
+        List<Player> players = game.getPlayers();
+
+        playerService.monopolizeResources(monopolyMove, tycoon, players);
     }
 
     // performs plenty move
