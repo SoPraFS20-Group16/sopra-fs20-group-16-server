@@ -102,13 +102,13 @@ public class PlayerService {
         int randomCard = ThreadLocalRandom.current().nextInt(1, 100 + 1);
 
         if (randomCard >= 1 && randomCard <= 56) {
-            devType = DevelopmentType.KNIGHT;
+            devType = DevelopmentType.PLENTYPROGRESS;
         }
         else if (randomCard >= 57 && randomCard <= 76) {
-            devType = DevelopmentType.VICTORYPOINT;
+            devType = DevelopmentType.MONOPOLYPROGRESS;
         }
         else if (randomCard >= 77 && randomCard <= 84) {
-            devType = DevelopmentType.ROADPROGRESS;
+            devType = DevelopmentType.MONOPOLYPROGRESS;
         }
         else if (randomCard >= 85 && randomCard <= 92) {
             devType = DevelopmentType.PLENTYPROGRESS;
@@ -164,27 +164,29 @@ public class PlayerService {
         return playerRepository.saveAndFlush(player);
     }
 
-    public void monopolizeResources(MonopolyMove move, Player player, List<Player> opponents) {
+    public void monopolizeResources(MonopolyMove move, Player tycoon, List<Player> players) {
 
         // get monopolized resource
         ResourceType monopolyType = move.getMonopolyType();
 
-        // get funds of player
-        ResourceWallet funds = player.getWallet();
+        // get funds from tycoon
+        ResourceWallet funds = tycoon.getWallet();
 
-        // get all resources of monopoly type from all opponents and add them to player funds
-        for (Player opponent : opponents) {
+        // get all resources of monopoly type from all opponents and add them to the tycoon funds
+        for (Player player: players) {
+            if (!player.equals(tycoon)) {
 
-            ResourceWallet wallet = opponent.getWallet();
-            int transfer = wallet.getResourceAmount(monopolyType);
+                ResourceWallet opponentFunds = player.getWallet();
+                int transfer = opponentFunds.getResourceAmount(monopolyType);
 
-            wallet.removeResource(monopolyType, transfer);
-            funds.addResource(monopolyType, transfer);
+                funds.addResource(monopolyType, transfer);
+                opponentFunds.removeResource(monopolyType, transfer);
 
-            save(opponent);
+                save(player);
+            }
         }
 
-        save(player);
+        save(tycoon);
     }
 
     public void plentyResources(PlentyMove move) {
