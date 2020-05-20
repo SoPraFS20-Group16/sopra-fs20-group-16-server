@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
 import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
+import ch.uzh.ifi.seal.soprafs20.constant.PlentyType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
@@ -364,14 +365,13 @@ class DTOMapperTest {
 
     @Test
     void testConvertPlentyMoveToPlentyMoveDTO() {
-        final ResourceType plenty1 = ResourceType.BRICK;
-        final ResourceType plenty2 = ResourceType.GRAIN;
+
+        final PlentyType plentyType = PlentyType.MINER;
 
         PlentyMove move = new PlentyMove();
         move.setId(testMoveId);
         move.setUserId(testUserId);
-        move.setPlentyType1(plenty1);
-        move.setPlentyType2(plenty2);
+        move.setPlentyType(plentyType);
 
         PlentyMoveDTO moveDTO = DTOMapper.INSTANCE.convertPlentyMoveToPlentyMoveDTO(move);
 
@@ -380,8 +380,7 @@ class DTOMapperTest {
         assertEquals(move.getClass().getSimpleName(), moveDTO.getMoveName(),
                 "The move name is not mapped correctly");
 
-        assertEquals(plenty1, moveDTO.getPlentyType1(), "Plenty1 is not mapped correctly");
-        assertEquals(plenty2, moveDTO.getPlentyType2(), "Plenty2 is not mapped correctly");
+        assertEquals(plentyType, moveDTO.getPlentyType(), "PlentyType is not mapped correctly");
     }
 
 

@@ -1063,8 +1063,8 @@ class MoveCalculatorIntegrationTest {
         // assert
         moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
 
-        assertEquals(Math.pow(ResourceType.values().length, 2), moves.size(),
-                "there should be a separate move for every combination of two resource types");
+        assertEquals(PlentyType.values().length, moves.size(),
+                "there should be a separate move for every plenty type");
         for (Move move : moves) {
             assertEquals(PlentyMove.class, move.getClass(),
                     "the added move must be a plenty move");

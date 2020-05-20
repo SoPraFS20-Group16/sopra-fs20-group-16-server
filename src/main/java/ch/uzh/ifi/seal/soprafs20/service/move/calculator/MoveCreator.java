@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs20.service.move.calculator;
 
 import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
+import ch.uzh.ifi.seal.soprafs20.constant.PlentyType;
 import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
@@ -214,20 +215,16 @@ public class MoveCreator {
 
         List<PlentyMove> plentyMoves = new ArrayList<>();
 
-        // create a move for every resource type combination (of two)
-        for (ResourceType type1 : ResourceType.values()) {
-            for (ResourceType type2 : ResourceType.values()) {
-                PlentyMove move = new PlentyMove();
+        // create the and add the three different plenty move types
+        for (PlentyType type: PlentyType.values()) {
+            PlentyMove move = new PlentyMove();
+            move.setGameId(game.getId());
+            move.setUserId(player.getUserId());
+            move.setPlentyType(type);
 
-                move.setPlentyType1(type1);
-                move.setPlentyType2(type2);
-                move.setGameId(game.getId());
-                move.setUserId(player.getUserId());
-
-                plentyMoves.add(move);
-
-            }
+            plentyMoves.add(move);
         }
+
         // return list of plentyMoves
         return plentyMoves;
     }

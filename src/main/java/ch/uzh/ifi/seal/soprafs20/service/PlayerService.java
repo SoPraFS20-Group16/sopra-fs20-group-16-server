@@ -1,9 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service;
 
-import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
-import ch.uzh.ifi.seal.soprafs20.constant.ErrorMsg;
-import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
-import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
+import ch.uzh.ifi.seal.soprafs20.constant.*;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.ResourceWallet;
@@ -102,12 +99,15 @@ public class PlayerService {
         int randomCard = ThreadLocalRandom.current().nextInt(1, 100 + 1);
 
         if (randomCard >= 1 && randomCard <= 56) {
+            // TODO: change back to KNIGHT
             devType = DevelopmentType.PLENTYPROGRESS;
         }
         else if (randomCard >= 57 && randomCard <= 76) {
+            // TODO: change back to VICTORY
             devType = DevelopmentType.MONOPOLYPROGRESS;
         }
         else if (randomCard >= 77 && randomCard <= 84) {
+            // TODO: change back to ROAD PROGRESS
             devType = DevelopmentType.MONOPOLYPROGRESS;
         }
         else if (randomCard >= 85 && randomCard <= 92) {
@@ -198,19 +198,29 @@ public class PlayerService {
             throw new NullPointerException(ErrorMsg.NO_PLAYER_FOUND_WITH_USER_ID);
         }
 
-        // get requested resource type(s) and funds from player
-        ResourceType type1 = move.getPlentyType1();
-        ResourceType type2 = move.getPlentyType2();
-
+        // get funds from player
         ResourceWallet funds = player.getWallet();
 
-        // add resources to wallet
-        funds.addResource(type1, 1);
-        funds.addResource(type2, 1);
+        // update wallet according to plenty type
+        PlentyType type = move.getPlentyType();
 
-        // save
-        player.setWallet(funds);
-        playerRepository.saveAndFlush(player);
+        switch (type) {
+            case MINER:
+                funds.addResource(ResourceType.BRICK, 2);
+                funds.addResource(ResourceType.ORE, 2);
+                break;
+            case FARMER:
+                funds.addResource(ResourceType.WOOL, 2);
+                funds.addResource(ResourceType.GRAIN, 2);
+                break;
+            case LUMBERJACK:
+                funds.addResource(ResourceType.LUMBER, 5);
+                break;
+            default:
+                throw new IllegalStateException(ErrorMsg.PLENTY_TYPE_INVALID);
+        }
+
+        save(player);
     }
 
     public Player payForBuilding(BuildMove move) {

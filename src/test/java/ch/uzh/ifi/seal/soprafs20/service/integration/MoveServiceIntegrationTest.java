@@ -1,9 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.integration;
 
-import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
-import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
-import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
-import ch.uzh.ifi.seal.soprafs20.constant.TileType;
+import ch.uzh.ifi.seal.soprafs20.constant.*;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.game.*;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.City;
@@ -676,8 +673,8 @@ class MoveServiceIntegrationTest {
         List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
 
         //All next moves are PlentyMoves
-        assertEquals(Math.pow(ResourceType.values().length, 2), moves.size(),
-                "There should be a PlentyMove for every combination of two ResourceCards");
+        assertEquals(PlentyType.values().length, moves.size(),
+                "there should be a separate move for every plenty type");
         for (Move move : moves) {
             assertEquals(PlentyMove.class, move.getClass(),
                     "When a PlentyProgress Card is played, then PlentyMoves will be calculated");
@@ -792,11 +789,10 @@ class MoveServiceIntegrationTest {
     }
 
     @Test
-    void testPerformPlentyMove() {
+    void testPerformPlentyMove_Miner() {
         PlentyMove plentyMove = new PlentyMove();
         setupTestMove(plentyMove, testPlayer, testGame);
-        plentyMove.setPlentyType1(ResourceType.BRICK);
-        plentyMove.setPlentyType2(ResourceType.LUMBER);
+        plentyMove.setPlentyType(PlentyType.MINER);
 
         testPlayer.setWallet(new ResourceWallet());
         testPlayer = playerService.save(testPlayer);
@@ -807,9 +803,49 @@ class MoveServiceIntegrationTest {
         // assert that the plenty resources are added to the players' wallet
         testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
 
-        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.BRICK),
+        assertEquals(2, testPlayer.getWallet().getResourceAmount(ResourceType.BRICK),
                 "this plenty resource should have been added");
-        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.LUMBER),
+        assertEquals(2, testPlayer.getWallet().getResourceAmount(ResourceType.ORE),
+                "this plenty resource should have been added");
+    }
+
+    @Test
+    void testPerformPlentyMove_Farmer() {
+        PlentyMove plentyMove = new PlentyMove();
+        setupTestMove(plentyMove, testPlayer, testGame);
+        plentyMove.setPlentyType(PlentyType.FARMER);
+
+        testPlayer.setWallet(new ResourceWallet());
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        moveService.performMove(plentyMove);
+
+        // assert that the plenty resources are added to the players' wallet
+        testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
+
+        assertEquals(2, testPlayer.getWallet().getResourceAmount(ResourceType.WOOL),
+                "this plenty resource should have been added");
+        assertEquals(2, testPlayer.getWallet().getResourceAmount(ResourceType.GRAIN),
+                "this plenty resource should have been added");
+    }
+
+    @Test
+    void testPerformPlentyMove_Lumberjack() {
+        PlentyMove plentyMove = new PlentyMove();
+        setupTestMove(plentyMove, testPlayer, testGame);
+        plentyMove.setPlentyType(PlentyType.LUMBERJACK);
+
+        testPlayer.setWallet(new ResourceWallet());
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        moveService.performMove(plentyMove);
+
+        // assert that the plenty resources are added to the players' wallet
+        testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
+
+        assertEquals(5, testPlayer.getWallet().getResourceAmount(ResourceType.LUMBER),
                 "this plenty resource should have been added");
     }
 

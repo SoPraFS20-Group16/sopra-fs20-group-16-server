@@ -163,8 +163,7 @@ public interface DTOMapper {
     @Mapping(source = "id", target = "moveId")
     @Mapping(source = "moveName", target = "moveName")
     @Mapping(source = "userId", target = "userId")
-    @Mapping(source = "plentyType1", target = "plentyType1")
-    @Mapping(source = "plentyType2", target = "plentyType2")
+    @Mapping(source = "plentyType", target = "plentyType")
     PlentyMoveDTO convertPlentyMoveToPlentyMoveDTO(PlentyMove plentyMove);
 
     @Mapping(source = "id", target = "moveId")
