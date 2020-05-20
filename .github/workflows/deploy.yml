@@ -50,4 +50,4 @@ jobs:
       run: heroku git:remote -a $HEROKU_APP_NAME
 
     - name: deploy project to heroku
-      run: git push -f heroku HEAD:refs/heads/master
+      run: git push heroku HEAD:refs/heads/master
