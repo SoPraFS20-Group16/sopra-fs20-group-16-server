@@ -100,7 +100,7 @@ public class UserLocationService {
      * @param userId the userId
      * @return the found user location
      */
-    private UserLocation findByUserId(Long userId) {
+    public UserLocation findByUserId(Long userId) {
         return userLocationRepository.findByUserId(userId);
     }
 }

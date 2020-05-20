@@ -174,8 +174,6 @@ class HistoryServiceIntegrationTest {
         assertEquals(testGame.getId(), history.getGameId(), "The gameId does not match");
     }
 
-    //Todo: Test createGameHistory in Unit test
-
     /**
      * Tests the addMoveToHistory method for a default move history by using a pass move
      */
