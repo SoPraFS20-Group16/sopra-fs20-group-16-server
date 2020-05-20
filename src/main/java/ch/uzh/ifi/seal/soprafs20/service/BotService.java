@@ -63,7 +63,6 @@ public class BotService {
 
     private Long findUnusedGeneratedValue() {
 
-        //TODO: Revisit this Id generation!
         return new Date().getTime();
     }
 
@@ -82,9 +81,8 @@ public class BotService {
 
         List<Move> followUpMoves = moveService.findMovesForGameAndPlayer(gameId, botId);
 
-        if (!followUpMoves.isEmpty()) {
-            performBotMove(gameId, botId);
-        }
+        if (!followUpMoves.isEmpty()) performBotMove(gameId, botId);
+
     }
 
     private Move chooseMove(List<Move> moves) {
