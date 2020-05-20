@@ -4,6 +4,7 @@ import ch.uzh.ifi.seal.soprafs20.constant.*;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.UserLocation;
+import ch.uzh.ifi.seal.soprafs20.entity.game.Board;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
@@ -39,8 +40,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * DTOMapperTest
@@ -95,6 +95,7 @@ class DTOMapperTest {
         //Game instance
         Game game = new Game();
         game.setId(1L);
+        game.setWithBots(true);
 
         //Expected Result
         GameLinkDTO expected = new GameLinkDTO();
@@ -107,6 +108,8 @@ class DTOMapperTest {
         assertEquals(expected.getUrl(), result.getUrl(), "The game url is not mapped correctly");
         assertEquals("/games/1", expected.getUrl(),
                 "The setUrl method of GameLinkDTO does not work correctly");
+
+        assertTrue(result.isWithBots(), "The bot status is not mapped correctly");
     }
 
     @Test
@@ -131,11 +134,19 @@ class DTOMapperTest {
 
     @Test
     void testGameToGameDTO() {
+        final int testLastDiceRoll = 6;
         //Game instance
         Game game = new Game();
         game.setId(1L);
         game.setName("GameName");
         game.setWithBots(false);
+
+        game.setBoard(new Board());
+        game.setPlayers(Collections.singletonList(new Player()));
+        game.setStarted(true);
+        game.setLastDiceRoll(testLastDiceRoll);
+        game.setCurrentPlayer(game.getPlayers().get(0));
+
 
         //Expected Result
         GameDTO expected = new GameDTO();
@@ -152,7 +163,14 @@ class DTOMapperTest {
         assertEquals(expected.isWithBots(), result.isWithBots(),
                 "the withBot property is not mapped correctly");
 
-        //TODO: Is this test case still up to date?
+        assertNotNull(result.getBoard(), "The board was not mapped");
+        assertEquals(testLastDiceRoll, result.getLastDiceRoll(),
+                "The dice roll is not mapped correctly");
+        assertNotNull(result.getCurrentPlayer(), "The current player is not mapped correctly");
+        assertNotNull(result.getPlayers(), "The players are not mapped correctly");
+        assertEquals(1, result.getPlayers().size(), "There should be one player");
+        assertTrue(result.getStarted(), "The started status is not mapped correctly");
+
     }
 
     @Test
@@ -493,9 +511,8 @@ class DTOMapperTest {
 
         assertEquals(testUserId, historyDTO.getUserId(), "the userId is not mapped correctly");
         assertEquals(testUsername, historyDTO.getUsername(), "The username is not mapped correctly");
-        assertEquals(DiceMove.class.getSimpleName(), historyDTO.getMoveName(),
+        assertEquals(BuildMove.class.getSimpleName(), historyDTO.getMoveName(),
                 "The moveName is not mapped correctly");
         assertEquals(testBuildingType, historyDTO.getBuildingType());
     }
-
 }
