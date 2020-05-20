@@ -1,9 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.rest.mapper;
 
-import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
-import ch.uzh.ifi.seal.soprafs20.constant.PlentyType;
-import ch.uzh.ifi.seal.soprafs20.constant.ResourceType;
-import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
+import ch.uzh.ifi.seal.soprafs20.constant.*;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.UserLocation;
@@ -12,12 +9,11 @@ import ch.uzh.ifi.seal.soprafs20.entity.game.Tile;
 import ch.uzh.ifi.seal.soprafs20.entity.game.buildings.Settlement;
 import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.game.coordinate.Coordinate;
+import ch.uzh.ifi.seal.soprafs20.entity.history.BuildMoveHistory;
+import ch.uzh.ifi.seal.soprafs20.entity.history.DiceMoveHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.history.GameHistory;
 import ch.uzh.ifi.seal.soprafs20.entity.history.MoveHistory;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.CardMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
-import ch.uzh.ifi.seal.soprafs20.entity.moves.TradeMove;
+import ch.uzh.ifi.seal.soprafs20.entity.moves.*;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.KnightMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.MonopolyMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.development.PlentyMove;
@@ -28,6 +24,8 @@ import ch.uzh.ifi.seal.soprafs20.rest.dto.building.BuildingDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.*;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.CoordinateDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.game.board.TileDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.BuildMoveHistoryDTO;
+import ch.uzh.ifi.seal.soprafs20.rest.dto.history.DiceMoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.GameHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.history.MoveHistoryDTO;
 import ch.uzh.ifi.seal.soprafs20.rest.dto.move.*;
@@ -459,6 +457,45 @@ class DTOMapperTest {
         assertEquals(1, historyDTO.getMoves().size(), "The moves are not mapped correctly");
         assertEquals(testUserId, historyDTO.getMoves().get(0).getUserId(),
                 "The mapping of the array elements does not work");
+    }
+
+    @Test
+    void convertDiceMoveHistoryToDiceMoveHistoryDTO() {
+        final int roll = 6;
+        DiceMoveHistory moveHistory = new DiceMoveHistory();
+        moveHistory.setUserId(testUserId);
+        moveHistory.setMoveName(DiceMove.class.getSimpleName());
+        moveHistory.setUsername(testUsername);
+        moveHistory.setRoll(roll);
+
+
+        DiceMoveHistoryDTO historyDTO = DTOMapper.INSTANCE
+                .convertDiceMoveHistoryToDiceMoveHistoryDTO(moveHistory);
+
+        assertEquals(testUserId, historyDTO.getUserId(), "the userId is not mapped correctly");
+        assertEquals(testUsername, historyDTO.getUsername(), "The username is not mapped correctly");
+        assertEquals(DiceMove.class.getSimpleName(), historyDTO.getMoveName(),
+                "The moveName is not mapped correctly");
+        assertEquals(6, historyDTO.getRoll());
+    }
+
+    @Test
+    void convertBuildMoveHistoryToBuildMoveHistoryDTO() {
+        final BuildingType testBuildingType = BuildingType.SETTLEMENT;
+        BuildMoveHistory history = new BuildMoveHistory();
+        history.setUserId(testUserId);
+        history.setMoveName(BuildMove.class.getSimpleName());
+        history.setUsername(testUsername);
+        history.setBuildingType(testBuildingType);
+
+        BuildMoveHistoryDTO historyDTO = DTOMapper.INSTANCE
+                .convertBuildMoveHistoryToBuildMoveHistoryDTO(history);
+
+        assertEquals(testUserId, historyDTO.getUserId(), "the userId is not mapped correctly");
+        assertEquals(testUsername, historyDTO.getUsername(), "The username is not mapped correctly");
+        assertEquals(DiceMove.class.getSimpleName(), historyDTO.getMoveName(),
+                "The moveName is not mapped correctly");
+        assertEquals(testBuildingType, historyDTO.getBuildingType());
     }
 
 }
