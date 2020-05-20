@@ -157,6 +157,19 @@ public class GameService {
         return savedGame;
     }
 
+    /**
+     * Finds the game by passing in a Game object and checking
+     * against every primary key of the entity
+     * <p>
+     * Was introduced depending on the userService (template) as an example,
+     * but should be replaced by methods looking for specified keys.
+     * <p>
+     * This method otherwise needs to possibly change every time the Game class is updated
+     *
+     * @param gameInput the game input
+     * @return the game
+     */
+    @Deprecated
     public Game findGame(Game gameInput) {
 
         if (gameInput == null) {
@@ -197,10 +210,12 @@ public class GameService {
         return game.isPlayer(player);
     }
 
-    public Game findGameById(Long gameId) {
-        return gameRepository.findById(gameId).orElse(null);
-    }
-
+    /**
+     * Add player to game.
+     *
+     * @param createdPlayer the created player
+     * @param game          the game
+     */
     public void addPlayerToGame(Player createdPlayer, Game game) {
 
         //Add the player to the queue of the game
@@ -214,10 +229,22 @@ public class GameService {
         moveService.makeSetupRecalculations(game);
     }
 
+    /**
+     * Save game.
+     *
+     * @param game the game
+     * @return the game
+     */
     public Game save(Game game) {
         return gameRepository.saveAndFlush(game);
     }
 
+    /**
+     * Find game the user is a part of
+     *
+     * @param userId the user id
+     * @return the game
+     */
     public Game findGameOfUser(Long userId) {
 
         List<Game> games = gameRepository.findAll();
@@ -231,6 +258,11 @@ public class GameService {
         return null;
     }
 
+    /**
+     * Teardown game with id.
+     *
+     * @param gameId the game id
+     */
     public void teardownGameWithId(Long gameId) {
 
         // create game summary
@@ -249,6 +281,12 @@ public class GameService {
         this.deleteGameWithId(gameId);
     }
 
+    /**
+     * Creates a summary object for the game with the given id
+     * and saves it.
+     *
+     * @param gameId the games id
+     */
     private void createGameSummary(Long gameId) {
 
         Game game = findGameById(gameId);
@@ -275,6 +313,22 @@ public class GameService {
         gameSummaryRepository.saveAndFlush(summary);
     }
 
+    /**
+     * Find game by its id.
+     *
+     * @param gameId the game id
+     * @return the game
+     */
+    public Game findGameById(Long gameId) {
+        return gameRepository.findById(gameId).orElse(null);
+    }
+
+    /**
+     * Find game summary of the game with the given id.
+     *
+     * @param gameId the game id
+     * @return the game summary
+     */
     public GameSummary findGameSummary(Long gameId) {
 
         return gameSummaryRepository.findByGameId(gameId);
@@ -288,6 +342,11 @@ public class GameService {
         }
     }
 
+    /**
+     * Fill the game with bots until the default player amount is reached
+     *
+     * @param game the game
+     */
     public void fillWithBots(Game game) {
 
         int playerCount = game.getPlayers().size();

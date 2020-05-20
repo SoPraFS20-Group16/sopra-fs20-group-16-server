@@ -123,7 +123,21 @@ public class MoveService {
         makeRecalculations(game, handler, move);
     }
 
-    // is performed after performMove terminates
+    /**
+     * Recalculates the possible next moves.
+     * Called after the given move was performed.
+     * The passed handler may contain information about the possible next moves
+     * (A counter for example)
+     * <p>
+     * This method is deprecated because relying on information in the handler is error prone.
+     * It should only be relied on information that was saved to a repository and not
+     * in a service like worker
+     *
+     * @param game    the game
+     * @param handler the handler
+     * @param move    the move
+     */
+    @Deprecated
     public void makeRecalculations(Game game, MoveHandler handler, Move move) {
 
         //Calculate current players points
@@ -150,6 +164,13 @@ public class MoveService {
         notifyBotIfNeeded(game);
     }
 
+    /**
+     * Helper method that takes a game and recalculates the current players victory points
+     * after a move was executed.
+     *
+     * @param game the game for which the current players victory points should be recalculated
+     * @return the current player of the game
+     */
     private Player updateVictoryPoints(Game game) {
         // update the victory points of the current player
         Player player = game.getCurrentPlayer();
@@ -168,18 +189,32 @@ public class MoveService {
 
     // -- helper methods --
 
-    public boolean canExitFirstPart(Long gameId) {
-
-        Game game = gameService.findGameById(gameId);
-
-        int numberOfPlayers = game.getPlayers().size();
-        int numberOfRoads = game.getBoard().getRoads().size();
-
-        return (numberOfRoads / GameConstants.NUMBER_OF_FIRST_ROUNDS) == numberOfPlayers;
+    /**
+     * Delete all moves for the given game
+     * <p>
+     * Is used to remove expired moves after a move was executed
+     *
+     * @param gameId the games id
+     */
+    public void deleteAllMovesForGame(Long gameId) {
+        List<Move> expiredMoves = moveRepository.findAllByGameId(gameId);
+        moveRepository.deleteAll(expiredMoves);
+        moveRepository.flush();
     }
 
-    public List<Move> findMovesForGameAndPlayer(Long gameId, Long userId) {
-        return moveRepository.findAllByGameIdAndUserId(gameId, userId);
+    /**
+     * Sees if the current player of a game is a bot and if so asks the botService
+     * to perform the next move.
+     *
+     * @param game the game
+     */
+    private void notifyBotIfNeeded(Game game) {
+
+        Player currentPlayer = game.getCurrentPlayer();
+
+        if (currentPlayer.isBot()) {
+            botService.performBotMove(game.getId(), currentPlayer.getUserId());
+        }
     }
 
     /**
@@ -194,6 +229,41 @@ public class MoveService {
         return optionalMove.orElse(null);
     }
 
+    /**
+     * Checks if the game can exit the firstPart subroutine by checking if every player
+     * built the required amount of roads.
+     *
+     * @param gameId the game id
+     * @return boolean indicating if first part can be exited
+     */
+    public boolean canExitFirstPart(Long gameId) {
+
+        Game game = gameService.findGameById(gameId);
+
+        int numberOfPlayers = game.getPlayers().size();
+        int numberOfRoads = game.getBoard().getRoads().size();
+
+        return (numberOfRoads / GameConstants.NUMBER_OF_FIRST_ROUNDS) == numberOfPlayers;
+    }
+
+    /**
+     * Finds all the moves that a given player can make in a game.
+     *
+     * @param gameId the games id
+     * @param userId the users id
+     * @return the list of moves
+     */
+    public List<Move> findMovesForGameAndPlayer(Long gameId, Long userId) {
+        return moveRepository.findAllByGameIdAndUserId(gameId, userId);
+    }
+
+    // -- start move(s) --
+
+    /**
+     * Checks for the game if the start move can be made available
+     *
+     * @param game the game
+     */
     public void makeSetupRecalculations(Game game) {
 
         //Calculate the first move
@@ -204,14 +274,13 @@ public class MoveService {
         }
     }
 
-    public void deleteAllMovesForGame(Long gameId) {
-        List<Move> expiredMoves = moveRepository.findAllByGameId(gameId);
-        moveRepository.deleteAll(expiredMoves);
-        moveRepository.flush();
-    }
+    // -- initial moves --
 
-    // -- start move(s) --
-
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param startMove the start move
+     */
     public void performStartMove(StartMove startMove) {
 
         Game startedGame = gameService.findGameById(startMove.getGameId());
@@ -229,8 +298,11 @@ public class MoveService {
         gameService.save(startedGame);
     }
 
-    // -- initial moves --
-
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param firstPassMove the first pass move
+     */
     public void performFirstPassMove(FirstPassMove firstPassMove) {
         Game game = gameService.findGameById(firstPassMove.getGameId());
 
@@ -244,6 +316,11 @@ public class MoveService {
         gameService.save(game);
     }
 
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param move the move
+     */
     public void performFirstSettlementMove(FirstSettlementMove move) {
 
         // build settlement
@@ -261,10 +338,6 @@ public class MoveService {
             }
         }
 
-    }
-
-    public void performFirstRoadMove(FirstRoadMove firstRoadMove) {
-        boardService.build(firstRoadMove);
     }
 
     // -- standard moves --
@@ -349,16 +422,13 @@ public class MoveService {
 
     // - card moves -
 
-    // removes invoked development card from player
-    public void performCardMove(CardMove cardMove) {
-
-        // get the development card type from the move
-        DevelopmentType type = cardMove.getDevelopmentCard().getDevelopmentType();
-
-        // remove development card from player, if it's not a victoryPoint card
-        if (type != DevelopmentType.VICTORYPOINT) {
-            playerService.removeDevelopmentCard(cardMove);
-        }
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param firstRoadMove the first road move
+     */
+    public void performFirstRoadMove(FirstRoadMove firstRoadMove) {
+        boardService.build(firstRoadMove);
     }
 
     // - other moves -
@@ -401,7 +471,29 @@ public class MoveService {
 
     // -- development card moves --
 
-    // performs monopoly move
+    /**
+     * Is called by the move handler to execute move specific routine.
+     * <p>
+     * removes invoked development card from player
+     *
+     * @param cardMove the card move
+     */
+    public void performCardMove(CardMove cardMove) {
+
+        // get the development card type from the move
+        DevelopmentType type = cardMove.getDevelopmentCard().getDevelopmentType();
+
+        // remove development card from player, if it's not a victoryPoint card
+        if (type != DevelopmentType.VICTORYPOINT) {
+            playerService.removeDevelopmentCard(cardMove);
+        }
+    }
+
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param monopolyMove the monopoly move
+     */
     public void performMonopolyMove(MonopolyMove monopolyMove) {
 
         // get current game
@@ -416,20 +508,32 @@ public class MoveService {
         playerService.monopolizeResources(monopolyMove, tycoon, players);
     }
 
-    // performs plenty move
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param plentyMove the plenty move
+     */
     public void performPlentyMove(PlentyMove plentyMove) {
 
         playerService.plentyResources(plentyMove);
     }
 
-    // performs roadProgress move
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param buildMove the build move
+     */
     public void performRoadProgressMove(BuildMove buildMove) {
 
         // since the player does not have to pay for road, it gets directly build
         boardService.build(buildMove);
     }
 
-    // performs knight move (relocates the robber on board)
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param knightMove the knight move
+     */
     public void performKnightMove(KnightMove knightMove) {
 
         // get current board
@@ -442,23 +546,24 @@ public class MoveService {
         tileService.setRobber(tileId, board);
     }
 
-    // performs stealing move (usually invoked after knight move)
+    /**
+     * Is called by the move handler to execute move specific routine.
+     *
+     * @param stealMove the steal move
+     */
     public void performStealMove(StealMove stealMove) {
 
         // deduct a random resource from victim and add it to player wallet
         playerService.stealResource(stealMove);
     }
 
+    /**
+     * Find moves currently available for game with the given id
+     *
+     * @param gameId the game id
+     * @return the list
+     */
     public List<Move> findMovesForGameId(Long gameId) {
         return moveRepository.findAllByGameId(gameId);
-    }
-
-    private void notifyBotIfNeeded(Game game) {
-
-        Player currentPlayer = game.getCurrentPlayer();
-
-        if (currentPlayer.isBot()) {
-            botService.performBotMove(game.getId(), currentPlayer.getUserId());
-        }
     }
 }

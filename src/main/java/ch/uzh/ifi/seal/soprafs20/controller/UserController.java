@@ -41,7 +41,7 @@ public class UserController {
      *
      * @param gameService         the game service
      * @param userService         the user service
-     * @param userLocationService
+     * @param userLocationService the userLocationService
      */
     UserController(GameService gameService, UserService userService, UserLocationService userLocationService) {
         this.gameService = gameService;
