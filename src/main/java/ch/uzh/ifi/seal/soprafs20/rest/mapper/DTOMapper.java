@@ -74,6 +74,7 @@ public interface DTOMapper {
     @Mapping(source = "playerMinimum", target = "minPlayers")
     @Mapping(source = "players", target = "joinedPlayers")
     @Mapping(source = "started", target = "started")
+    @Mapping(source = "withBots", target = "withBots")
     GameLinkDTO convertGameToGameLinkDTO(Game game);
 
     @BeanMapping(ignoreByDefault = true)
