@@ -25,6 +25,9 @@ public class IpStackRequest {
         this.ipAddress = ipAddress;
     }
 
+    /**
+     * Make request for the ip address given in the constructor
+     */
     public void makeRequest() {
 
         RestTemplate restTemplate = new RestTemplate();
