@@ -57,6 +57,10 @@ class GamesServiceIntegrationTest {
     @Autowired
     BoardRepository boardRepository;
 
+    @Qualifier("queueRepository")
+    @Autowired
+    QueueRepository queueRepository;
+
     //Test Objects
     private Game testGame;
     private User testUser;
@@ -70,6 +74,7 @@ class GamesServiceIntegrationTest {
         gameRepository.deleteAll();
         boardRepository.deleteAll();
         tileRepository.deleteAll();
+        queueRepository.deleteAll();
 
         testUser = new User();
         testUser.setToken("Token");
@@ -111,13 +116,18 @@ class GamesServiceIntegrationTest {
         gameRepository.deleteAll();
         playerRepository.deleteAll();
 
-        Game createdGame = gameService.createGame(testGame);
+        testGame = new Game();
+        testGame.setName("TestGameName");
+        testGame.setWithBots(true);
+        testGame.setCreatorId(testUser.getId());
 
-        assertNotNull(createdGame, "The created game should not be null!");
+        testGame = gameService.createGame(testGame);
 
-        assertEquals(1, createdGame.getPlayers().size(), "There should be one player!");
+        assertNotNull(testGame, "The created game should not be null!");
 
-        Player createdPlayer = createdGame.getPlayers().get(0);
+        assertEquals(1, testGame.getPlayers().size(), "There should be one player!");
+
+        Player createdPlayer = testGame.getPlayers().get(0);
 
         assertEquals(testUser.getUsername(), createdPlayer.getUsername(),
                 "The new Player should match the user");
@@ -213,8 +223,19 @@ class GamesServiceIntegrationTest {
     @Test
     void testFillWithBots() {
 
-        //Fill game and update testGame with current repository object
+        gameRepository.deleteAll();
+        playerRepository.deleteAll();
+
+        testGame = new Game();
+        testGame.setName("TestGameName");
+        testGame.setWithBots(true);
+        testGame.setCreatorId(testUser.getId());
+
+        testGame = gameService.createGame(testGame);
+
         gameService.fillWithBots(testGame);
+
+        //Find the new game state
         testGame = gameService.findGameById(testGame.getId());
 
         assertEquals(GameConstants.DEFAULT_PLAYER_MAX, testGame.getPlayers().size(),
