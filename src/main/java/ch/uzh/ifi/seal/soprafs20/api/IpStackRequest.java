@@ -8,9 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.Map;
 
 public class IpStackRequest {
@@ -18,7 +17,7 @@ public class IpStackRequest {
     private static final Logger log = LoggerFactory.getLogger(IpStackRequest.class);
 
     private final String ipAddress;
-    private Map<String, Object> mappedBody;
+    private Map<String, Object> mappedBody = new HashMap<>();
     private boolean success = false;
 
     public IpStackRequest(String ipAddress) {
@@ -36,11 +35,8 @@ public class IpStackRequest {
         InetAddress address;
 
         try {
+            //Checks if ipAddress is valid, else throws
             address = InetAddress.getByName(ipAddress);
-            if (!(address instanceof Inet4Address) && !(address instanceof Inet6Address)) {
-                this.success = false;
-                return;
-            }
         }
         catch (Exception e) {
             log.error(e.getMessage());

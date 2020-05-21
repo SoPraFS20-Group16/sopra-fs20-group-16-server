@@ -3,8 +3,7 @@ package ch.uzh.ifi.seal.soprafs20.api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This test class assumes that the correct input will return a correct
@@ -20,14 +19,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class IpStackRequestTest {
 
     private final String TEST_IP = "2a02:1206:4544:3000:994:4ed3:5028:ae1f";
+    private final String FALSE_IP = "abcde";
 
     private IpStackRequest testRequest;
+    private IpStackRequest failedRequest;
 
     @BeforeEach
     void setup() {
         testRequest = new IpStackRequest(TEST_IP);
         testRequest.makeRequest();
         assert testRequest.isSuccess();
+
+        failedRequest = new IpStackRequest(FALSE_IP);
+        testRequest.makeRequest();
+        assert !failedRequest.isSuccess();
     }
 
     @Test
@@ -39,27 +44,52 @@ class IpStackRequestTest {
     }
 
     @Test
-    void testGetZipCode() {
+    void testGetZipCode_success() {
         assertNotNull(testRequest.getZipCode());
     }
 
     @Test
-    void testGetCity() {
+    void testGetCity_success() {
         assertNotNull(testRequest.getCity());
     }
 
     @Test
-    void testGetCountry() {
+    void testGetCountry_success() {
         assertNotNull(testRequest.getCountry());
     }
 
     @Test
-    void testGetLongitude() {
+    void testGetLongitude_success() {
         assertNotNull(testRequest.getLongitude());
     }
 
     @Test
-    void testGetLatitude() {
+    void testGetLatitude_success() {
         assertNotNull(testRequest.getLatitude());
+    }
+
+    @Test
+    void testGetZipCode_fail() {
+        assertNull(failedRequest.getZipCode());
+    }
+
+    @Test
+    void testGetCity_fail() {
+        assertNull(failedRequest.getCity());
+    }
+
+    @Test
+    void testGetCountry_fail() {
+        assertNull(failedRequest.getCountry());
+    }
+
+    @Test
+    void testGetLongitude_fail() {
+        assertNull(failedRequest.getLongitude());
+    }
+
+    @Test
+    void testGetLatitude_fail() {
+        assertNull(failedRequest.getLatitude());
     }
 }

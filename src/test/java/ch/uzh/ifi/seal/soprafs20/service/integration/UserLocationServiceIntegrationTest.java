@@ -117,7 +117,7 @@ public class UserLocationServiceIntegrationTest {
         assertFalse(location.isUserAllowsTracking());
         assertNull(location.getCountryName(), "The Country should be null");
         assertNull(location.getCity(), "The city should be null");
-        assertNull(location.getZipCode(), "The zipcode should be null");
+        assertNull(location.getZipCode(), "The zipCode should be null");
         assertNull(location.getLongitude(), "The longitude should be null");
         assertNull(location.getLatitude(), "The latitude should be null");
     }
