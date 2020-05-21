@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs20.service.integration;
 
+import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
@@ -19,10 +20,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
 @SpringBootTest
@@ -59,6 +60,7 @@ class GamesServiceIntegrationTest {
     //Test Objects
     private Game testGame;
     private User testUser;
+    private Player testPlayer;
 
     @BeforeEach
     void setup() {
@@ -74,16 +76,23 @@ class GamesServiceIntegrationTest {
         testUser.setUsername("TheUsername");
         testUser.setStatus(UserStatus.ONLINE);
         testUser.setPassword("ThePassword");
-
         testUser = userRepository.saveAndFlush(testUser);
-
         assertNotNull(testUser, "The user should not be null!");
 
         testGame = new Game();
         testGame.setName("TestGameName");
         testGame.setWithBots(true);
         testGame.setCreatorId(testUser.getId());
+        testGame = gameRepository.saveAndFlush(testGame);
+        assertNotNull(testGame, "The testGame should not be null");
 
+        testPlayer = new Player();
+        testPlayer.setUserId(testUser.getId());
+        testPlayer.setGameId(testGame.getId());
+        testPlayer.setUsername(testUser.getUsername());
+
+        testGame.addPlayer(testPlayer);
+        testGame = gameRepository.saveAndFlush(testGame);
     }
 
     @AfterEach
@@ -100,6 +109,7 @@ class GamesServiceIntegrationTest {
     void testCreateGame() {
 
         gameRepository.deleteAll();
+        playerRepository.deleteAll();
 
         Game createdGame = gameService.createGame(testGame);
 
@@ -178,5 +188,43 @@ class GamesServiceIntegrationTest {
         //tiles should be empty
         List<Tile> tiles = tileRepository.findAll();
         assertEquals(0, tiles.size(), "Tiles should be deleted");
+    }
+
+    @Test
+    void testGetGameForUser_userHasGame() {
+
+        Game game = gameService.findGameOfUser(testUser.getId());
+
+        assertEquals(testGame.getId(), game.getId(), "The user should have a player in the game");
+    }
+
+    @Test
+    void testGetGameForUser_userHasNoGame() {
+
+        //Delete players
+        testGame.setPlayers(new ArrayList<>());
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        Game game = gameService.findGameOfUser(testUser.getId());
+
+        assertNull(game, "The user should not be in a game");
+    }
+
+    @Test
+    void testFillWithBots() {
+
+        //Fill game and update testGame with current repository object
+        gameService.fillWithBots(testGame);
+        testGame = gameService.findGameById(testGame.getId());
+
+        assertEquals(GameConstants.DEFAULT_PLAYER_MAX, testGame.getPlayers().size(),
+                "The game should have the default player max amount");
+        int bots = 0;
+
+        for (Player player : testGame.getPlayers()) {
+            if (player.isBot()) bots++;
+        }
+
+        assertEquals((GameConstants.DEFAULT_PLAYER_MAX - 1), bots, "All except one player are bots");
     }
 }
