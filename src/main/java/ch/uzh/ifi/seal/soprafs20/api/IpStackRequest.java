@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs20.api;
 
-import ch.uzh.ifi.seal.soprafs20.constant.ApiConstants;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -44,8 +43,11 @@ public class IpStackRequest {
             return;
         }
 
+        String apiKey = System.getenv().get("IPSTACK_KEY");
+        log.info(apiKey);
+
         String url = "http://api.ipstack.com/" + address.getHostAddress() +
-                "?access_key=" + ApiConstants.API_KEY;
+                "?access_key=" + apiKey;
 
         ResponseEntity<String> response
                 = restTemplate.getForEntity(url, String.class);
