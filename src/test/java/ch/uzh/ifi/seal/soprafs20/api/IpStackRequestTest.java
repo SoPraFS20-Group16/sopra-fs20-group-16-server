@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs20.api;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>
  * Tested are the individual fields in order to verify that the mapping
  * between the api response and the concrete fields works.
+ * <p>
+ * The tests are only executed if there is non null IPSTACK_KEY in the environment
  */
+@EnabledIfEnvironmentVariable(named = "IPSTACK_KEY", matches = "^(?!\\s*$).+")
 class IpStackRequestTest {
 
     private final String TEST_IP = "2a02:1206:4544:3000:994:4ed3:5028:ae1f";
@@ -26,6 +30,8 @@ class IpStackRequestTest {
 
     @BeforeEach
     void setup() {
+
+        System.out.println(System.getenv().get("IPSTACK_KEY"));
         testRequest = new IpStackRequest(TEST_IP);
         testRequest.makeRequest();
         assert testRequest.isSuccess();
