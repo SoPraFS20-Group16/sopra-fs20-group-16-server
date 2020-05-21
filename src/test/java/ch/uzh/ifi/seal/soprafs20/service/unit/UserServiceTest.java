@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
 class UserServiceTest {
 
@@ -34,6 +35,7 @@ class UserServiceTest {
         testUser.setPassword("password");
         testUser.setUsername("testUsername");
         testUser.setStatus(UserStatus.OFFLINE);
+        testUser.setToken("The testToken");
 
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
@@ -96,6 +98,86 @@ class UserServiceTest {
         userService.loginUser(testUser);
 
         assertEquals(UserStatus.ONLINE, testUser.getStatus());
+    }
+
+    @Test
+    void testFindUser_findById_success() {
+        given(userRepository.findUserById(Mockito.any())).willReturn(testUser);
+
+        User user = new User();
+        user.setId(testUser.getId());
+
+        User foundUser = userService.findUser(user);
+
+        assertEquals(testUser.getId(), foundUser.getId(), "The id does not match");
+        assertEquals(testUser.getUsername(), foundUser.getUsername(), "The username does not match");
+        assertEquals(testUser.getToken(), foundUser.getToken(), "The token does not match");
+    }
+
+    @Test
+    void testFindUser_findByUsername_success() {
+        given(userRepository.findByUsername(Mockito.any())).willReturn(testUser);
+
+        User user = new User();
+        user.setUsername(testUser.getUsername());
+
+        User foundUser = userService.findUser(user);
+
+        assertEquals(testUser.getId(), foundUser.getId(), "The id does not match");
+        assertEquals(testUser.getUsername(), foundUser.getUsername(), "The username does not match");
+        assertEquals(testUser.getToken(), foundUser.getToken(), "The token does not match");
+    }
+
+    @Test
+    void testFindUser_findByToken_success() {
+        given(userRepository.findByToken(Mockito.any())).willReturn(testUser);
+
+        User user = new User();
+        user.setToken(testUser.getToken());
+
+        User foundUser = userService.findUser(user);
+
+        assertEquals(testUser.getId(), foundUser.getId(), "The id does not match");
+        assertEquals(testUser.getUsername(), foundUser.getUsername(), "The username does not match");
+        assertEquals(testUser.getToken(), foundUser.getToken(), "The token does not match");
+    }
+
+    @Test
+    void testFindUser_findById_noUser() {
+        given(userRepository.findUserById(Mockito.any())).willReturn(null);
+
+        User user = new User();
+        user.setId(testUser.getId());
+
+        User foundUser = userService.findUser(user);
+
+        assertNull(foundUser, "No user should be found");
+    }
+
+    @Test
+    void testFindUser_findByUsername_noUser() {
+        given(userRepository.findByUsername(Mockito.any())).willReturn(null);
+
+        User user = new User();
+        user.setUsername(testUser.getUsername());
+
+        User foundUser = userService.findUser(user);
+
+        assertNull(foundUser, "No user should be found");
+
+    }
+
+    @Test
+    void testFindUser_findByToken_noUser() {
+        given(userRepository.findByToken(Mockito.any())).willReturn(null);
+
+        User user = new User();
+        user.setToken(testUser.getToken());
+
+        User foundUser = userService.findUser(user);
+
+        assertNull(foundUser, "No user should be found");
+
     }
 
 }

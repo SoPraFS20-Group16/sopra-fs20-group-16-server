@@ -60,7 +60,11 @@ public class UserService {
      *
      * @param user the User for which the database is searched. Needs to contain a primary key
      * @return the user
+     * @deprecated this method is deprecated because it potentially requires updates for every
+     * addition of a filed in the user entity. Method taking a specific key for a user should be used
+     * to retrieve users
      */
+    @Deprecated(forRemoval = true)
     public User findUser(User user) {
 
 
@@ -68,7 +72,7 @@ public class UserService {
         //At the moment of writing those are id, username and token
         //if the user cannot be found return null
 
-        User foundUser = new User();
+        User foundUser = null;
 
         if (user.getId() != null) {
             foundUser = userRepository.findUserById(user.getId());

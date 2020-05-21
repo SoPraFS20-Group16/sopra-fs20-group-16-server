@@ -137,7 +137,7 @@ public class MoveService {
      * @param handler the handler
      * @param move    the move
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public void makeRecalculations(Game game, MoveHandler handler, Move move) {
 
         //Calculate current players points

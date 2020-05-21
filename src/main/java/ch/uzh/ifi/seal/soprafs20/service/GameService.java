@@ -164,12 +164,12 @@ public class GameService {
      *
      * @param gameInput the game input
      * @return the game
-     * @deprecated Was introduced depending on the userService (template) as an example,
+     * @deprecated Was introduced following the userService (template) as an example,
      * but should be replaced by methods looking for specified keys.
      * <p>
      * This method otherwise needs to possibly change every time the Game class is updated
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Game findGame(Game gameInput) {
 
         if (gameInput == null) {
