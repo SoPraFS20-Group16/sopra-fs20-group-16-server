@@ -44,7 +44,6 @@ public class IpStackRequest {
         }
 
         String apiKey = System.getenv().get("IPSTACK_KEY");
-        log.info(apiKey);
 
         String url = "http://api.ipstack.com/" + address.getHostAddress() +
                 "?access_key=" + apiKey;

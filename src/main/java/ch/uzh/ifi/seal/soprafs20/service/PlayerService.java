@@ -98,23 +98,20 @@ public class PlayerService {
         DevelopmentType devType;
         int randomCard = ThreadLocalRandom.current().nextInt(1, 100 + 1);
 
-        if (randomCard >= 1 && randomCard <= 56) {
-            // TODO: change back to KNIGHT
+        if (randomCard >= 1 && randomCard <= 25) {
+            devType = DevelopmentType.KNIGHT;
+        }
+        else if (randomCard >= 26 && randomCard <= 60) {
             devType = DevelopmentType.PLENTYPROGRESS;
         }
-        else if (randomCard >= 57 && randomCard <= 76) {
-            // TODO: change back to VICTORY
-            devType = DevelopmentType.MONOPOLYPROGRESS;
+        else if (randomCard >= 61 && randomCard <= 75) {
+            devType = DevelopmentType.ROADPROGRESS;
         }
-        else if (randomCard >= 77 && randomCard <= 84) {
-            // TODO: change back to ROAD PROGRESS
+        else if (randomCard >= 76 && randomCard <= 90) {
             devType = DevelopmentType.MONOPOLYPROGRESS;
-        }
-        else if (randomCard >= 85 && randomCard <= 92) {
-            devType = DevelopmentType.PLENTYPROGRESS;
         }
         else {
-            devType = DevelopmentType.MONOPOLYPROGRESS;
+            devType = DevelopmentType.VICTORYPOINT;
         }
 
         developmentCard.setDevelopmentType(devType);
