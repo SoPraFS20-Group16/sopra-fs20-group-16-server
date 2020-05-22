@@ -48,8 +48,8 @@ To contribute to this project you can clone or fork this repository. If you want
 you can create a pull request. For more information visit the [Github Help Page](https://help.github.com/en/github).
 If you choose to make a pull request, make sure the github actions task **Test Project** passes.
 
-When running tests locally the tests relying on an API key for [ipstack](ipstack.com) are disabled if no key is available
-If you wish to deploy your own version and / or want to include these tests, then [here you can learn more about environment variables](https://docs.oracle.com/javase/tutorial/essential/environment/env.html). The environment variable for the ipstack key is named IPSTACK_KEY. You can get an API key by opening a free account at [ipstack](ipstack.com).
+When running tests locally, the tests relying on an API key for [ipstack](ipstack.com) are disabled if no key is available.
+If you wish to deploy your own version and / or want to include these tests, then [here you can learn more about environment variables](https://docs.oracle.com/javase/tutorial/essential/environment/env.html). The environment variable for the ipstack key is named `IPSTACK_KEY`. You can get an API key by opening a free account at [ipstack](ipstack.com).
 
 If your pull request is accepted, the project is automatically deployed to heroku. If you want to deploy your own
 version check out this guide on 
