@@ -882,11 +882,11 @@ class MoveServiceIntegrationTest {
     }
 
     @Test
-    void testPerformPurchaseMove() {
+    void testPerformPurchaseMove_oneBuy() {
         PurchaseMove purchaseMove = new PurchaseMove();
         setupTestMove(purchaseMove, testPlayer, testGame);
 
-        // give the player purchase funds
+        // give the player purchase funds for one card
         testPlayer.setWallet(new DevelopmentCard().getPrice());
         testPlayer = playerService.save(testPlayer);
 
@@ -903,6 +903,46 @@ class MoveServiceIntegrationTest {
                     "Wallet should be empty!");
         }
 
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+        assertEquals(1, moves.size(), "only one move should follow");
+        assertEquals(PassMove.class, moves.get(0).getClass(), "a pass move must follow," +
+                "as the player only can afford one development card");
+    }
+
+    @Test
+    void testPerformPurchaseMove_twoBuys() {
+        PurchaseMove purchaseMove = new PurchaseMove();
+        setupTestMove(purchaseMove, testPlayer, testGame);
+
+        // give the player purchase funds for two cards
+        ResourceWallet funds = new ResourceWallet();
+        ResourceWallet price = new DevelopmentCard().getPrice();
+
+        for (ResourceType type: price.getAllTypes()) {
+            funds.addResource(type, 2 * price.getResourceAmount(type));
+        }
+
+        testPlayer.setWallet(funds);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        moveService.performMove(purchaseMove);
+
+        // assert that the player got one development card and has paid for it
+        testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
+        assertEquals(1, testPlayer.getDevelopmentCards().size(),
+                "There should be a development card added");
+        for (ResourceType type : testPlayer.getWallet().getAllTypes()) {
+            assertEquals(price.getResourceAmount(type), testPlayer.getWallet().getResourceAmount(type),
+                    "the player must have paid for the card and only can afford one more card");
+        }
+
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        assertEquals(2, moves.size(), "another purchase move or a pass move must follow");
+        for (Move move : moves) {
+            assertThat(move.getClass(), anyOf(equalTo(PurchaseMove.class), equalTo(PassMove.class)));
+        }
     }
 
     @Test
