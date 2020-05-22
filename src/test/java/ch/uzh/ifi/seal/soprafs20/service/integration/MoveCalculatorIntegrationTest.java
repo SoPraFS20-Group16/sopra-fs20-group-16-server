@@ -1188,7 +1188,7 @@ class MoveCalculatorIntegrationTest {
     }
 
     @Test
-    void testCalculateAllRoadProgressMoves_valid() {
+    void testCalculateAllRoadProgressMoves_valid_settlement() {
 
         // player can afford road
         testPlayer.setWallet(new Road().getPrice());
@@ -1202,6 +1202,51 @@ class MoveCalculatorIntegrationTest {
         settlement.setUserId(testPlayer.getUserId());
 
         testBoard.addSettlement(settlement);
+
+        Road road = new Road();
+        road.setCoordinate1(coordinate);
+        road.setCoordinate2(coordinate.getNeighbors().get(0));
+        road.setUserId(testPlayer.getUserId());
+
+        testBoard.addRoad(road);
+
+        // perform
+        List<Move> moves = MoveCalculator.calculateAllRoadProgressMoves(testGame, 0);
+        moveRepository.saveAll(moves);
+
+        // assert
+        moveService.findMovesForGameAndPlayer(testGame.getId(), testPlayer.getUserId());
+
+        // a building has three adjacent road options, if not build at edge of board
+        // a road already adjacent to building provides an extra road building option
+        assertEquals(4, moves.size(),
+                "a road provides one additional road building option");
+        for (Move move : moves) {
+            assertEquals(RoadProgressMove.class, move.getClass(),
+                    "the move must be a roadProgress move");
+            assertEquals(Road.class, ((RoadProgressMove) move).getBuilding().getClass(),
+                    "the building of the move must be a road");
+            // every possible road should shares a coordinate with either the settlement or the adjacent road
+            assertTrue(((RoadProgressMove) move).getBuilding().getCoordinates().contains(coordinate) ||
+                    ((RoadProgressMove) move).getBuilding().getCoordinates().contains(coordinate.getNeighbors().get(0)));
+        }
+    }
+
+    @Test
+    void testCalculateAllRoadProgressMoves_valid_city() {
+
+        // player can afford road
+        testPlayer.setWallet(new Road().getPrice());
+        playerService.save(testPlayer);
+
+        // add settlement on board with one adjacent road
+        Coordinate coordinate = testBoard.getTiles().get(0).getCoordinates().get(5);
+
+        City city = new City();
+        city.setCoordinate(coordinate);
+        city.setUserId(testPlayer.getUserId());
+
+        testBoard.addCity(city);
 
         Road road = new Road();
         road.setCoordinate1(coordinate);

@@ -181,6 +181,25 @@ class MoveServiceIntegrationTest {
         assertNull(moveService.findMoveById(12L));
     }
 
+    @Test
+    void testPerformCardMove_VictoryCard() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        // add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.VICTORYPOINT);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        moveService.performMove(cardMove);
+
+        // assert that the card did not got removed, since it is VP card
+        assertEquals(1, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should not be deducted");
+    }
+
 
     //Exemplary for any move, individual perform functions tested separately
     @Test
@@ -643,6 +662,9 @@ class MoveServiceIntegrationTest {
             assertEquals(KnightMove.class, move.getClass(),
                     "When a Knight Card is played, then KnightMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
@@ -667,6 +689,9 @@ class MoveServiceIntegrationTest {
             assertEquals(RoadProgressMove.class, move.getClass(),
                     "When a RoadProgress Card is played RoadProgressMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
@@ -693,6 +718,9 @@ class MoveServiceIntegrationTest {
             assertEquals(PlentyMove.class, move.getClass(),
                     "When a PlentyProgress Card is played, then PlentyMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
@@ -718,6 +746,9 @@ class MoveServiceIntegrationTest {
             assertEquals(MonopolyMove.class, move.getClass(),
                     "When a Monopoly Card is played MonopolyMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
