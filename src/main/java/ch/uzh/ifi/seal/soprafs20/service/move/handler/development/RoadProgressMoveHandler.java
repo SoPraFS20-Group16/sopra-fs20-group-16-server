@@ -20,7 +20,7 @@ public class RoadProgressMoveHandler implements MoveHandler {
     @Override
     public void perform(Move move, MoveService moveService) {
 
-        if(move.getClass() != RoadProgressMove.class) {
+        if (move.getClass() != RoadProgressMove.class) {
             throw new IllegalStateException(ErrorMsg.WRONG_HANDLER_SETUP);
         }
 

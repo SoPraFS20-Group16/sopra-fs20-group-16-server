@@ -51,7 +51,7 @@ public class UserController {
 
     /**
      * GET /users
-     *
+     * <p>
      * Success: 200 OK
      *
      * @return all the users in the database as DTOs in an array
@@ -76,9 +76,9 @@ public class UserController {
 
     /**
      * POST /users
-     *
+     * <p>
      * Creates a new user in the database
-     *
+     * <p>
      * Success: 201 CREATED, Failure: 409 CONFLICT
      *
      * @param userPostDTO the user DTO
@@ -112,10 +112,10 @@ public class UserController {
 
     /**
      * GET /users/:userId
-     *
+     * <p>
      * gets the user with the given Id as a path variable
      * and returns it as a DTO
-     *
+     * <p>
      * Success: 200 OK, Failure: 404 NOT FOUND
      *
      * @param userId the Path Variable of the url
@@ -142,9 +142,9 @@ public class UserController {
 
     /**
      * PUT /login
-     *
+     * <p>
      * logs in the user with the passed credentials
-     *
+     * <p>
      * Success: 200 OK, Failure: 401 UNAUTHORIZED
      *
      * @param userPostDTO the user post dto

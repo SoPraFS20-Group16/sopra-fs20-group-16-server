@@ -49,15 +49,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class DTOMapperTest {
 
-    @Autowired
-    private TileService tileService;
-
-    private Long testGameId = 123L;
     private final String testUsername = "testUsername";
     private final Long testUserId = 12L;
     private final Long testMoveId = 1234L;
     private final Coordinate testCoordinate = new Coordinate(1, 2);
-
+    @Autowired
+    private TileService tileService;
+    private Long testGameId = 123L;
 
     @Test
     void testCreateUser_fromUserPostDTO_toUser_success() {

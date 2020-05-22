@@ -209,12 +209,12 @@ class MoveServiceIntegrationTest {
         //empty handler that does no move calculations, as they are tested separately
         MoveHandler testHandler = new MoveHandler() {
             @Override
-            public List<Move> calculateNextMoves(Game game, Move move) {
-                return new ArrayList<>();
+            public void perform(Move move, MoveService moveService) {
             }
 
             @Override
-            public void perform(Move move, MoveService moveService) {
+            public List<Move> calculateNextMoves(Game game, Move move) {
+                return new ArrayList<>();
             }
         };
 
@@ -247,12 +247,12 @@ class MoveServiceIntegrationTest {
         //empty handler that does no move calculations, as they are tested separately
         MoveHandler testHandler = new MoveHandler() {
             @Override
-            public List<Move> calculateNextMoves(Game game, Move move) {
-                return new ArrayList<>();
+            public void perform(Move move, MoveService moveService) {
             }
 
             @Override
-            public void perform(Move move, MoveService moveService) {
+            public List<Move> calculateNextMoves(Game game, Move move) {
+                return new ArrayList<>();
             }
         };
 
@@ -354,6 +354,11 @@ class MoveServiceIntegrationTest {
         }
     }
 
+    private void setupTestMove(Move move, Player player, Game game) {
+        move.setUserId(player.getUserId());
+        move.setGameId(game.getId());
+    }
+
     @Test
     void testPerformStartMove() {
 
@@ -387,6 +392,18 @@ class MoveServiceIntegrationTest {
 
         assertEquals(secondPlayer.getUserId(), testGame.getCurrentPlayer().getUserId(),
                 "The second player should be current player now");
+    }
+
+    private Player setupSecondTestPlayer() {
+        //Add a player that can be passed to
+        Player secondPlayer = new Player();
+        secondPlayer.setUsername("secondPlayer");
+        secondPlayer.setUserId(22L);
+        secondPlayer.setGameId(testGame.getId());
+        secondPlayer = playerService.save(secondPlayer);
+        testGame.addPlayer(secondPlayer);
+        testGame = gameService.save(testGame);
+        return secondPlayer;
     }
 
     /**
@@ -486,7 +503,6 @@ class MoveServiceIntegrationTest {
         assertNotNull(testBoard.getRoads().get(0), "Road should not be null");
     }
 
-
     @Test
     void testPerformBuildMove_buildSettlement() {
         BuildMove buildMove = new BuildMove();
@@ -568,7 +584,6 @@ class MoveServiceIntegrationTest {
         assertNotNull(testBoard.getCities().get(0), "City should not be null!");
     }
 
-
     @Test
     void testPerformBuildMove_buildRoad() {
 
@@ -604,7 +619,6 @@ class MoveServiceIntegrationTest {
         assertEquals(1, testBoard.getRoads().size(), "There must be one road");
         assertNotNull(testBoard.getRoads().get(0), "The road should not be null");
     }
-
 
     @Test
     void testPerformCardMove_KnightMove() {
@@ -932,23 +946,6 @@ class MoveServiceIntegrationTest {
         assertEquals(2, victim.getWallet().getResourceAmount(ResourceType.ORE),
                 "1 resource must be stolen from victim");
 
-    }
-
-    private void setupTestMove(Move move, Player player, Game game) {
-        move.setUserId(player.getUserId());
-        move.setGameId(game.getId());
-    }
-
-    private Player setupSecondTestPlayer() {
-        //Add a player that can be passed to
-        Player secondPlayer = new Player();
-        secondPlayer.setUsername("secondPlayer");
-        secondPlayer.setUserId(22L);
-        secondPlayer.setGameId(testGame.getId());
-        secondPlayer = playerService.save(secondPlayer);
-        testGame.addPlayer(secondPlayer);
-        testGame = gameService.save(testGame);
-        return secondPlayer;
     }
 
 }

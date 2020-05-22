@@ -313,6 +313,14 @@ public class GameService {
         gameSummaryRepository.saveAndFlush(summary);
     }
 
+    private void deleteGameWithId(Long gameId) {
+        Optional<Game> game = gameRepository.findById(gameId);
+        if (game.isPresent()) {
+            gameRepository.delete(game.get());
+            gameRepository.flush();
+        }
+    }
+
     /**
      * Find game by its id.
      *
@@ -332,14 +340,6 @@ public class GameService {
     public GameSummary findGameSummary(Long gameId) {
 
         return gameSummaryRepository.findByGameId(gameId);
-    }
-
-    private void deleteGameWithId(Long gameId) {
-        Optional<Game> game = gameRepository.findById(gameId);
-        if (game.isPresent()) {
-            gameRepository.delete(game.get());
-            gameRepository.flush();
-        }
     }
 
     /**

@@ -22,11 +22,11 @@ public class MonopolyMove extends Move {
         return new MonopolyMoveHandler();
     }
 
-    public void setMonopolyType(ResourceType monopolyType) {
-        this.monopolyType = monopolyType;
-    }
-
     public ResourceType getMonopolyType() {
         return monopolyType;
+    }
+
+    public void setMonopolyType(ResourceType monopolyType) {
+        this.monopolyType = monopolyType;
     }
 }

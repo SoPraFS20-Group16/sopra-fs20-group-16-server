@@ -15,12 +15,11 @@ import java.util.Map;
 @Table(name = "RESOURCE_WALLET")
 public class ResourceWallet implements Serializable {
 
+    @ElementCollection
+    private final Map<ResourceType, Integer> resources;
     @Id
     @GeneratedValue
     private Long id;
-
-    @ElementCollection
-    private final Map<ResourceType, Integer> resources;
 
 
     public ResourceWallet() {

@@ -56,6 +56,33 @@ public class UserService {
     }
 
     /**
+     * This is a helper method that will check the uniqueness criteria of the username
+     * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
+     *
+     * @param userToBeCreated the user that should be added to the database
+     * @throws RestException throws if the username is set to be an empty word
+     * @see User
+     */
+    private void checkIfUserAlreadyExists(User userToBeCreated) {
+
+        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+
+        String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
+
+        if (userByUsername != null) {
+            throw new RestException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
+        }
+    }
+
+    private void checkEmptyWords(User userToBeCreated) {
+
+        if (userToBeCreated.getUsername().trim().length() == 0 ||
+                userToBeCreated.getPassword().trim().length() == 0) {
+            throw new RestException(HttpStatus.CONFLICT, "empty words are not allowed");
+        }
+    }
+
+    /**
      * Finds a user in the database.
      *
      * @param user the User for which the database is searched. Needs to contain a primary key
@@ -76,9 +103,11 @@ public class UserService {
 
         if (user.getId() != null) {
             foundUser = userRepository.findUserById(user.getId());
-        } else if (user.getUsername() != null) {
+        }
+        else if (user.getUsername() != null) {
             foundUser = userRepository.findByUsername(user.getUsername());
-        } else if (user.getToken() != null) {
+        }
+        else if (user.getToken() != null) {
             foundUser = userRepository.findByToken(user.getToken());
         }
 
@@ -117,34 +146,6 @@ public class UserService {
         return userByUsername;
 
     }
-
-    /**
-     * This is a helper method that will check the uniqueness criteria of the username
-     * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
-     *
-     * @param userToBeCreated the user that should be added to the database
-     * @throws RestException throws if the username is set to be an empty word
-     * @see User
-     */
-    private void checkIfUserAlreadyExists(User userToBeCreated) {
-
-        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-
-        String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-
-        if (userByUsername != null) {
-            throw new RestException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
-        }
-    }
-
-    private void checkEmptyWords(User userToBeCreated) {
-
-        if (userToBeCreated.getUsername().trim().length() == 0 ||
-            userToBeCreated.getPassword().trim().length() == 0) {
-            throw new RestException(HttpStatus.CONFLICT, "empty words are not allowed");
-        }
-    }
-
 
     public User logoutUser(User userToBeLoggedOut) {
 

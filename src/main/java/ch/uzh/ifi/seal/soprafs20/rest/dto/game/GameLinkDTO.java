@@ -72,15 +72,15 @@ public class GameLinkDTO extends AbstractGameDTO {
         return joinedPlayers;
     }
 
+    public void setJoinedPlayers(List<Player> players) {
+        joinedPlayers = players.size();
+    }
+
     public boolean isWithBots() {
         return withBots;
     }
 
     public void setWithBots(boolean withBots) {
         this.withBots = withBots;
-    }
-
-    public void setJoinedPlayers(List<Player> players) {
-        joinedPlayers = players.size();
     }
 }

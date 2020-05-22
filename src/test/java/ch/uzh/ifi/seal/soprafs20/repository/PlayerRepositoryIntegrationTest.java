@@ -14,14 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 class PlayerRepositoryIntegrationTest {
 
+    private final Long testGameId = 123L;
     @Autowired
     private TestEntityManager entityManager;
-
     @Qualifier("playerRepository")
     @Autowired
     private PlayerRepository playerRepository;
-
-    private final Long testGameId = 123L;
 
     @AfterEach
     void teardown() {

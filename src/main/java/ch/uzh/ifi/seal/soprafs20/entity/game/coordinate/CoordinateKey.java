@@ -7,6 +7,16 @@ public class CoordinateKey implements Serializable {
     int y;
 
     @Override
+    public int hashCode() {
+
+        int hash = 7;
+        hash = 31 * hash + x;
+        hash = 31 * hash + y;
+
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
@@ -19,15 +29,5 @@ public class CoordinateKey implements Serializable {
         CoordinateKey other = (CoordinateKey) o;
 
         return this.x == other.x && this.y == other.y;
-    }
-
-    @Override
-    public int hashCode() {
-
-        int hash = 7;
-        hash = 31 * hash + x;
-        hash = 31 * hash + y;
-
-        return hash;
     }
 }

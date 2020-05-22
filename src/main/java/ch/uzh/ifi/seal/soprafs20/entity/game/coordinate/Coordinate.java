@@ -36,29 +36,22 @@ public class Coordinate implements Serializable {
         this.setY(y);
     }
 
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     public List<Coordinate> getNeighbors() {
         return neighbors;
     }
 
     public void setNeighbors(List<Coordinate> neighbors) {
         this.neighbors = neighbors;
+    }
+
+    @Override
+    public int hashCode() {
+
+        int hash = 7;
+        hash = 31 * hash + x;
+        hash = 31 * hash + y;
+
+        return hash;
     }
 
     @Override
@@ -76,13 +69,19 @@ public class Coordinate implements Serializable {
         return this.getX() == other.getX() && this.getY() == other.getY();
     }
 
-    @Override
-    public int hashCode() {
+    public int getX() {
+        return x;
+    }
 
-        int hash = 7;
-        hash = 31 * hash + x;
-        hash = 31 * hash + y;
+    public void setX(int x) {
+        this.x = x;
+    }
 
-        return hash;
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }

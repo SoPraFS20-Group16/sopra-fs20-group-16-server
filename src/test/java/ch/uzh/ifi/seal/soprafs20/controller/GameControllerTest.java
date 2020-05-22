@@ -195,6 +195,24 @@ class GameControllerTest {
     }
 
     /**
+     * Helper Method to convert DTOs into a JSON string such that the input can be processed
+     *
+     * @param object the object to be returned as json
+     * @return string
+     */
+    private String asJsonString(final Object object) {
+        try {
+            return new ObjectMapper().writeValueAsString(object);
+        }
+        catch (JsonProcessingException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    String.format("The request body could not be created.%s", e.toString())
+            );
+        }
+    }
+
+    /**
      * Tests the POST /games endpoint.
      * Assumes Token is valid but the user already plays in another game
      *
@@ -237,7 +255,6 @@ class GameControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isForbidden());
     }
-
 
     /**
      * Tests the POST /games endpoint.
@@ -558,6 +575,8 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.moves", hasSize(1)));
     }
 
+    //TODO: Add test case that checks the correct mapping of the development cards!! (GameControllerTest)
+
     /**
      * Tests the GET /games/gameId endpoint.
      * Assumes there is a player in the game
@@ -610,8 +629,6 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.moves", hasSize(0)))
                 .andExpect(jsonPath("$.players", hasSize(1)));
     }
-
-    //TODO: Add test case that checks the correct mapping of the development cards!! (GameControllerTest)
 
     /**
      * Tests the PUT /games/gameId endpoint.
@@ -1244,24 +1261,6 @@ class GameControllerTest {
         // then
         mockMvc.perform(postRequest)
                 .andExpect(status().isForbidden());
-    }
-
-    /**
-     * Helper Method to convert DTOs into a JSON string such that the input can be processed
-     *
-     * @param object the object to be returned as json
-     * @return string
-     */
-    private String asJsonString(final Object object) {
-        try {
-            return new ObjectMapper().writeValueAsString(object);
-        }
-        catch (JsonProcessingException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    String.format("The request body could not be created.%s", e.toString())
-            );
-        }
     }
 
 }

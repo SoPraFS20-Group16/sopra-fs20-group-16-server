@@ -6,11 +6,11 @@ public class CardMoveDTO extends MoveDTO {
 
     private DevelopmentCard developmentCard;
 
-    public void setDevelopmentCard(DevelopmentCard developmentCard) {
-        this.developmentCard = developmentCard;
-    }
-
     public DevelopmentCard getDevelopmentCard() {
         return developmentCard;
+    }
+
+    public void setDevelopmentCard(DevelopmentCard developmentCard) {
+        this.developmentCard = developmentCard;
     }
 }

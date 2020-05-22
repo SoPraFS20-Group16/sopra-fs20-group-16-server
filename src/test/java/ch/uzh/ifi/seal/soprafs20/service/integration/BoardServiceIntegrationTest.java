@@ -27,36 +27,28 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @AutoConfigureTestDatabase
 class BoardServiceIntegrationTest {
 
+    private final Long testGameId = 123L;
     @Qualifier("coordinateRepository")
     @Autowired
     CoordinateRepository coordinateRepository;
-
     @Qualifier("tileRepository")
     @Autowired
     TileRepository tileRepository;
-
     @Qualifier("boardRepository")
     @Autowired
     BoardRepository boardRepository;
-
     @Qualifier("moveRepository")
     @Autowired
     MoveRepository moveRepository;
-
     @Qualifier("gameRepository")
     @Autowired
     GameRepository gameRepository;
-
     @Autowired
     BoardService boardService;
-
     @Autowired
     TileService tileService;
-
     @Autowired
     EntityManager entityManager;
-
-    private final Long testGameId = 123L;
 
     @BeforeEach
     void setup() {

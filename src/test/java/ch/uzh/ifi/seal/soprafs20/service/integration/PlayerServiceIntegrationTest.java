@@ -27,47 +27,35 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @AutoConfigureTestDatabase
 class PlayerServiceIntegrationTest {
 
-    @Qualifier("userRepository")
-    @Autowired
-    private UserRepository userRepository;
-
-    @Qualifier("playerRepository")
-    @Autowired
-    private PlayerRepository playerRepository;
-
+    private final Long testGameId = 321L;
     @Qualifier("coordinateRepository")
     @Autowired
     CoordinateRepository coordinateRepository;
-
     @Qualifier("tileRepository")
     @Autowired
     TileRepository tileRepository;
-
     @Qualifier("boardRepository")
     @Autowired
     BoardRepository boardRepository;
-
     @Qualifier("moveRepository")
     @Autowired
     MoveRepository moveRepository;
-
     @Qualifier("gameRepository")
     @Autowired
     GameRepository gameRepository;
-
-
-
+    @Qualifier("userRepository")
+    @Autowired
+    private UserRepository userRepository;
+    @Qualifier("playerRepository")
+    @Autowired
+    private PlayerRepository playerRepository;
     @Autowired
     private PlayerService playerService;
-
     @Autowired
     private EntityManager entityManager;
-
     //Test Objects
     private User testUser;
     private Long testUserId;
-    private final Long testGameId = 321L;
-
 
     @BeforeEach
     void setup() {

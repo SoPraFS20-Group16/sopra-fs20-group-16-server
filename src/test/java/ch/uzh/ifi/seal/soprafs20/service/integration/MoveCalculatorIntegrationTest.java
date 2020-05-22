@@ -167,25 +167,6 @@ class MoveCalculatorIntegrationTest {
         gameRepository.deleteAll();
     }
 
-    private Player setupSecondTestPlayer() {
-        //Add a player that can be passed to
-        Player secondPlayer = new Player();
-        secondPlayer.setUsername("secondPlayer");
-        secondPlayer.setUserId(22L);
-        secondPlayer.setGameId(testGame.getId());
-        secondPlayer = playerService.save(secondPlayer);
-        testGame.addPlayer(secondPlayer);
-        testGame = gameService.save(testGame);
-        return secondPlayer;
-    }
-
-    private void setupTestMove(Move move, Player player, Game game) {
-        move.setUserId(player.getUserId());
-        move.setGameId(game.getId());
-    }
-
-    // -- start move(s) --
-
     @Test
     void testCalculateStartMove() {
 
@@ -207,8 +188,6 @@ class MoveCalculatorIntegrationTest {
                 "the userId of the start move must be the creatorId");
     }
 
-    // -- initial moves --
-
     @Test
     void testCalculateFirstPassMove() {
 
@@ -225,6 +204,8 @@ class MoveCalculatorIntegrationTest {
         assertEquals(FirstPassMove.class, moves.get(0).getClass(),
                 "the move must be a firstPass move");
     }
+
+    // -- start move(s) --
 
     @Test
     void testCalculateFirstSettlementMoves_emptyBoard() {
@@ -247,6 +228,8 @@ class MoveCalculatorIntegrationTest {
                     "the building must be a settlement");
         }
     }
+
+    // -- initial moves --
 
     @Test
     void testCalculateFirstSettlementMoves_nonEmptyBoard() {
@@ -312,9 +295,10 @@ class MoveCalculatorIntegrationTest {
         }
     }
 
-    // -- standard moves --
-
-    // - default moves -
+    private void setupTestMove(Move move, Player player, Game game) {
+        move.setUserId(player.getUserId());
+        move.setGameId(game.getId());
+    }
 
     @Test
     void testCalculatePassMove() {
@@ -334,6 +318,10 @@ class MoveCalculatorIntegrationTest {
 
     }
 
+    // -- standard moves --
+
+    // - default moves -
+
     @Test
     void testCalculateDiceMove() {
 
@@ -351,8 +339,6 @@ class MoveCalculatorIntegrationTest {
                 "the move must be a dice move");
 
     }
-
-    // - build moves -
 
     @Test
     void testCalculateRoadMoves_connectingToSettlement_valid() {
@@ -390,6 +376,8 @@ class MoveCalculatorIntegrationTest {
                     "every possible road should share a coordinate with the connecting settlement");
         }
     }
+
+    // - build moves -
 
     @Test
     void testCalculateRoadMoves_connectingToCity_valid() {
@@ -582,6 +570,18 @@ class MoveCalculatorIntegrationTest {
 
         assertEquals(0, moves.size(),
                 "a road move cannot be added, since the player does not have any buildings to connect");
+    }
+
+    private Player setupSecondTestPlayer() {
+        //Add a player that can be passed to
+        Player secondPlayer = new Player();
+        secondPlayer.setUsername("secondPlayer");
+        secondPlayer.setUserId(22L);
+        secondPlayer.setGameId(testGame.getId());
+        secondPlayer = playerService.save(secondPlayer);
+        testGame.addPlayer(secondPlayer);
+        testGame = gameService.save(testGame);
+        return secondPlayer;
     }
 
     @Test

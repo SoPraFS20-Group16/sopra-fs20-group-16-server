@@ -14,7 +14,7 @@ public class GameHistory {
     @OneToMany(cascade = CascadeType.ALL)
     private List<MoveHistory> moves;
 
-    public GameHistory(){
+    public GameHistory() {
         this.moves = new ArrayList<>();
     }
 

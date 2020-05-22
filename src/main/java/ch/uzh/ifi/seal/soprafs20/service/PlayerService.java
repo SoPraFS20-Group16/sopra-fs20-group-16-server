@@ -73,7 +73,7 @@ public class PlayerService {
         ResourceWallet price = new DevelopmentCard().getPrice();
         ResourceWallet funds = player.getWallet();
 
-        for (ResourceType type: price.getAllTypes()) {
+        for (ResourceType type : price.getAllTypes()) {
             funds.removeResource(type, price.getResourceAmount(type));
         }
 
@@ -170,7 +170,7 @@ public class PlayerService {
         ResourceWallet funds = tycoon.getWallet();
 
         // get all resources of monopoly type from all opponents and add them to the tycoon funds
-        for (Player player: players) {
+        for (Player player : players) {
             if (!player.equals(tycoon)) {
 
                 ResourceWallet opponentFunds = player.getWallet();
@@ -184,6 +184,10 @@ public class PlayerService {
         }
 
         save(tycoon);
+    }
+
+    public Player save(Player player) {
+        return playerRepository.saveAndFlush(player);
     }
 
     public void plentyResources(PlentyMove move) {
@@ -262,7 +266,7 @@ public class PlayerService {
         List<DevelopmentCard> ownedCards = player.getDevelopmentCards();
 
         // remove development card from player
-        for (DevelopmentCard card: ownedCards) {
+        for (DevelopmentCard card : ownedCards) {
             if (card.getDevelopmentType() == type) {
                 ownedCards.remove(card);
                 break;
@@ -284,14 +288,6 @@ public class PlayerService {
         }
 
         return victoryPoints;
-    }
-
-    public Player findPlayerByUserId(Long id) {
-        return playerRepository.findByUserId(id);
-    }
-
-    public Player save(Player player) {
-        return playerRepository.saveAndFlush(player);
     }
 
     public void stealResource(StealMove move) {
@@ -346,5 +342,9 @@ public class PlayerService {
 
         // save player
         save(player);
+    }
+
+    public Player findPlayerByUserId(Long id) {
+        return playerRepository.findByUserId(id);
     }
 }

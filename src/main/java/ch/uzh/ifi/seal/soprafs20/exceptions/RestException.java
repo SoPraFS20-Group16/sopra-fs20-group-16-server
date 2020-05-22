@@ -1,8 +1,8 @@
 package ch.uzh.ifi.seal.soprafs20.exceptions;
 
-import org.springframework.lang.Nullable;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 
 public class RestException extends RuntimeException {
 

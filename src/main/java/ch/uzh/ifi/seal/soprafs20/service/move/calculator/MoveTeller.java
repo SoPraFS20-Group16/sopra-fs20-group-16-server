@@ -21,6 +21,10 @@ public class MoveTeller {
         throw new IllegalStateException(ErrorMsg.INIT_MSG);
     }
 
+    static boolean canAffordRoad(Player player) {
+        Road road = new Road();
+        return canAffordBuilding(player, road);
+    }
 
     static boolean canAffordBuilding(Player player, Building building) {
 
@@ -37,11 +41,6 @@ public class MoveTeller {
             }
         }
         return true;
-    }
-
-    static boolean canAffordRoad(Player player) {
-        Road road = new Road();
-        return canAffordBuilding(player, road);
     }
 
     static boolean canAffordSettlement(Player player) {

@@ -34,7 +34,8 @@ public class KnightMoveHandler implements MoveHandler {
         List<Move> possibleStealMoves = MoveCalculator.calculateAllStealMoves(game);
         if (!possibleStealMoves.isEmpty()) {
             return possibleStealMoves;
-        } else {
+        }
+        else {
             return MoveCalculator.calculateAllStandardMoves(game);
         }
 

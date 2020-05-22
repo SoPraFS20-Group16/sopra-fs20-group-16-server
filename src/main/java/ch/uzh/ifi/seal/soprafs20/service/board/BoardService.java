@@ -120,14 +120,6 @@ public class BoardService {
         return boardRepository.saveAndFlush(board);
     }
 
-    private Tile createNewTile(TileType tileType, Coordinate topCoordinate, int tileNumber, Long gameId) {
-        Tile newTile;
-        newTile = tileService.createTile(topCoordinate, gameId);
-        newTile.setTileNumber(tileNumber);
-        newTile.setType(tileType);
-        return newTile;
-    }
-
     /**
      * Returns with the correct number of TileType objects per Tile that should have that type
      *
@@ -169,6 +161,14 @@ public class BoardService {
         return typeList;
     }
 
+    private Tile createNewTile(TileType tileType, Coordinate topCoordinate, int tileNumber, Long gameId) {
+        Tile newTile;
+        newTile = tileService.createTile(topCoordinate, gameId);
+        newTile.setTileNumber(tileNumber);
+        newTile.setType(tileType);
+        return newTile;
+    }
+
     public void build(BuildMove move) {
         buildWorker(move.getBuilding(), move.getGameId(), move.getUserId());
     }
@@ -194,6 +194,16 @@ public class BoardService {
             default:
                 throw new IllegalStateException("Unknown building type not allowed!");
         }
+    }
+
+    private Board getBoardByGameId(Long gameId) {
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NullPointerException(ErrorMsg.NO_MOVE_FOR_NONEXISTING_GAME);
+        }
+
+        return gameOptional.get().getBoard();
     }
 
     public void removeSettlementForCity(BuildMove buildMove) {
@@ -237,16 +247,6 @@ public class BoardService {
         return tiles;
     }
 
-    private Board getBoardByGameId(Long gameId) {
-        Optional<Game> gameOptional = gameRepository.findById(gameId);
-
-        if (gameOptional.isEmpty()) {
-            throw new NullPointerException(ErrorMsg.NO_MOVE_FOR_NONEXISTING_GAME);
-        }
-
-        return gameOptional.get().getBoard();
-    }
-
     public int getPointsFromBuildings(Game game, Player player) {
 
         int buildingPoints = 0;
@@ -260,7 +260,7 @@ public class BoardService {
 
         Board board = gameOptional.get().getBoard();
 
-        for (City city: board.getCities()) {
+        for (City city : board.getCities()) {
             if (city.getUserId().equals(player.getUserId())) {
                 buildingPoints += city.getVictoryPoints();
             }
@@ -287,24 +287,24 @@ public class BoardService {
         return buildings;
     }
 
-    private void getCitiesFromTileForPlayer(Tile tile, Player player, Board board, List<Building> buildings) {
-        for (City city : board.getCities()) {
-            if (city.getUserId().equals(player.getUserId())) {
-                for (Coordinate coordinate : tile.getCoordinates()) {
-                    if (city.getCoordinate() == coordinate) {
-                        buildings.add(city);
-                    }
-                }
-            }
-        }
-    }
-
     private void getSettlementsFromTileForPlayer(Tile tile, Player player, Board board, List<Building> buildings) {
         for (Settlement settlement : board.getSettlements()) {
             if (settlement.getUserId().equals(player.getUserId())) {
                 for (Coordinate coordinate : tile.getCoordinates()) {
                     if (settlement.getCoordinate() == coordinate) {
                         buildings.add(settlement);
+                    }
+                }
+            }
+        }
+    }
+
+    private void getCitiesFromTileForPlayer(Tile tile, Player player, Board board, List<Building> buildings) {
+        for (City city : board.getCities()) {
+            if (city.getUserId().equals(player.getUserId())) {
+                for (Coordinate coordinate : tile.getCoordinates()) {
+                    if (city.getCoordinate() == coordinate) {
+                        buildings.add(city);
                     }
                 }
             }

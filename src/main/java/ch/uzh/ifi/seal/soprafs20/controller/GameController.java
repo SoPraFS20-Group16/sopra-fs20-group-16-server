@@ -87,9 +87,9 @@ public class GameController {
 
     /**
      * POST /games
-     *
+     * <p>
      * creates a new game instance
-     *
+     * <p>
      * Success: 201 CREATED, Failure 503 SERVICE UNAVAILABLE, 401 UNAUTHORIZED
      *
      * @param gamePostDTO the gamePostDTO
@@ -139,9 +139,9 @@ public class GameController {
 
     /**
      * GET /games/:gameId
-     *
+     * <p>
      * returns the game that has the Id gameId
-     *
+     * <p>
      * Success: 200 OK, Failure: 403 FORBIDDEN, 404 NOT FOUND, 401 UNAUTHORIZED
      * (If the game exists but the user lacks permission, then 403 is returned)
      *
@@ -152,7 +152,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Object getGameWithId(@RequestHeader(name = "Token") String token,
-                                 @PathVariable Long gameId) {
+                                @PathVariable Long gameId) {
 
         //Check token for validity
         GameControllerHelper.checkToken(userService, token);

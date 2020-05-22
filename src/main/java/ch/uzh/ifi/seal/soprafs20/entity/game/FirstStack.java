@@ -9,18 +9,15 @@ import java.util.Map;
 @Table(name = "FIRST_STACK")
 public class FirstStack {
 
+    @ElementCollection
+    private final Map<Integer, Long> playerStack;
     @Id
     @GeneratedValue
     private Long id;
-
     @Column
     private Long gameId;
-
     @Column
     private int lastIndex;
-
-    @ElementCollection
-    private final Map<Integer, Long> playerStack;
 
 
     public FirstStack() {
@@ -28,27 +25,27 @@ public class FirstStack {
 
     }
 
-    public void setGameId(Long gameId) {
-        this.gameId = gameId;
-    }
-
     public Long getGameId() {
         return gameId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
     public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setup(List<Player> players) {
 
         int playerIndex = 0;
 
-        for (Player player: players) {
+        for (Player player : players) {
             playerStack.put(playerIndex, player.getUserId());
             playerIndex++;
         }
@@ -56,21 +53,14 @@ public class FirstStack {
         computeFinalStack();
     }
 
-    //Functionality:
-    public Long getNext() {
-        lastIndex++;
-        lastIndex = lastIndex % playerStack.size();
-        return playerStack.get(lastIndex);
-    }
-
     private void computeFinalStack() {
 
-        int largestToMirror = playerStack.size()-1;
+        int largestToMirror = playerStack.size() - 1;
         int index = playerStack.size();
         Map<Integer, Long> toBeAdded = new HashMap<>();
 
         while (largestToMirror >= 0) {
-            for (Integer key: playerStack.keySet()) {
+            for (Integer key : playerStack.keySet()) {
 
                 if (key == largestToMirror) {
 
@@ -82,6 +72,13 @@ public class FirstStack {
         }
         //Add the newly created elements to the player stack
         toBeAdded.keySet().forEach(key -> playerStack.put(key, toBeAdded.get(key)));
+    }
+
+    //Functionality:
+    public Long getNext() {
+        lastIndex++;
+        lastIndex = lastIndex % playerStack.size();
+        return playerStack.get(lastIndex);
     }
 
     public Long getFirstPlayersUserId() {

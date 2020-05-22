@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 
 class BoardServiceTest {
 
+    private final Long testGameId = 123L;
     @InjectMocks
     TileService tileService;
     @Mock
@@ -37,14 +38,10 @@ class BoardServiceTest {
     private BoardService boardService;
     @Mock
     private TileRepository tileRepository;
-
     @Mock
     private CoordinateService coordinateService;
-
     @Mock
     private CoordinateRepository coordinateRepository;
-
-    private final Long testGameId = 123L;
 
     @BeforeEach
     void setup() {

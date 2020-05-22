@@ -29,60 +29,6 @@ public class MoveLandRegistry {
 
     // -- get building(s) from player --
 
-    static List<Road> getRoadsOfPlayer(Player player, Board board) {
-
-        List<Road> roads = new ArrayList<>();
-
-        for (Road road : board.getRoads()) {
-            if (road.getUserId().equals(player.getUserId())) {
-                roads.add(road);
-            }
-        }
-        return roads;
-    }
-
-    static List<Settlement> getSettlementsOfPlayer(Player player, Board board) {
-
-        List<Settlement> settlements = new ArrayList<>();
-
-        for (Settlement settlement : board.getSettlements()) {
-            if (settlement.getUserId().equals(player.getUserId())) {
-                settlements.add(settlement);
-            }
-        }
-        return settlements;
-    }
-
-    static List<City> getCitiesOfPlayer(Player player, Board board) {
-
-        List<City> cities = new ArrayList<>();
-
-        for (City city : board.getCities()) {
-            if (city.getUserId().equals(player.getUserId())) {
-                cities.add(city);
-            }
-        }
-        return cities;
-    }
-
-    // -- get building(s) from tile --
-
-    private static void getSettlementsFromTile(List<Building> buildings, Board board, Tile tile) {
-        for (Settlement settlement : board.getSettlements()) {
-            if (tile.getCoordinates().contains(settlement.getCoordinate())) {
-                buildings.add(settlement);
-            }
-        }
-    }
-
-    private static void getCitiesFromTile(List<Building> buildings, Board board, Tile tile) {
-        for (City city : board.getCities()) {
-            if (tile.getCoordinates().contains(city.getCoordinate())) {
-                buildings.add(city);
-            }
-        }
-    }
-
     public static List<Building> getBuildingsFromTileWithRobber(Game game) {
 
         List<Building> buildings = new ArrayList<>();
@@ -101,7 +47,23 @@ public class MoveLandRegistry {
         return buildings;
     }
 
-    // -- valid-building-coordinate helper methods --
+    private static void getSettlementsFromTile(List<Building> buildings, Board board, Tile tile) {
+        for (Settlement settlement : board.getSettlements()) {
+            if (tile.getCoordinates().contains(settlement.getCoordinate())) {
+                buildings.add(settlement);
+            }
+        }
+    }
+
+    private static void getCitiesFromTile(List<Building> buildings, Board board, Tile tile) {
+        for (City city : board.getCities()) {
+            if (tile.getCoordinates().contains(city.getCoordinate())) {
+                buildings.add(city);
+            }
+        }
+    }
+
+    // -- get building(s) from tile --
 
     static boolean isValidBuildingCoordinate(Board board, Coordinate coordinate) {
 
@@ -116,16 +78,87 @@ public class MoveLandRegistry {
         return true;
     }
 
-    static List<Coordinate> getRoadCoordinates(List<Road> roads) {
+    static void calculateRoadBuildingMovesConnectingToBuilding(Game game, List<BuildMove> possibleMoves, Player player, Board board) {
 
-        List<Coordinate> roadCoordinates = new ArrayList<>();
-
-        for (Road road : roads) {
-            roadCoordinates.add(road.getCoordinate1());
-            roadCoordinates.add(road.getCoordinate2());
+        List<Settlement> settlements = getSettlementsOfPlayer(player, board);
+        for (Settlement settlement : settlements) {
+            Coordinate coordinate = settlement.getCoordinate();
+            for (Coordinate neighbor : coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    BuildMove move = MoveCreator.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+            }
         }
 
-        return roadCoordinates;
+        List<City> cities = getCitiesOfPlayer(player, board);
+        for (City city : cities) {
+            Coordinate coordinate = city.getCoordinate();
+            for (Coordinate neighbor : coordinate.getNeighbors()) {
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    BuildMove move = MoveCreator.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+            }
+        }
+    }
+
+    static List<Settlement> getSettlementsOfPlayer(Player player, Board board) {
+
+        List<Settlement> settlements = new ArrayList<>();
+
+        for (Settlement settlement : board.getSettlements()) {
+            if (settlement.getUserId().equals(player.getUserId())) {
+                settlements.add(settlement);
+            }
+        }
+        return settlements;
+    }
+
+    // -- valid-building-coordinate helper methods --
+
+    static List<City> getCitiesOfPlayer(Player player, Board board) {
+
+        List<City> cities = new ArrayList<>();
+
+        for (City city : board.getCities()) {
+            if (city.getUserId().equals(player.getUserId())) {
+                cities.add(city);
+            }
+        }
+        return cities;
+    }
+
+    static void calculateRoadProgressMovesConnectingToRoad(Game game, int previousRoadProgressMoves,
+                                                           List<RoadProgressMove> possibleMoves,
+                                                           Player player, Board board) {
+        // get road end points
+        List<Coordinate> roadEndPoints = MoveLandRegistry.getRoadEndPoints(player, board);
+
+        // get all valid building coordinates and create moves
+        for (Coordinate coordinate : roadEndPoints) {
+            for (Coordinate neighbor : coordinate.getNeighbors())
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player,
+                            coordinate, neighbor, previousRoadProgressMoves);
+                    possibleMoves.add(move);
+                }
+        }
+    }
+
+    static void calculateRoadBuildingMovesConnectingToRoad(Game game, List<BuildMove> possibleMoves, Player player, Board board) {
+
+        // get all road end points
+        List<Coordinate> roadEndPoints = getRoadEndPoints(player, board);
+
+        // if there are open road end points, then calculate building coordinates
+        for (Coordinate coordinate : roadEndPoints) {
+            for (Coordinate neighbor : coordinate.getNeighbors())
+                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
+                    BuildMove move = MoveCreator.createRoadMove(game, player, coordinate, neighbor);
+                    possibleMoves.add(move);
+                }
+        }
     }
 
     static List<Coordinate> getRoadEndPoints(Player player, Board board) {
@@ -162,46 +195,16 @@ public class MoveLandRegistry {
         return coordinates;
     }
 
-    static void calculateRoadBuildingMovesConnectingToBuilding(Game game, List<BuildMove> possibleMoves, Player player, Board board) {
+    static List<Road> getRoadsOfPlayer(Player player, Board board) {
 
-        List<Settlement> settlements = getSettlementsOfPlayer(player, board);
-        for (Settlement settlement : settlements) {
-            Coordinate coordinate = settlement.getCoordinate();
-            for (Coordinate neighbor : coordinate.getNeighbors()) {
-                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    BuildMove move = MoveCreator.createRoadMove(game, player, coordinate, neighbor);
-                    possibleMoves.add(move);
-                }
+        List<Road> roads = new ArrayList<>();
+
+        for (Road road : board.getRoads()) {
+            if (road.getUserId().equals(player.getUserId())) {
+                roads.add(road);
             }
         }
-
-        List<City> cities = getCitiesOfPlayer(player, board);
-        for (City city : cities) {
-            Coordinate coordinate = city.getCoordinate();
-            for (Coordinate neighbor : coordinate.getNeighbors()) {
-                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    BuildMove move = MoveCreator.createRoadMove(game, player, coordinate, neighbor);
-                    possibleMoves.add(move);
-                }
-            }
-        }
-    }
-
-    static void calculateRoadProgressMovesConnectingToRoad(Game game, int previousRoadProgressMoves,
-                                                           List<RoadProgressMove> possibleMoves,
-                                                           Player player, Board board) {
-        // get road end points
-        List<Coordinate> roadEndPoints = MoveLandRegistry.getRoadEndPoints(player, board);
-
-        // get all valid building coordinates and create moves
-        for (Coordinate coordinate : roadEndPoints) {
-            for (Coordinate neighbor : coordinate.getNeighbors())
-                if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                    RoadProgressMove move = MoveCreator.createRoadProgressMove(game, player,
-                            coordinate, neighbor, previousRoadProgressMoves);
-                    possibleMoves.add(move);
-                }
-        }
+        return roads;
     }
 
     static void calculateRoadProgressMovesConnectingToBuilding(Game game, List<RoadProgressMove> possibleMoves,
@@ -232,19 +235,16 @@ public class MoveLandRegistry {
         }
     }
 
-    static void calculateRoadBuildingMovesConnectingToRoad(Game game, List<BuildMove> possibleMoves, Player player, Board board) {
+    static List<Coordinate> getRoadCoordinates(List<Road> roads) {
 
-        // get all road end points
-        List<Coordinate> roadEndPoints = getRoadEndPoints(player, board);
+        List<Coordinate> roadCoordinates = new ArrayList<>();
 
-        // if there are open road end points, then calculate building coordinates
-            for (Coordinate coordinate : roadEndPoints) {
-                for (Coordinate neighbor : coordinate.getNeighbors())
-                    if (!board.hasRoadWithCoordinates(coordinate, neighbor)) {
-                        BuildMove move = MoveCreator.createRoadMove(game, player, coordinate, neighbor);
-                        possibleMoves.add(move);
-                    }
-            }
+        for (Road road : roads) {
+            roadCoordinates.add(road.getCoordinate1());
+            roadCoordinates.add(road.getCoordinate2());
+        }
+
+        return roadCoordinates;
     }
 
 }

@@ -15,11 +15,11 @@ public class TradeMoveDTO extends MoveDTO {
         this.offeredType = offeredType;
     }
 
-    public void setNeededType(ResourceType neededType) {
-        this.neededType = neededType;
-    }
-
     public ResourceType getNeededType() {
         return neededType;
+    }
+
+    public void setNeededType(ResourceType neededType) {
+        this.neededType = neededType;
     }
 }

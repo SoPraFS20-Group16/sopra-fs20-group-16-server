@@ -37,17 +37,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private UserLocationService userLocationService;
-
     @MockBean
     GameService gameService;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private UserLocationService userLocationService;
 
     /**
      * Tests the GET /users endpoint which has to return an array of UserGetDTOs

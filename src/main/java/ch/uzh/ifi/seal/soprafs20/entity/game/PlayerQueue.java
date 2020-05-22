@@ -11,26 +11,19 @@ import java.util.Map;
 @Table(name = "PLAYER_QUEUE")
 public class PlayerQueue {
 
+    @ElementCollection
+    private final Map<Integer, Long> queue;
     @Column
     Long gameId;
-
     @Id
     @GeneratedValue
     private Long id;
-
     @Column
     private int lastIndex;
-
-    @ElementCollection
-    private final Map<Integer, Long> queue;
 
 
     public PlayerQueue() {
         queue = new HashMap<>();
-    }
-
-    private boolean hasNext() {
-        return queue.size() != 0;
     }
 
     public Long getNext() {
@@ -42,6 +35,10 @@ public class PlayerQueue {
         lastIndex++;
         lastIndex = lastIndex % queue.size();
         return queue.get(lastIndex);
+    }
+
+    private boolean hasNext() {
+        return queue.size() != 0;
     }
 
     public void addUserId(Long userId) {

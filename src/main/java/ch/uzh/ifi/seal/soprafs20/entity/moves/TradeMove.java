@@ -25,13 +25,13 @@ public class TradeMove extends Move {
         return new TradeMoveHandler();
     }
 
+    public ResourceType getNeededType() {
+        return neededType;
+    }
+
     // getters and setters
     public void setNeededType(ResourceType neededType) {
         this.neededType = neededType;
-    }
-
-    public ResourceType getNeededType() {
-        return neededType;
     }
 
     public ResourceType getOfferedType() {

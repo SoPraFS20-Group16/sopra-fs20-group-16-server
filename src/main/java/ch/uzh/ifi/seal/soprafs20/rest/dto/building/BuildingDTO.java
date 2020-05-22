@@ -21,12 +21,12 @@ public class BuildingDTO {
         this.buildingType = buildingType;
     }
 
-    public void setCoordinates(List<CoordinateDTO> coordinates) {
-        this.coordinates = coordinates;
-    }
-
     public List<CoordinateDTO> getCoordinates() {
         return coordinates;
+    }
+
+    public void setCoordinates(List<CoordinateDTO> coordinates) {
+        this.coordinates = coordinates;
     }
 
     public Long getUserId() {

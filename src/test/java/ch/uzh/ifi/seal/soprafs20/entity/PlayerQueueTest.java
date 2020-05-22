@@ -49,7 +49,7 @@ class PlayerQueueTest {
         playerToBeAdded.setUserId(player4);
         allPlayerObjects.add(playerToBeAdded);
 
-        for (Player player: allPlayerObjects) {
+        for (Player player : allPlayerObjects) {
             queue.addUserId(player.getUserId());
         }
     }
@@ -80,4 +80,4 @@ class PlayerQueueTest {
         //Then the second again
         assertEquals(second, queue.getNext(), "the second should go now!");
     }
- }
+}

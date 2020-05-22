@@ -474,7 +474,7 @@ public class MoveCalculator {
         // get current board
         Board board = game.getBoard();
 
-        for (Tile tile: board.getTiles()) {
+        for (Tile tile : board.getTiles()) {
 
             KnightMove move = new KnightMove();
             move.setTileId(tile.getId());

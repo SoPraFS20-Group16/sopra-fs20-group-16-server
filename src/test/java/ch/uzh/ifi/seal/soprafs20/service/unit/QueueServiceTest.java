@@ -63,7 +63,7 @@ class QueueServiceTest {
         playerToBeAdded.setUserId(player4);
         allPlayerObjects.add(playerToBeAdded);
 
-        for (Player player: allPlayerObjects) {
+        for (Player player : allPlayerObjects) {
             queue.addUserId(player.getUserId());
         }
     }

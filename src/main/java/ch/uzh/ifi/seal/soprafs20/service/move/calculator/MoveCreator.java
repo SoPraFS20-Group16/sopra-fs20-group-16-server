@@ -216,7 +216,7 @@ public class MoveCreator {
         List<PlentyMove> plentyMoves = new ArrayList<>();
 
         // create the and add the three different plenty move types
-        for (PlentyType type: PlentyType.values()) {
+        for (PlentyType type : PlentyType.values()) {
             PlentyMove move = new PlentyMove();
             move.setGameId(game.getId());
             move.setUserId(player.getUserId());

@@ -32,26 +32,19 @@ import static org.mockito.BDDMockito.given;
 class GameServiceTest {
 
     @Mock
-    private GameRepository gameRepository;
-
-    @Mock
     PlayerRepository playerRepository;
-
     @Mock
     PlayerService playerService;
-
     @Mock
     BoardService boardService;
-
     @Mock
     QueueService queueService;
-
     @Mock
     MoveService moveService;
-
-   @Mock
+    @Mock
     HistoryService historyService;
-
+    @Mock
+    private GameRepository gameRepository;
     @InjectMocks
     private GameService gameService;
 
@@ -76,7 +69,7 @@ class GameServiceTest {
         ReflectionTestUtils.setField(gameService, "boardService", boardService);
         ReflectionTestUtils.setField(gameService, "queueService", queueService);
         ReflectionTestUtils.setField(gameService, "moveService", moveService);
-        ReflectionTestUtils.setField(gameService,"historyService", historyService);
+        ReflectionTestUtils.setField(gameService, "historyService", historyService);
     }
 
     @Test

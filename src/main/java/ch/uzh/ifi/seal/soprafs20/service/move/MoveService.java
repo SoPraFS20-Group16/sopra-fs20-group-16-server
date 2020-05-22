@@ -124,6 +124,19 @@ public class MoveService {
     }
 
     /**
+     * Delete all moves for the given game
+     * <p>
+     * Is used to remove expired moves after a move was executed
+     *
+     * @param gameId the games id
+     */
+    public void deleteAllMovesForGame(Long gameId) {
+        List<Move> expiredMoves = moveRepository.findAllByGameId(gameId);
+        moveRepository.deleteAll(expiredMoves);
+        moveRepository.flush();
+    }
+
+    /**
      * Recalculates the possible next moves.
      * Called after the given move was performed.
      * The passed handler may contain information about the possible next moves
@@ -164,6 +177,8 @@ public class MoveService {
         notifyBotIfNeeded(game);
     }
 
+    // -- helper methods --
+
     /**
      * Helper method that takes a game and recalculates the current players victory points
      * after a move was executed.
@@ -185,21 +200,6 @@ public class MoveService {
         //save player
         playerService.save(player);
         return player;
-    }
-
-    // -- helper methods --
-
-    /**
-     * Delete all moves for the given game
-     * <p>
-     * Is used to remove expired moves after a move was executed
-     *
-     * @param gameId the games id
-     */
-    public void deleteAllMovesForGame(Long gameId) {
-        List<Move> expiredMoves = moveRepository.findAllByGameId(gameId);
-        moveRepository.deleteAll(expiredMoves);
-        moveRepository.flush();
     }
 
     /**
