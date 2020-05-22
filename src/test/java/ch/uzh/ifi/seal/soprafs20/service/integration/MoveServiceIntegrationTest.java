@@ -668,7 +668,7 @@ class MoveServiceIntegrationTest {
     }
 
     @Test
-    void testCardMove_RoadProgress() {
+    void testCardMove_RoadProgress_valid() {
         CardMove cardMove = new CardMove();
         setupTestMove(cardMove, testPlayer, testGame);
 
@@ -677,6 +677,12 @@ class MoveServiceIntegrationTest {
         cardMove.setDevelopmentCard(card);
         testPlayer.addDevelopmentCard(card);
         testPlayer = playerService.save(testPlayer);
+
+        // add settlement to build on
+        Settlement settlement = new Settlement();
+        settlement.setUserId(testPlayer.getUserId());
+        settlement.setCoordinate(testBoard.getAllCoordinates().get(0));
+        testBoard.addSettlement(settlement);
 
         //Perform
         moveService.performMove(cardMove);
@@ -688,6 +694,108 @@ class MoveServiceIntegrationTest {
         for (Move move : moves) {
             assertEquals(RoadProgressMove.class, move.getClass(),
                     "When a RoadProgress Card is played RoadProgressMoves will be calculated");
+        }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
+    }
+
+    @Test
+    void testCardMove_RoadProgress_BuildOneRoad_valid() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        //Add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.ROADPROGRESS);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // add settlement to build on
+        Settlement settlement = new Settlement();
+        settlement.setUserId(testPlayer.getUserId());
+        settlement.setCoordinate(testBoard.getAllCoordinates().get(0));
+        testBoard.addSettlement(settlement);
+
+        // perform card move
+        moveService.performMove(cardMove);
+
+        // get followup moves
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        // perform buildMove (build first road)
+        moveService.performMove(moves.get(0));
+
+        // get followup moves
+        List<Move> followUpMoves = moveRepository.findAllByGameId(testGame.getId());
+
+        // next move is roadProgress move
+        for (Move move : followUpMoves) {
+            assertEquals(RoadProgressMove.class, move.getClass(),
+                    "When a RoadProgress Card is played RoadProgressMoves will be calculated");
+        }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
+    }
+
+    @Test
+    void testCardMove_RoadProgress_noBuildingsToConnect_Invalid() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        //Add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.ROADPROGRESS);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // testPlayer does NOT have any buildings (needed to build a road)
+
+        // perform
+        moveService.performMove(cardMove);
+
+        // get moves
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        // assert move type
+        for (Move move : moves) {
+            assertEquals(PassMove.class, move.getClass(),
+                    "Since the player does not have any building options, a passmove should occur");
+        }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
+    }
+
+    @Test
+    void testCardMove_RoadProgress_maxNumberOfRoadsReached_Invalid() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        //Add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.ROADPROGRESS);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // player has already max amount of allowed roads build on board
+        for (int i = 0; i < PlayerConstants.MAX_NUMBER_ROADS; i++) {
+            Road road = new Road();
+            road.setUserId(testPlayer.getUserId());
+            testBoard.addRoad(road);
+        }
+
+        // perform
+        moveService.performMove(cardMove);
+
+        // get moves
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        // assert move type
+        for (Move move : moves) {
+            assertEquals(PassMove.class, move.getClass(),
+                    "since the player reached his max number of roads, a passMove should occur");
         }
 
         assertEquals(0, testPlayer.getDevelopmentCards().size(),
@@ -976,6 +1084,34 @@ class MoveServiceIntegrationTest {
                 "the stolen resource must be added");
         assertEquals(2, victim.getWallet().getResourceAmount(ResourceType.ORE),
                 "1 resource must be stolen from victim");
+
+    }
+
+    @Test
+    void testPerformStealMove_victimHasEmptyWallet() {
+        StealMove stealMove = new StealMove();
+        setupTestMove(stealMove, testPlayer, testGame);
+        Player victim = setupSecondTestPlayer();
+        stealMove.setVictimId(victim.getUserId());
+
+        // set wallet for player
+        ResourceWallet funds = new ResourceWallet();
+        funds.addResource(ResourceType.ORE, 1);
+        testPlayer.setWallet(funds);
+
+        // assume victim has no resources
+        victim.setWallet(new ResourceWallet());
+
+        testPlayer = playerService.save(testPlayer);
+        victim = playerService.save(victim);
+
+        // perform
+        moveService.performMove(stealMove);
+
+        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.ORE),
+                "no resource should be added");
+        assertEquals(0, victim.getWallet().getResourceAmount(ResourceType.ORE),
+                "the victim does not have any resources");
 
     }
 
