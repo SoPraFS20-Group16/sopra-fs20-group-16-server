@@ -169,7 +169,7 @@ public class GameService {
      * <p>
      * This method otherwise needs to possibly change every time the Game class is updated
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "M4")
     public Game findGame(Game gameInput) {
 
         if (gameInput == null) {

@@ -129,15 +129,15 @@ public class MoveService {
      * The passed handler may contain information about the possible next moves
      * (A counter for example)
      * <p>
-     * This method is deprecated because relying on information in the handler is error prone.
-     * It should only be relied on information that was saved to a repository and not
-     * in a service like worker
      *
      * @param game    the game
      * @param handler the handler
      * @param move    the move
+     * @deprecated This method is deprecated because relying on information in the handler is error prone.
+     * It should only be relied on information that was saved to a repository and not
+     * in a service like worker
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "M4")
     public void makeRecalculations(Game game, MoveHandler handler, Move move) {
 
         //Calculate current players points

@@ -31,7 +31,6 @@ class IpStackRequestTest {
     @BeforeEach
     void setup() {
 
-        System.out.println(System.getenv().get("IPSTACK_KEY"));
         testRequest = new IpStackRequest(TEST_IP);
         testRequest.makeRequest();
         assert testRequest.isSuccess();

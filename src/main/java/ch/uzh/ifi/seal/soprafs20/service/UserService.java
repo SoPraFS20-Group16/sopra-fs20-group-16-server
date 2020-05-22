@@ -64,7 +64,7 @@ public class UserService {
      * addition of a filed in the user entity. Method taking a specific key for a user should be used
      * to retrieve users
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "M4")
     public User findUser(User user) {
 
 
