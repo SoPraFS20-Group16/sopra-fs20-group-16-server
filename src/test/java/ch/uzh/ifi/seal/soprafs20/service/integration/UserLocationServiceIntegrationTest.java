@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase
-public class UserLocationServiceIntegrationTest {
+class UserLocationServiceIntegrationTest {
 
     private final Long testUserId = 12L;
     private final String testUsername = "TestUsername";
