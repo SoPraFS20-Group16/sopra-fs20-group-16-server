@@ -1,10 +1,12 @@
 package ch.uzh.ifi.seal.soprafs20.controller;
 
 
+import ch.uzh.ifi.seal.soprafs20.constant.DevelopmentType;
 import ch.uzh.ifi.seal.soprafs20.constant.GameConstants;
 import ch.uzh.ifi.seal.soprafs20.entity.Game;
 import ch.uzh.ifi.seal.soprafs20.entity.User;
 import ch.uzh.ifi.seal.soprafs20.entity.game.Player;
+import ch.uzh.ifi.seal.soprafs20.entity.game.cards.DevelopmentCard;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.BuildMove;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.Move;
 import ch.uzh.ifi.seal.soprafs20.entity.moves.PassMove;
@@ -30,10 +32,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -575,8 +577,6 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.moves", hasSize(1)));
     }
 
-    //TODO: Add test case that checks the correct mapping of the development cards!! (GameControllerTest)
-
     /**
      * Tests the GET /games/gameId endpoint.
      * Assumes there is a player in the game
@@ -596,6 +596,7 @@ class GameControllerTest {
         Player player = new Player();
         player.setUserId(user.getId());
         player.setUsername(user.getUsername());
+        player.addDevelopmentCard(new DevelopmentCard(DevelopmentType.VICTORYPOINT));
 
         Game game = new Game();
         game.setId(1L);
@@ -627,7 +628,9 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.gameId", is(game.getId().intValue())))
                 .andExpect(jsonPath("$.withBots", is(game.isWithBots())))
                 .andExpect(jsonPath("$.moves", hasSize(0)))
-                .andExpect(jsonPath("$.players", hasSize(1)));
+                .andExpect(jsonPath("$.players", hasSize(1)))
+                .andExpect(jsonPath("$.players[0].developmentCards", isA(LinkedHashMap.class)))
+                .andExpect(jsonPath("$.players[0].resources", isA(LinkedHashMap.class)));
     }
 
     /**
