@@ -19,8 +19,8 @@ Based on simple concepts, this game does not fail to provide a diverting experie
 This backend part of the project is build on the spring boot project-template provided for SoPra FS20. For more
  information about spring boot, visit the [official Spring website](https://spring.io/projects/spring-boot). It is 
  responsible for the core game logic, providing the
-  game state to the client via a REST API. The game state includes the board, the players as well as all possible
-   moves that can be made. Moves can be made using the REST API.
+ game state to the client via a REST API. The game state includes the board, the players as well as all possible
+ moves that can be made. Moves can be made using the REST API.
 
 ## High-level components
 
@@ -47,6 +47,9 @@ authentication. It also provides a list uf all users and their location data, if
 To contribute to this project you can clone or fork this repository. If you want to add your changes or improvements
 you can create a pull request. For more information visit the [Github Help Page](https://help.github.com/en/github).
 If you choose to make a pull request, make sure the github actions task **Test Project** passes.
+
+When running tests locally, the tests relying on an API key for [ipstack](ipstack.com) are disabled if no key is available.
+If you wish to deploy your own version and / or want to include these tests, then [here you can learn more about environment variables](https://docs.oracle.com/javase/tutorial/essential/environment/env.html). The environment variable for the ipstack key is named `IPSTACK_KEY`. You can get an API key by opening a free account at [ipstack](ipstack.com).
 
 If your pull request is accepted, the project is automatically deployed to heroku. If you want to deploy your own
 version check out this guide on 

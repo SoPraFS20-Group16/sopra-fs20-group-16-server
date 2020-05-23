@@ -33,6 +33,6 @@ public class PurchaseMoveHandler implements MoveHandler {
     public List<Move> calculateNextMoves(Game game, Move move) {
 
         // it's not allowed to invoke a development card in the same move it got purchased
-        return MoveCalculator.calculateAllStandardMovesExclusiveDevCard(game);
+        return MoveCalculator.calculatePurchaseAndPassMoves(game);
     }
 }

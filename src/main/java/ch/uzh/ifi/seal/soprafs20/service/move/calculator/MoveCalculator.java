@@ -426,7 +426,7 @@ public class MoveCalculator {
     }
 
     /**
-     * Calculates all the moves that are available, except the development card moves
+     * Calculates all the moves that are available after a development card got purchased
      * <p>
      * This method is used to exclude development cards in the recalculations
      * if the player bought a development card during their current turn.
@@ -434,20 +434,12 @@ public class MoveCalculator {
      * @param game the game
      * @return the list
      */
-    public static List<Move> calculateAllStandardMovesExclusiveDevCard(Game game) {
+    public static List<Move> calculatePurchaseAndPassMoves(Game game) {
 
         List<Move> moves = new ArrayList<>();
 
-        //Add all the build moves
-        moves.addAll(calculateCityMoves(game));
-        moves.addAll(calculateSettlementMoves(game));
-        moves.addAll(calculateRoadMoves(game));
-
-        //Add purchase of devCard moves
+        // add purchase moves
         moves.addAll(calculatePurchaseMoves(game));
-
-        //Add trade with bank moves
-        moves.addAll(calculateTradeMoves(game));
 
         // add pass move(s)
         moves.addAll(calculatePassMove(game));

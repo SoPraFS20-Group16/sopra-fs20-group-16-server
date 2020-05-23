@@ -36,7 +36,9 @@ public class RoadProgressMoveHandler implements MoveHandler {
 
         int previousRoadProgressMoves = ((RoadProgressMove) move).getPreviousRoadProgressMoves();
 
-        if (previousRoadProgressMoves < GameConstants.NUMBER_OF_ROADS_ROAD_PROGRESS) {
+        // check if another free road is permitted and if the board setup allows an additional road on it
+        if (previousRoadProgressMoves < GameConstants.NUMBER_OF_ROADS_ROAD_PROGRESS
+                && !MoveCalculator.calculateAllRoadProgressMoves(game, previousRoadProgressMoves).isEmpty()) {
             return MoveCalculator.calculateAllRoadProgressMoves(game, previousRoadProgressMoves);
         }
 

@@ -309,6 +309,11 @@ public class PlayerService {
             }
         }
 
+        // if victim does not have any resources end move here
+        if (availableTypes.isEmpty()) {
+            return;
+        }
+
         int random = ThreadLocalRandom.current().nextInt(0, availableTypes.size());
 
         ResourceType stolenType = availableTypes.get(random);

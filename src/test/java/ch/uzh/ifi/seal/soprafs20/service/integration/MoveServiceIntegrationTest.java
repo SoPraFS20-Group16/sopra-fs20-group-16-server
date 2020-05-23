@@ -181,6 +181,25 @@ class MoveServiceIntegrationTest {
         assertNull(moveService.findMoveById(12L));
     }
 
+    @Test
+    void testPerformCardMove_VictoryCard() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        // add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.VICTORYPOINT);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        moveService.performMove(cardMove);
+
+        // assert that the card did not got removed, since it is VP card
+        assertEquals(1, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should not be deducted");
+    }
+
 
     //Exemplary for any move, individual perform functions tested separately
     @Test
@@ -643,10 +662,13 @@ class MoveServiceIntegrationTest {
             assertEquals(KnightMove.class, move.getClass(),
                     "When a Knight Card is played, then KnightMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
-    void testCardMove_RoadProgress() {
+    void testCardMove_RoadProgress_valid() {
         CardMove cardMove = new CardMove();
         setupTestMove(cardMove, testPlayer, testGame);
 
@@ -655,6 +677,12 @@ class MoveServiceIntegrationTest {
         cardMove.setDevelopmentCard(card);
         testPlayer.addDevelopmentCard(card);
         testPlayer = playerService.save(testPlayer);
+
+        // add settlement to build on
+        Settlement settlement = new Settlement();
+        settlement.setUserId(testPlayer.getUserId());
+        settlement.setCoordinate(testBoard.getAllCoordinates().get(0));
+        testBoard.addSettlement(settlement);
 
         //Perform
         moveService.performMove(cardMove);
@@ -667,6 +695,111 @@ class MoveServiceIntegrationTest {
             assertEquals(RoadProgressMove.class, move.getClass(),
                     "When a RoadProgress Card is played RoadProgressMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
+    }
+
+    @Test
+    void testCardMove_RoadProgress_BuildOneRoad_valid() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        //Add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.ROADPROGRESS);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // add settlement to build on
+        Settlement settlement = new Settlement();
+        settlement.setUserId(testPlayer.getUserId());
+        settlement.setCoordinate(testBoard.getAllCoordinates().get(0));
+        testBoard.addSettlement(settlement);
+
+        // perform card move
+        moveService.performMove(cardMove);
+
+        // get followup moves
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        // perform buildMove (build first road)
+        moveService.performMove(moves.get(0));
+
+        // get followup moves
+        List<Move> followUpMoves = moveRepository.findAllByGameId(testGame.getId());
+
+        // next move is roadProgress move
+        for (Move move : followUpMoves) {
+            assertEquals(RoadProgressMove.class, move.getClass(),
+                    "When a RoadProgress Card is played RoadProgressMoves will be calculated");
+        }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
+    }
+
+    @Test
+    void testCardMove_RoadProgress_noBuildingsToConnect_Invalid() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        //Add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.ROADPROGRESS);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // testPlayer does NOT have any buildings (needed to build a road)
+
+        // perform
+        moveService.performMove(cardMove);
+
+        // get moves
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        // assert move type
+        for (Move move : moves) {
+            assertEquals(PassMove.class, move.getClass(),
+                    "Since the player does not have any building options, a passmove should occur");
+        }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
+    }
+
+    @Test
+    void testCardMove_RoadProgress_maxNumberOfRoadsReached_Invalid() {
+        CardMove cardMove = new CardMove();
+        setupTestMove(cardMove, testPlayer, testGame);
+
+        //Add development card
+        DevelopmentCard card = new DevelopmentCard(DevelopmentType.ROADPROGRESS);
+        cardMove.setDevelopmentCard(card);
+        testPlayer.addDevelopmentCard(card);
+        testPlayer = playerService.save(testPlayer);
+
+        // player has already max amount of allowed roads build on board
+        for (int i = 0; i < PlayerConstants.MAX_NUMBER_ROADS; i++) {
+            Road road = new Road();
+            road.setUserId(testPlayer.getUserId());
+            testBoard.addRoad(road);
+        }
+
+        // perform
+        moveService.performMove(cardMove);
+
+        // get moves
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        // assert move type
+        for (Move move : moves) {
+            assertEquals(PassMove.class, move.getClass(),
+                    "since the player reached his max number of roads, a passMove should occur");
+        }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
@@ -693,6 +826,9 @@ class MoveServiceIntegrationTest {
             assertEquals(PlentyMove.class, move.getClass(),
                     "When a PlentyProgress Card is played, then PlentyMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
@@ -718,6 +854,9 @@ class MoveServiceIntegrationTest {
             assertEquals(MonopolyMove.class, move.getClass(),
                     "When a Monopoly Card is played MonopolyMoves will be calculated");
         }
+
+        assertEquals(0, testPlayer.getDevelopmentCards().size(),
+                "the dev-card should be deducted");
     }
 
     @Test
@@ -743,11 +882,11 @@ class MoveServiceIntegrationTest {
     }
 
     @Test
-    void testPerformPurchaseMove() {
+    void testPerformPurchaseMove_oneBuy() {
         PurchaseMove purchaseMove = new PurchaseMove();
         setupTestMove(purchaseMove, testPlayer, testGame);
 
-        // give the player purchase funds
+        // give the player purchase funds for one card
         testPlayer.setWallet(new DevelopmentCard().getPrice());
         testPlayer = playerService.save(testPlayer);
 
@@ -764,6 +903,46 @@ class MoveServiceIntegrationTest {
                     "Wallet should be empty!");
         }
 
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+        assertEquals(1, moves.size(), "only one move should follow");
+        assertEquals(PassMove.class, moves.get(0).getClass(), "a pass move must follow," +
+                "as the player only can afford one development card");
+    }
+
+    @Test
+    void testPerformPurchaseMove_twoBuys() {
+        PurchaseMove purchaseMove = new PurchaseMove();
+        setupTestMove(purchaseMove, testPlayer, testGame);
+
+        // give the player purchase funds for two cards
+        ResourceWallet funds = new ResourceWallet();
+        ResourceWallet price = new DevelopmentCard().getPrice();
+
+        for (ResourceType type: price.getAllTypes()) {
+            funds.addResource(type, 2 * price.getResourceAmount(type));
+        }
+
+        testPlayer.setWallet(funds);
+        testPlayer = playerService.save(testPlayer);
+
+        // perform
+        moveService.performMove(purchaseMove);
+
+        // assert that the player got one development card and has paid for it
+        testPlayer = playerService.findPlayerByUserId(testPlayer.getUserId());
+        assertEquals(1, testPlayer.getDevelopmentCards().size(),
+                "There should be a development card added");
+        for (ResourceType type : testPlayer.getWallet().getAllTypes()) {
+            assertEquals(price.getResourceAmount(type), testPlayer.getWallet().getResourceAmount(type),
+                    "the player must have paid for the card and only can afford one more card");
+        }
+
+        List<Move> moves = moveRepository.findAllByGameId(testGame.getId());
+
+        assertEquals(2, moves.size(), "another purchase move or a pass move must follow");
+        for (Move move : moves) {
+            assertThat(move.getClass(), anyOf(equalTo(PurchaseMove.class), equalTo(PassMove.class)));
+        }
     }
 
     @Test
@@ -945,6 +1124,34 @@ class MoveServiceIntegrationTest {
                 "the stolen resource must be added");
         assertEquals(2, victim.getWallet().getResourceAmount(ResourceType.ORE),
                 "1 resource must be stolen from victim");
+
+    }
+
+    @Test
+    void testPerformStealMove_victimHasEmptyWallet() {
+        StealMove stealMove = new StealMove();
+        setupTestMove(stealMove, testPlayer, testGame);
+        Player victim = setupSecondTestPlayer();
+        stealMove.setVictimId(victim.getUserId());
+
+        // set wallet for player
+        ResourceWallet funds = new ResourceWallet();
+        funds.addResource(ResourceType.ORE, 1);
+        testPlayer.setWallet(funds);
+
+        // assume victim has no resources
+        victim.setWallet(new ResourceWallet());
+
+        testPlayer = playerService.save(testPlayer);
+        victim = playerService.save(victim);
+
+        // perform
+        moveService.performMove(stealMove);
+
+        assertEquals(1, testPlayer.getWallet().getResourceAmount(ResourceType.ORE),
+                "no resource should be added");
+        assertEquals(0, victim.getWallet().getResourceAmount(ResourceType.ORE),
+                "the victim does not have any resources");
 
     }
 
